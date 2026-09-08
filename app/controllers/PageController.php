@@ -1,5 +1,6 @@
 <?php
 
+// Controla las páginas públicas y las respuestas de error de la aplicación.
 class PageController extends Controller
 {
     public function home(): void
@@ -54,6 +55,14 @@ class PageController extends Controller
         http_response_code(404);
         $this->view('404', [
             'title' => 'Página no encontrada',
+        ]);
+    }
+
+    public function serverError(): void
+    {
+        http_response_code(500);
+        $this->view('500', [
+            'title' => 'Error del servidor',
         ]);
     }
 }

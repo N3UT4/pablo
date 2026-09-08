@@ -1,0 +1,16 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# Respuestas consistentes para errores generados por Apache.
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+
+<FilesMatch "^(database\.sql|README\.md|\.env|composer\.(json|lock))$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

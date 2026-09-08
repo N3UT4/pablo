@@ -1,4 +1,5 @@
 <?php
+// Configuración base, sesión segura y valores de conexión del entorno.
 if (session_status() !== PHP_SESSION_ACTIVE) {
     $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
     session_set_cookie_params([
@@ -9,6 +10,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+// Las credenciales se leen del entorno; los valores locales solo sirven para desarrollo.
 define('APP_ROOT', dirname(__DIR__));
 define('APP_URL', getenv('APP_URL') ?: '/');
 
@@ -34,6 +36,7 @@ define('STUDIO_HOURS', [
     '5:00 p. m. - 9:00 p. m.',
 ]);
 
+// Token usado para proteger formularios contra solicitudes CSRF.
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }

@@ -2,6 +2,7 @@
 
 abstract class Controller
 {
+    // Renderiza una vista dentro del encabezado y pie compartidos.
     protected function view(string $template, array $data = []): void
     {
         extract($data, EXTR_SKIP);
@@ -16,6 +17,7 @@ abstract class Controller
         require APP_ROOT . '/app/views/layout/footer.php';
     }
 
+    // Centraliza las redirecciones para terminar la petición inmediatamente.
     protected function redirect(string $route): void
     {
         header('Location: ' . $route);

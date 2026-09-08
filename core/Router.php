@@ -1,5 +1,6 @@
 <?php
 
+// Traduce la acción solicitada a un método del controlador correspondiente.
 class Router
 {
     public static function dispatch(): void

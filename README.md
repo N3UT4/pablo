@@ -2,15 +2,34 @@
 
 Proyecto web de estudio de tatuajes con estructura MVC en PHP.
 
-## Estructura
+## Estructura del proyecto
+
+Las carpetas se mantienen en su ubicación actual para conservar las URLs existentes.
 
 - app/controllers: controladores
 - app/models: modelos
 - app/views: vistas
+- app/views/layout: encabezado y pie compartidos
+- app/views/pages: páginas renderizadas por el MVC
 - config: configuración
 - core: base MVC
-- public: se puede usar para una capa pública si luego se expande
+- css: estilos globales y de formularios
+- js: interacciones del navegador
+- img: logotipos, ilustraciones y fotografías
+- lang: traducciones
+- storage: archivos generados localmente (no se versionan)
 - database.sql: estructura completa de MySQL
+
+## Manejo de errores
+
+- `404.html` es la página pública para rutas inexistentes.
+- `500.html` es la página pública para errores del servidor web.
+- `app/views/pages/404.php` y `app/views/pages/500.php` son las vistas usadas por el MVC.
+- `.htaccess` conecta los errores de Apache con las páginas públicas y bloquea archivos sensibles.
+
+Los comentarios del código se concentran en los puntos de entrada, configuración,
+enrutamiento y renderizado para documentar la responsabilidad de cada pieza sin
+llenar las vistas con ruido visual.
 
 ## Ejecutar localmente
 
