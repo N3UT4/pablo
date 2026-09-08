@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promociones — ITZA TATTOO STUDIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/forms.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">ITZA <span>TATTOO</span></a>
+    <nav class="steps-nav">
+      <a href="index.html">Inicio</a>
+      <a href="promociones.html" class="active">Promociones</a>
+      <a href="registro.html">Registro</a>
+    </nav>
+    <div class="lang-switcher"></div>
+  </div>
+</div>
+
+<div class="container container-narrow">
+  <div class="card">
+    <div class="card-head">
+      <span class="eyebrow">Descuentos exclusivos</span>
+      <h1>Canjear cupón</h1>
+      <p>Ingresa un código de promoción para obtener descuentos en tu próxima cita.</p>
+    </div>
+
+    <form id="promocionesForm" novalidate>
+      <div class="section-title">Validar cupón</div>
+
+      <div class="field">
+        <label for="codigo_cupon">Código de cupón</label>
+        <input type="text" id="codigo_cupon" name="codigo_cupon" placeholder="Ej: ITZA2026" autocomplete="off">
+        <span class="err" id="codigoCuponErr">Ingresa un código válido.</span>
+      </div>
+
+      <button type="button" id="validarBtn" class="submit-btn" style="background: var(--gold); color: var(--ink); margin-bottom: 20px;">
+        Validar cupón
+      </button>
+
+      <!-- Mostrado solo si el cupón es válido -->
+      <div id="cuponValido" style="display:none;">
+        <div class="alert success" style="display:flex;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>¡Cupón válido! Este descuento se aplicará a tu próxima compra.</span>
+        </div>
+
+        <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <strong id="nombrePromo">Descuento 15%</strong>
+            <span id="montoPromo" style="color: var(--blood-bright); font-weight: 600;">-$20.000</span>
+          </div>
+          <p id="descripcionPromo" style="font-size: 13px; color: var(--bone-dim); margin-bottom: 8px;">Válido para tatuajes desde $100.000</p>
+          <p id="vigenciaPromo" style="font-size: 12px; color: var(--bone-dim);">Válido hasta: 31 dic 2026</p>
+        </div>
+      </div>
+
+      <div id="formAplicacion" style="display:none;">
+        <div class="section-title">Aplicar a tu cita</div>
+
+        <div class="field">
+          <label for="email_cupon">Tu correo electrónico</label>
+          <input type="email" id="email_cupon" name="email_cupon" placeholder="tu@correo.com">
+          <span class="err" id="emailCuponErr">Ingresa un correo válido.</span>
+        </div>
+
+        <div class="field">
+          <label for="fecha_uso">Fecha planeada para usar el cupón</label>
+          <input type="date" id="fecha_uso" name="fecha_uso">
+          <span class="err" id="fechaUsoErr">Ingresa una fecha válida.</span>
+        </div>
+
+        <div class="field">
+          <label for="notas_cupon">Notas <span class="optional">(opcional)</span></label>
+          <textarea id="notas_cupon" name="notas_cupon" placeholder="Ej: Aplicar a mi próxima sesión de blackwork" rows="3"></textarea>
+        </div>
+
+        <div class="check-row">
+          <input type="checkbox" id="acepta_terminos" name="acepta_terminos">
+          <label for="acepta_terminos" style="text-transform:none; letter-spacing:0; font-weight:400; color:var(--bone-dim);">
+            Acepto que el cupón solo es válido una vez y no es transferible.
+          </label>
+        </div>
+        <span class="err" id="aceptaTerminosErr" style="margin-top:-8px;">Debes aceptar los términos para continuar.</span>
+
+        <button type="submit" class="submit-btn">Registrar cupón en mi cuenta</button>
+      </div>
+
+      <div id="sinCupon" style="display:none; text-align: center; padding: 40px 0;">
+        <p style="color: var(--bone-dim); font-size: 14px;">Código no encontrado o expirado</p>
+        <p style="color: var(--bone-dim); font-size: 13px; margin-top: 8px;">Verifica el código e intenta de nuevo</p>
+      </div>
+    </form>
+
+    <div style="border-top: 1px solid var(--line); margin-top: 40px; padding-top: 24px;">
+      <div class="section-title">Promociones activas</div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="background: var(--panel-2); border-left: 3px solid var(--gold); padding: 12px 14px; border-radius: 2px;">
+          <strong style="color: var(--gold);">WELCOME20</strong> — Descuento 20% para clientes nuevos
+        </div>
+        <div style="background: var(--panel-2); border-left: 3px solid var(--success); padding: 12px 14px; border-radius: 2px;">
+          <strong style="color: var(--success);">REFERIDOS</strong> — Descuento por cada amigo que refiera
+        </div>
+        <div style="background: var(--panel-2); border-left: 3px solid var(--blood-bright); padding: 12px 14px; border-radius: 2px;">
+          <strong style="color: var(--blood-bright);">LOYALTY</strong> — Descuentos progresivos por sesiones
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/swal-theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/form-fx.js"></script>
+<script src="js/promociones.js"></script>
+</body>
+</html>

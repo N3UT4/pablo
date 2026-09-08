@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galería — ITZA TATTOO STUDIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/forms.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">ITZA <span>TATTOO</span></a>
+    <nav class="steps-nav">
+      <span class="staff-label">Área de staff · Admin / Tatuador</span>
+    </nav>
+    <div class="lang-switcher"></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- GATE: solo visible hasta validar acceso de staff -->
+  <div id="accessGate" class="card gate-card">
+    <div class="card-head">
+      <span class="eyebrow">Acceso restringido</span>
+      <h1>Solo personal autorizado</h1>
+      <p>Esta sección es exclusiva para administradores y tatuadores. Ingresa el código de acceso para continuar.</p>
+    </div>
+    <button id="unlockBtn" class="submit-btn">Ingresar código de staff</button>
+    <p class="hint">¿Eres cliente? <a href="index.html">Vuelve al inicio</a></p>
+  </div>
+
+  <div class="card" id="galeriaCard" style="display:none;">
+    <div class="card-head">
+      <span class="eyebrow">Gestión de contenido</span>
+      <h1>Subir a galería</h1>
+      <p>Agrega fotos de trabajos realizados a la galería del estudio.</p>
+    </div>
+
+    <form id="galeriaForm" novalidate>
+      <div class="section-title">Detalles del trabajo</div>
+
+      <div class="field">
+        <label for="titulo_trabajo">Título del trabajo</label>
+        <input type="text" id="titulo_trabajo" name="titulo_trabajo" placeholder="Ej: Blackwork antebrazo">
+        <span class="err" id="tituloTrabajoErr">Escribe un título para el trabajo.</span>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="tatuador_trabajo">Tatuador</label>
+          <select id="tatuador_trabajo" name="tatuador_trabajo">
+            <option value="">Selecciona un tatuador</option>
+            <option value="1">Itzel R. — Blackwork & tribal</option>
+            <option value="2">Julián S. — Realismo</option>
+            <option value="3">Mariana C. — Fine line</option>
+            <option value="4">Daniel A. — Color & cover-up</option>
+          </select>
+          <span class="err" id="tatuadorTrabajoErr">Selecciona un tatuador.</span>
+        </div>
+        <div class="field">
+          <label for="estilo_trabajo">Estilo</label>
+          <select id="estilo_trabajo" name="estilo_trabajo">
+            <option value="">Selecciona un estilo</option>
+            <option value="blackwork">Blackwork</option>
+            <option value="realismo">Realismo</option>
+            <option value="fine_line">Fine Line</option>
+            <option value="color">Color</option>
+            <option value="cover_up">Cover-up</option>
+            <option value="tribal">Tribal</option>
+            <option value="geométrico">Geométrico</option>
+          </select>
+          <span class="err" id="estiloTrabajoErr">Selecciona un estilo.</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="descripcion_trabajo">Descripción <span class="optional">(opcional)</span></label>
+        <textarea id="descripcion_trabajo" name="descripcion_trabajo" placeholder="Técnica utilizada, detalles especiales, tiempo de sesión, etc..." rows="4"></textarea>
+      </div>
+
+      <div class="section-title">Subir fotos</div>
+
+      <div id="uploadBox" class="upload-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <strong>Arrastra fotos aquí o haz clic para seleccionar</strong>
+        <span>Formatos: JPG, PNG · Máx 5MB por foto</span>
+        <input type="file" id="fotos_trabajo" name="fotos_trabajo" accept="image/jpeg,image/png" multiple style="display:none;">
+      </div>
+
+      <div id="previewContainer" style="display:none; margin-top:20px;">
+        <div class="section-title">Vista previa</div>
+        <div id="preview" style="display:flex; gap:12px; flex-wrap:wrap;"></div>
+      </div>
+
+      <span class="err" id="fotosErr" style="margin-top:12px; display:none;">Selecciona al menos una foto.</span>
+
+      <div class="check-row">
+        <input type="checkbox" id="autoriza_publicacion" name="autoriza_publicacion">
+        <label for="autoriza_publicacion" style="text-transform:none; letter-spacing:0; font-weight:400; color:var(--bone-dim);">
+          Autorizo la publicación de estas fotos en la galería y redes sociales de ITZA TATTOO.
+        </label>
+      </div>
+      <span class="err" id="autorizaErr" style="margin-top:-8px;">Debes autorizar para continuar.</span>
+
+      <button type="submit" class="submit-btn">Subir a galería</button>
+      <p class="hint">Las fotos serán revisadas antes de publicarse en el sitio.</p>
+    </form>
+  </div>
+</div>
+
+<script src="js/swal-theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/form-fx.js"></script>
+<script src="js/galeria.js"></script>
+</body>
+</html>

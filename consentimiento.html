@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consentimiento informado — ITZA TATTOO STUDIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/forms.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">ITZA <span>TATTOO</span></a>
+    <nav class="steps-nav">
+      <span class="staff-label">Área de staff · Admin / Tatuador</span>
+    </nav>
+    <div class="lang-switcher"></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- GATE: solo visible hasta validar acceso de staff -->
+  <div id="accessGate" class="card gate-card">
+    <div class="card-head">
+      <span class="eyebrow">Acceso restringido</span>
+      <h1>Solo personal autorizado</h1>
+      <p>Esta sección es exclusiva para administradores y tatuadores del estudio. Ingresa el código de acceso para continuar.</p>
+    </div>
+    <button id="unlockBtn" class="submit-btn">Ingresar código de staff</button>
+    <p class="hint">¿Eres cliente? <a href="index.html">Vuelve al inicio</a></p>
+  </div>
+
+  <div class="card" id="consentCard" style="display:none;">
+    <div class="card-head">
+      <span class="eyebrow">Paso 4</span>
+      <h1>Consentimiento informado</h1>
+      <p>Antes de tatuarte debes leer, entender y firmar este consentimiento. Si eres menor de edad, tu acudiente debe completar y firmar también.</p>
+    </div>
+
+    <form id="consentimientoForm" novalidate>
+      <div class="section-title">Datos del cliente</div>
+
+      <div class="field">
+        <label for="nombre_cliente_consent">Nombre completo</label>
+        <input type="text" id="nombre_cliente_consent" name="nombre_cliente" placeholder="Nombre y apellido">
+        <span class="err" id="nombreConsentErr">Escribe tu nombre completo.</span>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="documento_consent">Documento de identidad</label>
+          <input type="text" id="documento_consent" name="documento" placeholder="Cédula / T.I.">
+          <span class="err" id="documentoConsentErr">Ingresa un documento válido.</span>
+        </div>
+        <div class="field">
+          <label for="fecha_nacimiento_cliente">Fecha de nacimiento</label>
+          <input type="date" id="fecha_nacimiento_cliente" name="fecha_nacimiento">
+          <span class="err" id="fechaNacimientoConsentErr">Ingresa tu fecha de nacimiento.</span>
+        </div>
+      </div>
+
+      <div class="section-title">Procedimiento</div>
+
+      <div class="field">
+        <label for="procedimiento">Descripción del procedimiento</label>
+        <textarea id="procedimiento" name="procedimiento" placeholder="Ej: Tatuaje blackwork en antebrazo derecho, 15x10 cm"></textarea>
+        <span class="err" id="procedimientoErr">Describe el procedimiento a realizar.</span>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="acepta_riesgos" name="acepta_riesgos">
+        <label for="acepta_riesgos" style="text-transform:none; letter-spacing:0; font-weight:400; color:var(--bone-dim);">
+          Declaro que he sido informado(a) sobre los riesgos del procedimiento (reacciones alérgicas, infecciones, sangrado y variaciones de color/cicatrización), los cuidados posteriores requeridos, y que acepto realizarme el procedimiento de forma voluntaria.
+        </label>
+      </div>
+      <span class="err" id="riesgosErr" style="margin-top:-8px;">Debes aceptar los riesgos para continuar.</span>
+
+      <div class="field">
+        <label for="firma_cliente">Firma digital del cliente <span class="optional">(escribe tu nombre completo)</span></label>
+        <div class="sign-box">
+          <input type="text" id="firma_cliente" name="firma_cliente" placeholder="Escribe tu nombre para firmar" style="text-align:center; font-family:'Bebas Neue'; font-size:20px; letter-spacing:1px; border:none; background:transparent;">
+        </div>
+        <span class="err" id="firmaClienteErr">Firma con tu nombre completo.</span>
+      </div>
+
+      <!-- ---- Guardian flow (shown only if minor) ---- -->
+      <div class="section-title">Autorización de acudiente</div>
+      <div id="guardianNote" class="guardian-note" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 9v4m0 4h.01M10.29 3.86l-8.4 14.55A1.5 1.5 0 0 0 3.19 20.6h17.62a1.5 1.5 0 0 0 1.3-2.19l-8.4-14.55a1.5 1.5 0 0 0-2.6 0z"/></svg>
+        <span>El cliente es menor de edad. Un acudiente debe completar y firmar esta sección para autorizar el procedimiento.</span>
+      </div>
+
+      <div id="guardianBox" class="guardian-box">
+        <div class="row2">
+          <div class="field">
+            <label for="acudiente_nombre">Nombre del acudiente</label>
+            <input type="text" id="acudiente_nombre" name="acudiente_nombre" placeholder="Nombre y apellido">
+            <span class="err" id="acudienteNombreErr">Escribe el nombre completo del acudiente.</span>
+          </div>
+          <div class="field">
+            <label for="acudiente_documento">Documento del acudiente</label>
+            <input type="text" id="acudiente_documento" name="acudiente_documento" placeholder="Cédula">
+            <span class="err" id="acudienteDocumentoErr">Ingresa un documento válido.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="parentesco">Parentesco con el menor</label>
+          <select id="parentesco" name="parentesco">
+            <option value="">Selecciona una opción</option>
+            <option value="madre">Madre</option>
+            <option value="padre">Padre</option>
+            <option value="tutor_legal">Tutor legal</option>
+            <option value="otro">Otro familiar autorizado</option>
+          </select>
+          <span class="err" id="parentescoErr">Selecciona el parentesco.</span>
+        </div>
+        <div class="field">
+          <label for="firma_acudiente">Firma digital del acudiente</label>
+          <div class="sign-box">
+            <input type="text" id="firma_acudiente" name="firma_acudiente" placeholder="Escribe el nombre del acudiente para firmar" style="text-align:center; font-family:'Bebas Neue'; font-size:20px; letter-spacing:1px; border:none; background:transparent;">
+          </div>
+          <span class="err" id="firmaAcudienteErr">Firma con el nombre completo del acudiente.</span>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Firmar y enviar consentimiento</button>
+      <p class="hint">Este documento queda asociado a tu historial de cliente en el estudio.</p>
+    </form>
+  </div>
+</div>
+
+<script src="js/swal-theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/form-fx.js"></script>
+<script src="js/consentimiento.js"></script>
+</body>
+</html>

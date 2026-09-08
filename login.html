@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingresar — ITZA TATTOO STUDIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/forms.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">ITZA <span>TATTOO</span></a>
+    <nav class="steps-nav">
+      <a href="registro.html">Registro</a>
+      <a href="login.html" class="active">Ingresar</a>
+      <a href="abono.html">Agendar y abonar</a>
+    </nav>
+    <div class="lang-switcher"></div>
+  </div>
+</div>
+
+<div class="container container-narrow">
+  <div class="card">
+    <div class="card-head">
+      <span class="eyebrow" data-i18n="login.subtitulo">Bienvenido de nuevo</span>
+      <h1 data-i18n="login.titulo">Iniciar sesión</h1>
+      <p data-i18n="login.descripcion">Ingresa con tu correo y contraseña para gestionar tus citas y ver promociones exclusivas.</p>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="loginEmail" data-i18n="login.email">Correo electrónico</label>
+        <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="email" data-i18n-placeholder="login.email_placeholder">
+        <span class="err" id="loginEmailErr" data-i18n="login.email_error">Ingresa un correo válido.</span>
+      </div>
+      <div class="field">
+        <label for="loginPass" data-i18n="login.password">Contraseña</label>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" data-i18n-placeholder="login.password_placeholder">
+        <span class="err" id="loginPassErr" data-i18n="login.password_error">La contraseña debe tener mínimo 6 caracteres.</span>
+      </div>
+      <button type="submit" class="submit-btn" data-i18n="login.submit">Entrar</button>
+      <p class="hint"><span data-i18n="login.noAccount">¿No tienes cuenta?</span> <a href="registro.html" data-i18n="login.register">Regístrate aquí</a></p>
+    </form>
+  </div>
+</div>
+
+<script src="js/swal-theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/form-fx.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
