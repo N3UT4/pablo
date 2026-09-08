@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Dashboard — ITZA TATTOO STUDIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/forms.css">
+<style>
+  .welcome-banner {
+    background: linear-gradient(135deg, #D4123A 0%, #FF2E4A 100%);
+    color: white;
+    padding: 32px 24px;
+    border-radius: 6px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .welcome-banner::before {
+    content: '✦';
+    position: absolute;
+    top: -20px;
+    right: -40px;
+    font-size: 200px;
+    opacity: 0.1;
+  }
+  
+  .welcome-banner h2 {
+    font-size: 28px;
+    font-weight: 900;
+    margin: 0 0 12px 0;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+  }
+  
+  .welcome-banner p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: 0.95;
+  }
+  
+  .user-info {
+    background: var(--panel-2);
+    border-left: 4px solid var(--blood);
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+  
+  .user-info strong {
+    color: var(--blood);
+  }
+  
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 32px 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--blood);
+    position: relative;
+    padding-bottom: 12px;
+  }
+  
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--blood);
+  }
+  
+  .hours-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  
+  .hours-item {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .hours-item strong {
+    color: var(--blood);
+    font-size: 13px;
+  }
+  
+  .hours-item .time {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: var(--bone);
+    font-size: 16px;
+  }
+  
+  .status-badge {
+    background: rgba(46, 125, 70, 0.2);
+    color: #2E7D46;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  
+  .status-badge.closed {
+    background: rgba(212, 18, 58, 0.2);
+    color: var(--blood);
+  }
+  
+  .exclusive-section {
+    background: linear-gradient(135deg, rgba(212, 18, 58, 0.1) 0%, rgba(212, 18, 58, 0.05) 100%);
+    border: 1px solid rgba(212, 18, 58, 0.3);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  
+  .exclusive-label {
+    display: inline-block;
+    background: var(--blood);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+  }
+  
+  .exclusive-section h3 {
+    font-size: 18px;
+    margin: 8px 0 12px 0;
+    font-weight: 700;
+  }
+  
+  .exclusive-section p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--bone-dim);
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  
+  .cta-btn {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .cta-btn.secondary {
+    background: transparent;
+    border: 2px solid var(--blood);
+    color: var(--blood);
+  }
+  
+  .cta-btn.secondary:hover {
+    background: rgba(212, 18, 58, 0.1);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">ITZA <span>TATTOO</span></a>
+    <nav class="steps-nav">
+      <a href="abono.html">Agendar y abonar</a>
+      <a href="perfil.html">Mi perfil</a>
+      <a href="contacto.html">Contacto</a>
+      <a href="#" onclick="logout()" class="logout-link" data-i18n="common.salir">Salir</a>
+    </nav>
+    <div class="lang-switcher"></div>
+  </div>
+</div>
+
+<div class="container container-narrow">
+  <!-- BIENVENIDA -->
+  <div class="welcome-banner">
+    <h2 data-i18n="dashboard.welcome">¡Bienvenido a ITZA TATTOO!</h2>
+    <p data-i18n="dashboard.welcome_desc">Gracias por confiar en nosotros para tu próxima pieza. Aquí encontrarás toda la información para agendar tu cita, revisar promociones exclusivas y mucho más.</p>
+  </div>
+
+  <!-- INFORMACIÓN DEL USUARIO -->
+  <div class="user-info">
+    <strong data-i18n="dashboard.logged_as">Sesión iniciada como:</strong>
+    <div id="userEmail" style="font-size: 14px; margin-top: 6px;">—</div>
+  </div>
+
+  <!-- HORARIOS DE ATENCIÓN -->
+  <div class="section-title" data-i18n="dashboard.hours_title">Horarios de atención</div>
+  <div class="hours-grid">
+    <div class="hours-item">
+      <div>
+        <strong data-i18n="dashboard.monday_friday">Lunes a viernes</strong>
+      </div>
+      <div>
+        <span class="time">8:00 AM — 9:00 PM</span>
+        <span class="status-badge" data-i18n="dashboard.open">Abierto</span>
+      </div>
+    </div>
+    <div class="hours-item">
+      <div>
+        <strong data-i18n="dashboard.saturday">Sábados</strong>
+      </div>
+      <div>
+        <span class="time">10:00 AM — 8:00 PM</span>
+        <span class="status-badge" data-i18n="dashboard.open">Abierto</span>
+      </div>
+    </div>
+    <div class="hours-item">
+      <div>
+        <strong data-i18n="dashboard.sunday">Domingos</strong>
+      </div>
+      <div>
+        <span class="time">—</span>
+        <span class="status-badge closed" data-i18n="dashboard.closed">Cerrado</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN EXCLUSIVA -->
+  <div class="exclusive-section">
+    <div class="exclusive-label" data-i18n="dashboard.exclusive">Acceso exclusivo</div>
+    <h3 data-i18n="dashboard.exclusive_title">Promociones especiales para nuestros clientes</h3>
+    <p data-i18n="dashboard.exclusive_desc">Como cliente de ITZA TATTOO, tienes acceso a promociones exclusivas y descuentos especiales. Revisa la sección de promociones para más detalles.</p>
+  </div>
+
+  <!-- ACCIONES RÁPIDAS -->
+  <div class="section-title" data-i18n="dashboard.quick_actions">Acciones rápidas</div>
+  <div class="cta-buttons">
+    <a href="abono.html" class="cta-btn submit-btn" data-i18n="dashboard.book_now">Agendar cita</a>
+    <a href="promociones.html" class="cta-btn submit-btn secondary" data-i18n="dashboard.promotions">Ver promociones</a>
+  </div>
+
+  <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); text-align: center;">
+    <p style="font-size: 13px; color: var(--bone-dim);" data-i18n="dashboard.help">¿Necesitas ayuda?</p>
+    <a href="contacto.html" class="submit-btn" style="margin-top: 12px; display: inline-block;" data-i18n="dashboard.contact">Ponte en contacto</a>
+  </div>
+</div>
+
+<script src="js/swal-theme.js"></script>
+<script src="js/i18n.js"></script>
+<script>
+  // Verificar que el usuario esté logueado
+  async function initDashboard() {
+    const session = JSON.parse(localStorage.getItem('itza_session') || 'null');
+    
+    if (!session || !session.email) {
+      // No hay sesión, redirigir a login
+      window.location.href = 'login.html';
+      return;
+    }
+
+    // Mostrar email del usuario
+    document.getElementById('userEmail').textContent = session.email;
+
+    // Traducir la página
+    await translatePage();
+  }
+
+  function logout() {
+    if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+      localStorage.removeItem('itza_session');
+      window.location.href = 'login.html';
+    }
+  }
+
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', initDashboard);
+</script>
+</body>
+</html>

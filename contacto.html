@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto — ITZA TATTOO STUDIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/forms.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo">ITZA <span>TATTOO</span></a>
+    <nav class="steps-nav">
+      <a href="index.html">Inicio</a>
+      <a href="contacto.html" class="active">Contacto</a>
+      <a href="registro.html">Registro</a>
+    </nav>
+    <div class="lang-switcher"></div>
+  </div>
+</div>
+
+<div class="container container-narrow">
+  <div class="card">
+    <div class="card-head">
+      <span class="eyebrow" data-i18n="contacto.subtitulo">¿Preguntas?</span>
+      <h1 data-i18n="contacto.titulo">Contáctanos</h1>
+      <p data-i18n="contacto.descripcion">Cuéntanos en qué podemos ayudarte. Nos pondremos en contacto a la brevedad.</p>
+    </div>
+
+    <form id="contactForm" novalidate>
+      <div class="section-title">Tu información</div>
+
+      <div class="field">
+        <label for="nombre_contacto">Nombre completo</label>
+        <input type="text" id="nombre_contacto" name="nombre_contacto" placeholder="Nombre y apellido">
+        <span class="err" id="nombreContactoErr">Escribe tu nombre completo.</span>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="email_contacto">Correo electrónico</label>
+          <input type="email" id="email_contacto" name="email_contacto" placeholder="tu@correo.com">
+          <span class="err" id="emailContactoErr">Ingresa un correo válido.</span>
+        </div>
+        <div class="field">
+          <label for="telefono_contacto">Teléfono <span class="optional">(opcional)</span></label>
+          <input type="tel" id="telefono_contacto" name="telefono_contacto" placeholder="300 000 0000">
+          <span class="err" id="telefonoContactoErr">Ingresa un número válido.</span>
+        </div>
+      </div>
+
+      <div class="section-title">Tu consulta</div>
+
+      <div class="field">
+        <label for="asunto">Asunto</label>
+        <select id="asunto" name="asunto">
+          <option value="">Selecciona un asunto</option>
+          <option value="consulta_tatuaje">Consulta sobre tatuaje</option>
+          <option value="info_general">Información general</option>
+          <option value="problema_cita">Problema con cita agendada</option>
+          <option value="recomendacion">Recomendación o sugerencia</option>
+          <option value="reclamo">Reclamo</option>
+          <option value="otro">Otro</option>
+        </select>
+        <span class="err" id="asuntoErr">Selecciona un asunto.</span>
+      </div>
+
+      <div class="field">
+        <label for="mensaje">Mensaje</label>
+        <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos con detalle qué necesitas..." rows="6"></textarea>
+        <span class="err" id="mensajeErr">El mensaje debe tener al menos 10 caracteres.</span>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="acepta_contacto" name="acepta_contacto">
+        <label for="acepta_contacto" style="text-transform:none; letter-spacing:0; font-weight:400; color:var(--bone-dim);">
+          Acepto que ITZA TATTOO se comunique conmigo por correo, WhatsApp o teléfono para responder mi consulta.
+        </label>
+      </div>
+      <span class="err" id="aceptaContactoErr" style="margin-top:-8px;">Debes aceptar para continuar.</span>
+
+      <button type="submit" class="submit-btn">Enviar consulta</button>
+      <p class="hint">Responderemos en máximo 24 horas hábiles.</p>
+    </form>
+  </div>
+</div>
+
+<script src="js/swal-theme.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/form-fx.js"></script>
+<script src="js/contacto.js"></script>
+</body>
+</html>
