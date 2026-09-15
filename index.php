@@ -1,4 +1,33 @@
 <?php
+// === CONFIGURACIÓN AUTOMÁTICA DE BASE DE DATOS (ITZA TATTOO) ===
+$auto_host = "127.0.0.1";
+$auto_user = "root";
+$auto_pass = ""; 
+$auto_dbname = "itza_tattoo"; // Nombre real de tu BD según tu config.php
+$auto_sql = __DIR__ . "/database.sql"; // Tu archivo SQL principal
+
+// Conectar a MySQL en XAMPP
+$auto_conn = new mysqli($auto_host, $auto_user, $auto_pass);
+if (!$auto_conn->connect_error) {
+    // Crear la base de datos si no existe
+    if ($auto_conn->query("CREATE DATABASE IF NOT EXISTS `$auto_dbname`")) {
+        $auto_conn->select_db($auto_dbname);
+        
+        // Verificar si la base de datos está vacía para importar las tablas
+        $auto_check = $auto_conn->query("SHOW TABLES");
+        if ($auto_check && $auto_check->num_rows == 0 && file_exists($auto_sql)) {
+            $auto_query = file_get_contents($auto_sql);
+            if ($auto_conn->multi_query($auto_query)) {
+                do {
+                    if ($auto_result = $auto_conn->store_result()) { $auto_result->free(); }
+                } while ($auto_conn->more_results() && $auto_conn->next_result());
+            }
+        }
+    }
+    $auto_conn->close();
+}
+// === FIN DE LA CONFIGURACIÓN AUTOMÁTICA ===
+
 // Punto de entrada de la aplicación MVC.
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/core/ControladorBase.php';
