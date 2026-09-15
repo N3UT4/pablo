@@ -1,0 +1,30 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# Redirecciones de las páginas .html antiguas a las rutas PHP del sistema MVC.
+Redirect 301 /index.html /index.php?action=home
+Redirect 301 /login.html /index.php?action=login
+Redirect 301 /registro.html /index.php?action=register
+Redirect 301 /dashboard.html /index.php?action=dashboard
+Redirect 301 /contacto.html /index.php?action=contact
+Redirect 301 /galeria.html /index.php?action=gallery
+Redirect 301 /abono.html /index.php?action=booking
+Redirect 301 /consentimiento.html /index.php?action=consent
+Redirect 301 /perfil.html /index.php?action=profile
+Redirect 301 /promociones.html /index.php?action=promotions
+Redirect 301 /404.html /index.php?action=404
+Redirect 301 /500.html /index.php?action=500
+
+# Respuestas consistentes para errores generados por Apache.
+ErrorDocument 404 /index.php?action=404
+ErrorDocument 500 /index.php?action=500
+
+<FilesMatch "^(database\.sql|README\.md|\.env|composer\.(json|lock))$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

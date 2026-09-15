@@ -1,0 +1,17 @@
+# Configuración local y secretos
+.env
+.env.*
+!.env.example
+
+# Datos generados localmente
+storage/*.json
+storage/*.log
+*.sql.bak
+*.sql.backup
+
+# Archivos del sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/
+*.tmp
+*.swp
