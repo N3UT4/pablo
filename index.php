@@ -3,7 +3,7 @@
 $auto_host = "127.0.0.1";
 $auto_user = "root";
 $auto_pass = ""; 
-$auto_dbname = "itza_tattoo"; // Nombre real de tu BD según tu config.php
+$auto_sql = __DIR__ . "/database/database.sql"; // Nombre real de tu BD según tu config.php
 $auto_sql = __DIR__ . "/database.sql"; // Tu archivo SQL principal
 
 // Conectar a MySQL en XAMPP
