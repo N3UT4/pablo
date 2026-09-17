@@ -79,19 +79,28 @@
 
       <div class="field">
         <label for="password_actual">Contraseña actual <span class="optional">(solo si deseas cambiarla)</span></label>
-        <input type="password" id="password_actual" name="password_actual" placeholder="••••••••">
+        <div class="password-wrap">
+          <input type="password" id="password_actual" name="password_actual" placeholder="••••••••">
+          <button type="button" class="password-toggle" aria-label="Mostrar contraseña"><i class="fa-solid fa-eye"></i></button>
+        </div>
         <span class="err" id="passwordActualErr">Contraseña incorrecta.</span>
       </div>
 
       <div class="row2">
         <div class="field">
           <label for="password_nueva">Nueva contraseña</label>
-          <input type="password" id="password_nueva" name="password_nueva" placeholder="Mínimo 6 caracteres">
+          <div class="password-wrap">
+            <input type="password" id="password_nueva" name="password_nueva" placeholder="Mínimo 6 caracteres">
+            <button type="button" class="password-toggle" aria-label="Mostrar contraseña"><i class="fa-solid fa-eye"></i></button>
+          </div>
           <span class="err" id="passwordNuevaErr">Mínimo 6 caracteres.</span>
         </div>
         <div class="field">
           <label for="password_confirm">Confirmar contraseña</label>
-          <input type="password" id="password_confirm" name="password_confirm" placeholder="Repite la contraseña">
+          <div class="password-wrap">
+            <input type="password" id="password_confirm" name="password_confirm" placeholder="Repite la contraseña">
+            <button type="button" class="password-toggle" aria-label="Mostrar contraseña"><i class="fa-solid fa-eye"></i></button>
+          </div>
           <span class="err" id="passwordConfirmErr">Las contraseñas no coinciden.</span>
         </div>
       </div>
@@ -101,3 +110,24 @@
     </form>
   </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.password-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var input = this.previousElementSibling;
+      var icon = this.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+        this.setAttribute('aria-label', 'Ocultar contraseña');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+        this.setAttribute('aria-label', 'Mostrar contraseña');
+      }
+    });
+  });
+});
+</script>

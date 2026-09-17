@@ -1,7 +1,10 @@
 <?php
+require_once dirname(__DIR__) . '/config/config.php';
 // Recurso JavaScript servido por PHP.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
+window.APP_BASE_URL = <?= json_encode(BASE_URL) ?>;
+
 // Helper compartido: obtiene el csrf_token de la sesión PHP y envía los formularios
 // de las páginas estáticas (galeria.html, abono.html, contacto.html, consentimiento.html,
 // promociones.html) al backend en index.php.
@@ -16,7 +19,7 @@ const ItzaAPI = (function () {
 
   async function getCsrfToken() {
     if (cachedToken) return cachedToken;
-    const res = await fetch('index.php?action=csrf-token', { credentials: 'same-origin' });
+    const res = await fetch(window.APP_BASE_URL + 'index.php?action=csrf-token', { credentials: 'same-origin' });
     const data = await res.json();
     cachedToken = data.csrf_token;
     return cachedToken;
@@ -32,7 +35,7 @@ const ItzaAPI = (function () {
     formData.set('csrf_token', token);
 
     try {
-      const res = await fetch(`index.php?action=${action}`, {
+      const res = await fetch(window.APP_BASE_URL + 'index.php?action=' + encodeURIComponent(action), {
         method: 'POST',
         credentials: 'same-origin',
         body: formData,

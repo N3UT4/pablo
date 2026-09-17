@@ -1,6 +1,6 @@
 <?php
 
-require_once APP_ROOT . '/app/models/ModeloPromociones.php';
+require_once DIR_PATH . 'app/models/ModeloPromociones.php';
 
 // Atiende el formulario de promociones (js/promociones.js).
 class ControladorPromociones extends ControladorBase
@@ -62,7 +62,7 @@ class ControladorPromociones extends ControladorBase
 
             $userId = (int) ($_SESSION['user']['id'] ?? 0);
             if ($userId <= 0) {
-                $this->json(false, 'Debes iniciar sesión para guardar un cupón en tu cuenta.', ['redirect' => 'index.php?action=login'], 401);
+                $this->json(false, 'Debes iniciar sesión para guardar un cupón en tu cuenta.', ['redirect' => BASE_URL . 'index.php?action=login'], 401);
             }
 
             $codigo = trim((string) ($_POST['codigo_cupon'] ?? ''));

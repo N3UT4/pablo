@@ -32,7 +32,11 @@ class ControladorPaginas extends ControladorBase
         $user = $_SESSION['user'] ?? null;
         if (!$user) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Debes iniciar sesión primero.'];
-            $this->redirect('index.php?action=login');
+            $this->redirect(BASE_URL . 'index.php?action=login');
+        }
+
+        if (($user['rol'] ?? '') === 'tatuador') {
+            $this->redirect(BASE_URL . 'index.php?action=artist-panel');
         }
 
         $this->view('panel', [
@@ -45,7 +49,7 @@ class ControladorPaginas extends ControladorBase
     public function contact(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            require_once APP_ROOT . '/app/controllers/ControladorContacto.php';
+            require_once DIR_PATH . 'app/controllers/ControladorContacto.php';
             (new ControladorContacto())->store();
             return;
         }
@@ -85,7 +89,7 @@ class ControladorPaginas extends ControladorBase
         $user = $_SESSION['user'] ?? null;
         if (!$user) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Debes iniciar sesión primero.'];
-            $this->redirect('index.php?action=login');
+            $this->redirect(BASE_URL . 'index.php?action=login');
         }
 
         $this->view('perfil', [
@@ -103,6 +107,21 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    public function changePasswordForm(): void
+    {
+        $user = $_SESSION['user'] ?? null;
+        if (!$user) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Debes iniciar sesión primero.'];
+            $this->redirect(BASE_URL . 'index.php?action=login');
+        }
+
+        $this->view('cambiar_clave', [
+            'title' => 'Cambiar clave — ITZA TATTOO STUDIO',
+            'currentPage' => 'cambiar_clave',
+            'user' => $user,
+        ]);
+    }
+
     // Endpoint liviano para que los formularios estáticos (galeria.html, abono.html, etc.)
     // obtengan un csrf_token válido antes de enviar su POST por fetch().
     public function csrfToken(): void
@@ -112,7 +131,6 @@ class ControladorPaginas extends ControladorBase
 
     public function notFound(): void
     {
-        http_response_code(404);
         $this->view('error404', [
             'title' => 'Página no encontrada',
         ]);
@@ -120,7 +138,6 @@ class ControladorPaginas extends ControladorBase
 
     public function serverError(): void
     {
-        http_response_code(500);
         $this->view('error500', [
             'title' => 'Error del servidor',
         ]);

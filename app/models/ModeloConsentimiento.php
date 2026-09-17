@@ -1,6 +1,6 @@
 <?php
 
-require_once APP_ROOT . '/core/ModeloBase.php';
+require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloConsentimiento extends ModeloBase
 {

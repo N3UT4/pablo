@@ -32,15 +32,15 @@
     <h3>Promociones activas</h3>
     <p>Accede a descuentos para clientes y aprovecha tu primera cita con beneficios especiales.</p>
     <div class="cta-buttons">
-      <a href="index.php?action=booking" class="btn-primary cta-btn">Agendar cita</a>
-      <a href="index.php?action=promotions" class="btn-ghost cta-btn secondary">Ver promociones</a>
+      <a href="<?= BASE_URL ?>index.php?action=booking" class="btn-primary cta-btn">Agendar cita</a>
+      <a href="<?= BASE_URL ?>index.php?action=promotions" class="btn-ghost cta-btn secondary">Ver promociones</a>
     </div>
   </div>
 
   <div class="card" style="margin-top: 24px; border: 1px solid #6f2d2d;">
     <div class="section-title">Zona de cuenta</div>
     <p>Eliminar tu cuenta borrará tus datos de acceso de forma permanente.</p>
-    <form method="POST" action="index.php?action=delete-account"
+    <form method="POST" action="<?= BASE_URL ?>index.php?action=delete-account"
           onsubmit="return confirm('¿Seguro que deseas eliminar tu cuenta? Esta acción no se puede deshacer.');">
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
       <button type="submit" class="btn-ghost" style="color: #ffb3b3; border-color: #6f2d2d;">

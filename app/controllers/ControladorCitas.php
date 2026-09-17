@@ -1,9 +1,9 @@
 <?php
 
-require_once APP_ROOT . '/app/models/ModeloCitas.php';
-require_once APP_ROOT . '/app/models/ModeloPagos.php';
-require_once APP_ROOT . '/app/models/ModeloArtistas.php';
-require_once APP_ROOT . '/app/models/ModeloServicios.php';
+require_once DIR_PATH . 'app/models/ModeloCitas.php';
+require_once DIR_PATH . 'app/models/ModeloPagos.php';
+require_once DIR_PATH . 'app/models/ModeloArtistas.php';
+require_once DIR_PATH . 'app/models/ModeloServicios.php';
 
 // Atiende el formulario de abono (js/abono.js): agenda la cita y registra el abono/pago.
 class ControladorCitas extends ControladorBase
@@ -34,7 +34,7 @@ class ControladorCitas extends ControladorBase
 
             $userId = (int) ($_SESSION['user']['id'] ?? 0);
             if ($userId <= 0) {
-                $this->json(false, 'Debes iniciar sesión para agendar una cita.', ['redirect' => 'index.php?action=login'], 401);
+                $this->json(false, 'Debes iniciar sesión para agendar una cita.', ['redirect' => BASE_URL . 'index.php?action=login'], 401);
             }
 
             $artistId = (int) ($_POST['id_tatuador'] ?? 0);

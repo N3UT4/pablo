@@ -1,6 +1,6 @@
 <?php
 
-require_once APP_ROOT . '/app/models/ModeloContacto.php';
+require_once DIR_PATH . 'app/models/ModeloContacto.php';
 
 // Atiende el formulario de contacto (js/contacto.js).
 class ControladorContacto extends ControladorBase

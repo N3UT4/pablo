@@ -1,7 +1,7 @@
 <footer class="site-footer">
     <div class="footer-inner">
         <div>
-            <a href="index.php?action=home" class="footer-logo">ITZA <span>TATTOO</span></a>
+            <a href="<?= BASE_URL ?>index.php?action=home" class="footer-logo">ITZA <span>TATTOO</span></a>
             <p><?= htmlspecialchars(STUDIO_CITY) ?></p>
         </div>
         <div class="social-links" aria-label="Redes sociales del estudio">
@@ -23,28 +23,33 @@
         </div>
     </div>
 </footer>
-    <script src="js/internacionalizacion.php"></script>
-    <script src="js/swal-tema.php"></script>
-    <script src="js/formularios-fx.php"></script>
-    <script src="js/animaciones.php"></script>
-    <?php if (($currentPage ?? '') === 'login'): ?>
-        <script src="js/autenticacion.php"></script>
+    <script src="<?= BASE_URL ?>js/internacionalizacion.php"></script>
+    <script src="<?= BASE_URL ?>js/swal-tema.php"></script>
+    <script src="<?= BASE_URL ?>js/formularios-fx.php"></script>
+    <script src="<?= BASE_URL ?>js/animaciones.php"></script>
+    <?php if (($currentPage ?? '') === 'home'): ?>
+        <script src="<?= BASE_URL ?>js/galeria-carrusel.php"></script>
+    <?php elseif (($currentPage ?? '') === 'login'): ?>
+        <script src="<?= BASE_URL ?>js/autenticacion.php"></script>
     <?php elseif (($currentPage ?? '') === 'register'): ?>
-        <script src="js/registro.php"></script>
+        <script src="<?= BASE_URL ?>js/registro.php"></script>
     <?php elseif (($currentPage ?? '') === 'gallery'): ?>
-        <script src="js/api.php"></script>
-        <script src="js/galeria.php"></script>
+        <script src="<?= BASE_URL ?>js/api.php"></script>
+        <script src="<?= BASE_URL ?>js/galeria.php"></script>
     <?php elseif (($currentPage ?? '') === 'booking'): ?>
-        <script src="js/api.php"></script>
-        <script src="js/abono.php"></script>
+        <script src="<?= BASE_URL ?>js/api.php"></script>
+        <script src="<?= BASE_URL ?>js/abono.php"></script>
     <?php elseif (($currentPage ?? '') === 'consent'): ?>
-        <script src="js/api.php"></script>
-        <script src="js/consentimiento.php"></script>
+        <script src="<?= BASE_URL ?>js/api.php"></script>
+        <script src="<?= BASE_URL ?>js/consentimiento.php"></script>
     <?php elseif (($currentPage ?? '') === 'profile'): ?>
-        <script src="js/perfil.php"></script>
+        <script src="<?= BASE_URL ?>js/perfil.php"></script>
     <?php elseif (($currentPage ?? '') === 'promotions'): ?>
-        <script src="js/api.php"></script>
-        <script src="js/promociones.php"></script>
+        <script src="<?= BASE_URL ?>js/api.php"></script>
+        <script src="<?= BASE_URL ?>js/promociones.php"></script>
+    <?php elseif (in_array(($currentPage ?? ''), ['artist-panel', 'artist-agenda', 'artist-horarios', 'artist-perfil'])): ?>
+        <script src="<?= BASE_URL ?>js/api.php"></script>
+        <script src="<?= BASE_URL ?>js/tatuador.php"></script>
     <?php endif; ?>
 </body>
 </html>

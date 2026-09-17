@@ -1,9 +1,9 @@
 <?php
 
-require_once APP_ROOT . '/app/models/ModeloCitas.php';
-require_once APP_ROOT . '/app/models/ModeloUsuarios.php';
-require_once APP_ROOT . '/app/models/ModeloServicios.php';
-require_once APP_ROOT . '/app/models/ModeloArtistas.php';
+require_once DIR_PATH . 'app/models/ModeloCitas.php';
+require_once DIR_PATH . 'app/models/ModeloUsuarios.php';
+require_once DIR_PATH . 'app/models/ModeloServicios.php';
+require_once DIR_PATH . 'app/models/ModeloArtistas.php';
 
 // API REST del proyecto (rúbrica: APIs REST, Formato JSON).
 // Expone el recurso "citas" (appointments) con los métodos HTTP:

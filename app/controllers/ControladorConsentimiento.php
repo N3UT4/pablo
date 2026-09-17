@@ -1,8 +1,8 @@
 <?php
 
-require_once APP_ROOT . '/app/models/ModeloConsentimiento.php';
-require_once APP_ROOT . '/app/models/ModeloCitas.php';
-require_once APP_ROOT . '/app/models/ModeloUsuarios.php';
+require_once DIR_PATH . 'app/models/ModeloConsentimiento.php';
+require_once DIR_PATH . 'app/models/ModeloCitas.php';
+require_once DIR_PATH . 'app/models/ModeloUsuarios.php';
 
 // Atiende el formulario de consentimiento (js/consentimiento.js).
 // Lo diligencia el staff con el cliente presente, por eso se protege con STAFF_ACCESS_CODE
@@ -47,7 +47,8 @@ class ControladorConsentimiento extends ControladorBase
             $firmaAcudiente = trim((string) ($_POST['firma_acudiente'] ?? ''));
 
             if ($nombre === '' || $documento === '' || $fechaNacimiento === '' || $procedimiento === ''
-                || !$aceptaRiesgos || $firmaCliente === '') {
+                || !$aceptaRiesgos || $firmaCliente === ''
+                || !preg_match('/^\d+$/', $documento)) {
                 $this->json(false, 'Completa todos los campos requeridos del consentimiento.', [], 422);
             }
 
@@ -56,6 +57,13 @@ class ControladorConsentimiento extends ControladorBase
             $user = $this->userModel->findByDocumento($documento);
             if (!$user) {
                 $this->json(false, 'No existe un cliente registrado con ese documento. Debe crear su cuenta primero.', [], 422);
+            }
+
+            $fn = new DateTime($fechaNacimiento);
+            $ahora = new DateTime();
+            $edad = $ahora->diff($fn)->y;
+            if ($edad < 15) {
+                $this->json(false, 'El cliente es menor de 15 años. No se permite el procedimiento sin acompañante legal autorizado.', [], 422);
             }
 
             $appointment = $this->appointmentModel->latestPendingConsent((int) $user['id']);

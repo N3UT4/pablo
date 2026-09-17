@@ -1,7 +1,10 @@
 <?php
+require_once dirname(__DIR__) . '/config/config.php';
 // Recurso JavaScript servido por PHP.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
+window.APP_BASE_URL = <?= json_encode(BASE_URL) ?>;
+
 // Sistema de internacionalización (i18n) para ITZA TATTOO STUDIO
 // Soporta: Español (es) e Inglés (en)
 
@@ -18,7 +21,7 @@ class I18n {
     if (this.loadedLangs.has(this.currentLang)) return;
     
     try {
-      const response = await fetch('lang/translations.json');
+      const response = await fetch(window.APP_BASE_URL + 'lang/translations.json');
       const data = await response.json();
       this.translations = data;
       this.loadedLangs.add(this.currentLang);

@@ -560,45 +560,5 @@
       "help": "¿Necesitas ayuda?",
       "contact": "Ponte en contacto"
     }
-  },
-  "en": {
-    "common": {
-      "inicio": "Home",
-      "registro": "Register",
-      "ingresar": "Sign In",
-      "salir": "Sign Out",
-      "agendar": "Book & Pay",
-      "contacto": "Contact",
-      "perfil": "My Profile",
-      "promociones": "Promotions",
-      "galeria": "Gallery",
-      "cancelar": "Cancel",
-      "enviar": "Send",
-      "guardar": "Save Changes",
-      "siguiente": "Next",
-      "anterior": "Previous",
-      "listo": "Done!",
-      "revisa": "Check the form",
-      "opcional": "(optional)"
-    },
-    "dashboard": {
-      "welcome": "Welcome to ITZA TATTOO!",
-      "welcome_desc": "Thank you for trusting us with your next piece. Here you will find all the information to book your appointment, check exclusive promotions and much more.",
-      "logged_as": "Logged in as:",
-      "hours_title": "Operating Hours",
-      "monday_friday": "Monday to Friday",
-      "saturday": "Saturdays",
-      "sunday": "Sundays",
-      "open": "Open",
-      "closed": "Closed",
-      "exclusive": "Exclusive Access",
-      "exclusive_title": "Special promotions for our clients",
-      "exclusive_desc": "As an ITZA TATTOO client, you have access to exclusive promotions and special discounts. Check the promotions section for more details.",
-      "quick_actions": "Quick Actions",
-      "book_now": "Book Appointment",
-      "promotions": "View Promotions",
-      "help": "Need Help?",
-      "contact": "Get in Touch"
-    }
   }
 }

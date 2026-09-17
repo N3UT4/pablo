@@ -6,7 +6,8 @@
       <p>Estamos listos para responder tus dudas, cotizar un diseño o ayudarte a reservar tu próxima cita.</p>
     </div>
 
-    <form method="POST" action="index.php?action=contact" novalidate>
+    <form method="POST" action="<?= BASE_URL ?>index.php?action=contact" novalidate>
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
       <div class="row2">
         <div class="field">
           <label for="contactName">Nombre</label>

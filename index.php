@@ -28,14 +28,52 @@ if (!$auto_conn->connect_error) {
     }
     $auto_conn->close();
 }
-// === FIN DE LA CONFIGURACIÓN AUTOMÁTICA ===
+
+// === MIGRACIÓN LEVE: tablas/columnas nuevas sin tocar datos existentes ===
+$auto_conn = new mysqli($auto_host, $auto_user, $auto_pass, $auto_dbname);
+if (!$auto_conn->connect_error) {
+    // Agrega user_id a artists si falta
+    $r = $auto_conn->query("SHOW COLUMNS FROM artists LIKE 'user_id'");
+    if (!$r || $r->num_rows === 0) {
+        $auto_conn->query("ALTER TABLE artists ADD COLUMN user_id INT UNSIGNED DEFAULT NULL AFTER id");
+        $auto_conn->query("ALTER TABLE artists ADD INDEX idx_artists_user (user_id)");
+    }
+
+    // Crea artist_schedules si falta
+    $auto_conn->query("CREATE TABLE IF NOT EXISTS artist_schedules (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        artist_id INT UNSIGNED NOT NULL,
+        dia_semana TINYINT(1) NOT NULL DEFAULT 0,
+        hora_inicio TIME NOT NULL DEFAULT '09:00:00',
+        hora_fin TIME NOT NULL DEFAULT '17:00:00',
+        disponible TINYINT(1) NOT NULL DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_schedule_artist FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
+        UNIQUE KEY uq_artist_schedule (artist_id, dia_semana)
+    ) ENGINE=InnoDB");
+    $auto_conn->close();
+}
+
+// === MIGRACIÓN LEVE: agrega artist_id a users si falta ===
+$auto_conn = new mysqli($auto_host, $auto_user, $auto_pass, $auto_dbname);
+if (!$auto_conn->connect_error) {
+    $r = $auto_conn->query("SHOW COLUMNS FROM users LIKE 'artist_id'");
+    if (!$r || $r->num_rows === 0) {
+        $auto_conn->query("ALTER TABLE users ADD COLUMN artist_id INT UNSIGNED DEFAULT NULL AFTER rol");
+        $auto_conn->query("ALTER TABLE users ADD INDEX idx_users_artist (artist_id)");
+    }
+    $auto_conn->close();
+}
+// === FIN DE LA MIGRACIÓN LEVE ===
 
 // Punto de entrada de la aplicación MVC.
 require_once __DIR__ . '/config/config.php';
-require_once __DIR__ . '/core/ControladorBase.php';
-require_once __DIR__ . '/core/Enrutador.php';
-require_once __DIR__ . '/app/controllers/ControladorPaginas.php';
-require_once __DIR__ . '/app/controllers/ControladorAutenticacion.php';
+require_once DIR_PATH . 'core/ControladorBase.php';
+require_once DIR_PATH . 'core/Enrutador.php';
+require_once DIR_PATH . 'app/controllers/ControladorPaginas.php';
+require_once DIR_PATH . 'app/controllers/ControladorAutenticacion.php';
+require_once DIR_PATH . 'app/controllers/ControladorTatuador.php';
 
 // Registra el error sin exponer detalles técnicos y muestra una respuesta 500 segura.
 set_exception_handler(static function (Throwable $exception): void {

@@ -1,7 +1,10 @@
 <?php
+require_once dirname(__DIR__) . '/config/config.php';
 // Recurso JavaScript servido por PHP.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
+window.APP_BASE_URL = <?= json_encode(BASE_URL) ?>;
+
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('promocionesForm');
   const validarBtn = document.getElementById('validarBtn');
@@ -111,7 +114,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!result.ok) {
       if (result.redirect) {
-        itzaError(result.message).then(() => { window.location.href = result.redirect; });
+        const redirectUrl = /^https?:\/\//i.test(result.redirect) || result.redirect.startsWith('/')
+          ? result.redirect
+          : window.APP_BASE_URL + result.redirect.replace(/^\.?\//, '');
+        itzaError(result.message).then(() => { window.location.href = redirectUrl; });
       } else {
         itzaError(result.message || 'No fue posible guardar el cupón.');
       }

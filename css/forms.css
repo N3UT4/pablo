@@ -57,11 +57,19 @@ body{
   color:#D4123A;
   font-size:11px;
   font-weight:700;
-  letter-spacing:0.8px;
+  letter-spacing:0.6px;
   cursor:pointer;
   transition:all 0.25s ease;
   font-family:'Work Sans',sans-serif;
   text-transform:uppercase;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:32px;
+  line-height:1.2;
+  overflow-wrap:break-word;
+  vertical-align:middle;
 }
 .lang-btn:hover{
   background:rgba(212, 18, 58, 0.1);
@@ -77,7 +85,9 @@ body{
 @media (max-width: 768px){
   .lang-switcher{ gap:6px; margin-right:12px; }
   .lang-btn{ padding:6px 10px; font-size:11px; }
-}.topbar-inner{
+}
+
+.topbar-inner {
   max-width:760px; margin:0 auto;
   display:flex; align-items:center; justify-content:space-between;
   position:relative;
@@ -267,6 +277,38 @@ form{
   cursor:pointer;
 }
 
+/* Password visibility toggle */
+.password-wrap {
+  position: relative;
+}
+.password-wrap input[type="password"],
+.password-wrap input[type="text"] {
+  padding-right: 44px;
+}
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--bone-dim);
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 14px;
+  z-index: 2;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+}
+.password-toggle:hover {
+  color: var(--blood-bright);
+}
+
 /* Checkbox / radio rows */
 .check-row{
   display:flex;
@@ -385,15 +427,21 @@ form{
   padding:16px 20px;
   font-family:'Work Sans', sans-serif;
   font-weight:800;
-  font-size:13px;
-  letter-spacing:1px;
+  font-size:14px;
+  letter-spacing:0.4px;
   text-transform:uppercase;
   cursor:pointer;
   transition: all 0.2s ease;
-  display:inline-block;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   text-align:center;
+  min-height:52px;
+  line-height:1.2;
+  white-space:normal;
+  overflow-wrap:break-word;
+  vertical-align:middle;
   text-decoration:none;
-  line-height:1;
 }
 .submit-btn:hover{
   background: var(--blood-bright);
@@ -420,6 +468,20 @@ form{
 }
 .hint a:hover{
   color: var(--blood);
+}
+
+/* ---- Utility: text centering ---- */
+.text-center{
+  text-align:center;
+}
+
+/* ---- Error actions (error500.php) ---- */
+.error-actions{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:28px;
 }
 
 /* ---- Staff gate (consentimiento.html) ---- */
@@ -514,4 +576,427 @@ form{
 @media (prefers-reduced-motion: reduce){
   .card-enter{ opacity:1; transform:none; transition:none; }
   .submit-btn:hover{ transform:none; }
+}
+
+/* =====================================================
+   PANEL (DASHBOARD)
+===================================================== */
+
+/* ---- Welcome banner ---- */
+.welcome-banner{
+  text-align:center;
+  margin-bottom:28px;
+}
+.welcome-banner h2{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:clamp(28px, 5vw, 40px);
+  letter-spacing:1px;
+  color:var(--bone);
+}
+.welcome-banner p{
+  color:var(--bone-dim);
+  font-size:14px;
+  margin-top:10px;
+  max-width:56ch;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* ---- User info ---- */
+.user-info{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:28px;
+  padding:14px 22px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:var(--panel-2);
+}
+.user-info strong{
+  color:var(--bone-dim);
+  font-size:13px;
+}
+
+/* ---- Hours grid ---- */
+.hours-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-bottom:28px;
+}
+.hours-item{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:16px;
+  background:var(--panel-2);
+  border:1px solid var(--line);
+  border-radius:4px;
+  text-align:center;
+}
+.hours-item strong{
+  color:var(--bone-dim);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.hours-item .time{
+  color:var(--bone);
+  font-weight:600;
+  font-size:14px;
+}
+.status-badge{
+  display:inline-block;
+  margin-left:auto;
+  margin-right:auto;
+  padding:3px 10px;
+  border:1px solid var(--blood);
+  color:var(--blood-bright);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  border-radius:3px;
+}
+
+/* ---- Exclusive section ---- */
+.exclusive-section{
+  text-align:center;
+  margin-top:28px;
+  margin-bottom:28px;
+}
+.exclusive-label{
+  display:inline-block;
+  background:var(--gold);
+  color:#1A1206;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  padding:3px 9px;
+  border-radius:20px;
+  margin-bottom:12px;
+}
+.exclusive-section h3{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px;
+  letter-spacing:1px;
+  color:var(--bone);
+  margin-bottom:10px;
+}
+.exclusive-section p{
+  color:var(--bone-dim);
+  font-size:14px;
+  max-width:56ch;
+  margin:0 auto;
+}
+
+/* ---- CTA buttons (dashboard) ---- */
+.cta-buttons{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.cta-btn{
+  flex:1;
+  min-width:180px;
+  min-height:52px;
+  padding:16px 20px;
+  background:var(--panel-2);
+  border:1px solid var(--line);
+  border-radius:3px;
+  color:var(--bone);
+  font-size:14px;
+  font-weight:700;
+  text-decoration:none;
+  transition:background .2s ease,border-color .2s ease,transform .18s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  line-height:1.2;
+  letter-spacing:0.4px;
+  white-space:normal;
+  overflow-wrap:break-word;
+  vertical-align:middle;
+}
+.cta-btn.btn-primary{
+  background:var(--blood);
+  border-color:var(--blood);
+  color:#fff;
+}
+.cta-btn.btn-primary:hover{
+  background:var(--blood-bright);
+  border-color:var(--blood-bright);
+}
+.cta-btn.secondary{
+  background:var(--panel-2);
+  border:1px solid var(--line);
+}
+
+@media (max-width:640px){
+  .hours-grid{
+    grid-template-columns:1fr;
+  }
+  .cta-buttons{
+    flex-direction:column;
+  }
+  .cta-btn{
+    flex:none;
+  }
+}
+
+/* =====================================================
+   ARTISTA DROPDOWN (header)
+===================================================== */
+.artist-dropdown{
+  position:relative;
+  display:inline-block;
+}
+.artist-dropdown-btn{
+  background:var(--blood);
+  color:var(--bone);
+  border:none;
+  padding:10px 16px;
+  border-radius:4px;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:background .2s ease;
+  text-align:center;
+  min-height:38px;
+  line-height:1.2;
+  letter-spacing:0.4px;
+  white-space:normal;
+  overflow-wrap:break-word;
+}
+.artist-dropdown-btn:hover{
+  background:var(--blood-bright);
+}
+.artist-dropdown-menu{
+  display:none;
+  position:absolute;
+  top:100%;
+  right:0;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:4px;
+  min-width:200px;
+  padding:6px 0;
+  z-index:1000;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);
+}
+.artist-dropdown:hover .artist-dropdown-menu{
+  display:block;
+}
+.artist-dropdown-menu a{
+  display:block;
+  padding:8px 14px;
+  color:var(--bone);
+  font-size:13px;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.artist-dropdown-menu a:hover{
+  background:var(--panel-2);
+  color:var(--blood-bright);
+}
+.dropdown-logout{
+  border-top:1px solid var(--line);
+  margin-top:4px;
+  color:#f87171 !important;
+}
+.dropdown-logout:hover{
+  background:rgba(248,113,113,.1);
+}
+
+/* =====================================================
+   ARTIST PANEL TABLES & FORMS
+===================================================== */
+.table-wrapper{
+  overflow-x:auto;
+  border:1px solid var(--line);
+  border-radius:4px;
+}
+.appointment-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+.appointment-table th{
+  background:var(--panel-2);
+  color:var(--bone-dim);
+  font-weight:600;
+  text-transform:uppercase;
+  font-size:11px;
+  letter-spacing:0.5px;
+  padding:10px 14px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+}
+.appointment-table td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+.appointment-table tbody tr:hover{
+  background:rgba(214,92,72,.03);
+}
+.fecha-cell{ white-space:nowrap; }
+.hora-cell{ white-space:nowrap; color:var(--bone-dim); }
+.cliente-cell .hint.small{
+  display:block;
+  color:var(--bone-dim);
+  font-size:11px;
+}
+.estado-cell{ white-space:nowrap; }
+.estado-select{
+  font-size:12px;
+  padding:4px 8px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:var(--panel-2);
+  color:var(--bone);
+  margin-bottom:4px;
+}
+.acciones-cell{ white-space:nowrap; }
+.btn-ghost.small{
+  padding:4px 10px;
+  font-size:12px;
+  border-radius:3px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:32px;
+  line-height:1.2;
+  letter-spacing:0.3px;
+  white-space:normal;
+  overflow-wrap:break-word;
+}
+
+/* ---- Status badges with color variants ---- */
+.status-badge{
+  display:inline-block;
+  margin-left:auto;
+  margin-right:auto;
+  padding:3px 10px;
+  font-size:10px;
+  font-weight:700;
+  border-radius:3px;
+  border:none;
+}
+
+/* ---- Schedule editor ---- */
+.schedule-editor{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.schedule-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.schedule-row:last-child{
+  border-bottom:none;
+}
+.schedule-day{
+  min-width:120px;
+}
+.checkbox-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  font-size:14px;
+}
+.checkbox-label input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  cursor:pointer;
+}
+.schedule-times{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:1;
+}
+.schedule-times input[type="time"]{
+  padding:6px 10px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:var(--panel-2);
+  color:var(--bone);
+  font-size:13px;
+  flex:1;
+}
+.schedule-times input[type="time"]:disabled{
+  opacity:0.4;
+  cursor:not-allowed;
+}
+.time-separator{
+  color:var(--bone-dim);
+  font-size:14px;
+}
+.save-dia{
+  padding:4px 12px;
+  font-size:12px;
+  border-radius:3px;
+  white-space:normal;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:32px;
+  line-height:1.2;
+  letter-spacing:0.3px;
+  overflow-wrap:break-word;
+}
+
+/* ---- Profile grid ---- */
+.profile-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+}
+.profile-section h3.section-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:18px;
+  letter-spacing:0.5px;
+  color:var(--bone);
+  margin-bottom:14px;
+}
+.profile-row{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px solid var(--line);
+}
+.profile-row label{
+  color:var(--bone-dim);
+  font-size:13px;
+}
+.profile-row span{
+  color:var(--bone);
+  font-size:13px;
+  font-weight:500;
+}
+.hint.small{
+  font-size:12px;
+  color:var(--bone-dim);
+}
+.cta-btn.secondary{
+  background:var(--panel-2);
+  border:1px solid var(--line);
 }

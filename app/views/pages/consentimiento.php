@@ -8,7 +8,7 @@
       <p>Esta sección es exclusiva para administradores y tatuadores del estudio. Ingresa el código de acceso para continuar.</p>
     </div>
     <button id="unlockBtn" class="submit-btn">Ingresar código de staff</button>
-    <p class="hint">¿Eres cliente? <a href="index.php?action=home">Vuelve al inicio</a></p>
+    <p class="hint">¿Eres cliente? <a href="<?= BASE_URL ?>index.php?action=home">Vuelve al inicio</a></p>
   </div>
 
   <div class="card" id="consentCard" style="display:none;">

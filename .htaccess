@@ -2,22 +2,34 @@ Options -Indexes
 DirectoryIndex index.php
 
 # Redirecciones de las páginas .html antiguas a las rutas PHP del sistema MVC.
-Redirect 301 /index.html /index.php?action=home
-Redirect 301 /login.html /index.php?action=login
-Redirect 301 /registro.html /index.php?action=register
-Redirect 301 /dashboard.html /index.php?action=dashboard
-Redirect 301 /contacto.html /index.php?action=contact
-Redirect 301 /galeria.html /index.php?action=gallery
-Redirect 301 /abono.html /index.php?action=booking
-Redirect 301 /consentimiento.html /index.php?action=consent
-Redirect 301 /perfil.html /index.php?action=profile
-Redirect 301 /promociones.html /index.php?action=promotions
-Redirect 301 /404.html /index.php?action=404
-Redirect 301 /500.html /index.php?action=500
+RewriteEngine On
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^index\.html$ %1index.php?action=home [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^login\.html$ %1index.php?action=login [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^registro\.html$ %1index.php?action=register [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^dashboard\.html$ %1index.php?action=dashboard [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^contacto\.html$ %1index.php?action=contact [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^galeria\.html$ %1index.php?action=gallery [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^abono\.html$ %1index.php?action=booking [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^consentimiento\.html$ %1index.php?action=consent [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^perfil\.html$ %1index.php?action=profile [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^promociones\.html$ %1index.php?action=promotions [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^404\.html$ %1index.php?action=404 [R=301,L]
+RewriteCond %{REQUEST_URI} ^(/(?:[^/]+/)?)
+RewriteRule ^500\.html$ %1index.php?action=500 [R=301,L]
 
-# Respuestas consistentes para errores generados por Apache.
-ErrorDocument 404 /index.php?action=404
-ErrorDocument 500 /index.php?action=500
+# El router MVC renderiza sus vistas 404/500 cuando se invoca directamente;
+# se omiten ErrorDocument absolutos para no romper montajes en subdirectorios.
 
 <FilesMatch "^(database\.sql|README\.md|\.env|composer\.(json|lock))$">
     Require all denied

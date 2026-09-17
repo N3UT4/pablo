@@ -5,6 +5,6 @@
       <h1>Página no encontrada</h1>
       <p>La ruta que intentas abrir no existe o ya no está disponible.</p>
     </div>
-    <a href="index.php?action=home" class="btn-primary">Volver al inicio</a>
+    <a href="<?= BASE_URL ?>index.php?action=home" class="btn-primary">Volver al inicio</a>
   </div>
 </div>

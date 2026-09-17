@@ -1,7 +1,7 @@
 <?php
 
-require_once APP_ROOT . '/app/models/ModeloGaleria.php';
-require_once APP_ROOT . '/app/models/ModeloArtistas.php';
+require_once DIR_PATH . 'app/models/ModeloGaleria.php';
+require_once DIR_PATH . 'app/models/ModeloArtistas.php';
 
 // Atiende el formulario de staff en galeria (js/galeria.js).
 class ControladorGaleria extends ControladorBase
@@ -95,14 +95,14 @@ class ControladorGaleria extends ControladorBase
                     continue;
                 }
 
-                $imagenPath = GALLERY_UPLOAD_URL . '/' . $filename;
+                $relativePath = GALLERY_UPLOAD_PATH . '/' . $filename;
                 $this->galleryModel->create([
                     'artist_id' => $artistId,
                     'titulo' => $titulo,
                     'descripcion' => $descripcionFull,
-                    'imagen' => $imagenPath,
+                    'imagen' => $relativePath,
                 ]);
-                $saved[] = $imagenPath;
+                $saved[] = $relativePath;
             }
 
             if (empty($saved)) {

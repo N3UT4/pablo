@@ -1,6 +1,6 @@
 <?php
 
-require_once APP_ROOT . '/app/models/ModeloCitas.php';
+require_once DIR_PATH . 'app/models/ModeloCitas.php';
 
 // Reportes exportables (rúbrica: generación de reportes).
 //   index.php?action=reporte-citas        -> descarga CSV (Excel)

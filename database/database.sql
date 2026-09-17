@@ -24,18 +24,23 @@ CREATE TABLE IF NOT EXISTS users (
   documento VARCHAR(50) DEFAULT NULL,
   fecha_nacimiento DATE DEFAULT NULL,
   rol ENUM('cliente', 'admin', 'tatuador') NOT NULL DEFAULT 'cliente',
+  artist_id INT UNSIGNED DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_users_documento (documento)
+  INDEX idx_users_documento (documento),
+  INDEX idx_users_artist (artist_id)
 ) ENGINE=InnoDB;
 
 -- Tatuadores que pueden atender citas.
 CREATE TABLE IF NOT EXISTS artists (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED DEFAULT NULL,
   nombre VARCHAR(120) NOT NULL,
   bio TEXT DEFAULT NULL,
   foto VARCHAR(255) DEFAULT NULL,
   activo TINYINT(1) NOT NULL DEFAULT 1,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_artists_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_artists_user (user_id)
 ) ENGINE=InnoDB;
 
 -- Servicios ofrecidos por el estudio.
@@ -123,6 +128,20 @@ CREATE TABLE IF NOT EXISTS gallery (
   activo TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_gallery_artist FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- Horarios de disponibilidad por tatuador (gestionados individualmente, no afectan el sitio web global).
+CREATE TABLE IF NOT EXISTS artist_schedules (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  artist_id INT UNSIGNED NOT NULL,
+  dia_semana TINYINT(1) NOT NULL DEFAULT 0, -- 0=Dom, 1=Lun, ..., 6=Sáb
+  hora_inicio TIME NOT NULL DEFAULT '09:00:00',
+  hora_fin TIME NOT NULL DEFAULT '17:00:00',
+  disponible TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_schedule_artist FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_artist_schedule (artist_id, dia_semana)
 ) ENGINE=InnoDB;
 
 -- Promociones publicadas por el estudio.

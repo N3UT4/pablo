@@ -62,15 +62,19 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   let esMenor = false;
+  let esMenorDe15 = false;
+  let esJoven = false;
 
   fechaNacimiento.addEventListener('change', function () {
     if (!fechaNacimiento.value) return;
     const edad = calcularEdad(fechaNacimiento.value);
     esMenor = edad < 18;
-    guardianBox.classList.toggle('show', esMenor);
-    guardianNote.style.display = esMenor ? 'flex' : 'none';
+    esMenorDe15 = edad < 15;
+    esJoven = edad >= 15 && edad < 18;
+    guardianBox.classList.toggle('show', esJoven);
+    guardianNote.style.display = esJoven ? 'flex' : 'none';
     document.querySelectorAll('#guardianBox input').forEach(inp => {
-      inp.required = esMenor;
+      inp.required = esJoven;
     });
   });
 
@@ -84,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!nombreValid) ok = false;
 
     const documento = document.getElementById('documento_consent');
-    const docValid = documento.value.trim().replace(/\D/g, '').length >= 6;
+    const docValid = /^\d+$/.test(documento.value.trim()) && documento.value.trim().length >= 6;
     setInvalid(documento, document.getElementById('documentoConsentErr'), !docValid);
     if (!docValid) ok = false;
 
@@ -111,14 +115,14 @@ document.addEventListener('DOMContentLoaded', function () {
     setInvalid(firmaCliente, document.getElementById('firmaClienteErr'), !firmaValid);
     if (!firmaValid) ok = false;
 
-    if (esMenor) {
+    if (esJoven) {
       const acudienteNombre = document.getElementById('acudiente_nombre');
       const acudienteNombreValid = acudienteNombre.value.trim().split(' ').filter(Boolean).length >= 2;
       setInvalid(acudienteNombre, document.getElementById('acudienteNombreErr'), !acudienteNombreValid);
       if (!acudienteNombreValid) ok = false;
 
       const acudienteDocumento = document.getElementById('acudiente_documento');
-      const acudienteDocValid = acudienteDocumento.value.trim().replace(/\D/g, '').length >= 6;
+      const acudienteDocValid = /^\d+$/.test(acudienteDocumento.value.trim()) && acudienteDocumento.value.trim().length >= 6;
       setInvalid(acudienteDocumento, document.getElementById('acudienteDocumentoErr'), !acudienteDocValid);
       if (!acudienteDocValid) ok = false;
 
@@ -131,6 +135,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const firmaAcudienteValid = firmaAcudiente.value.trim().length >= 3;
       setInvalid(firmaAcudiente, document.getElementById('firmaAcudienteErr'), !firmaAcudienteValid);
       if (!firmaAcudienteValid) ok = false;
+    }
+
+    if (esMenorDe15) {
+      itzaError('El cliente es menor de 15 años. No se puede agendar sin acompañante legal.');
+      return;
     }
 
     if (!ok) {

@@ -1,6 +1,6 @@
 <?php
 
-require_once APP_ROOT . '/core/ModeloBase.php';
+require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloUsuarios extends ModeloBase
 {
@@ -12,7 +12,7 @@ class ModeloUsuarios extends ModeloBase
     public function findByEmail(string $email): ?array
     {
         $statement = $this->execute(
-            'SELECT id, nombre, email, password, telefono, documento, fecha_nacimiento, rol, created_at
+            'SELECT id, nombre, email, password, telefono, documento, fecha_nacimiento, rol, artist_id, created_at
              FROM users WHERE email = :email LIMIT 1',
             ['email' => strtolower(trim($email))]
         );
@@ -90,6 +90,26 @@ class ModeloUsuarios extends ModeloBase
             'email' => $user['email'] ?? '',
             'rol' => $user['rol'] ?? 'cliente',
         ];
+        $_SESSION['role'] = $_SESSION['user']['rol'];
+
+        $artistUser = $this->findArtistByUser((int) $user['id']);
+        if ($artistUser !== null) {
+            $_SESSION['user']['artist_id'] = $artistUser['id'];
+            $_SESSION['artist_id'] = $artistUser['id'];
+        }
+    }
+
+    public function findArtistByUser(int $userId): ?array
+    {
+        $statement = $this->execute(
+            'SELECT a.id, a.nombre, a.bio, a.foto, a.activo
+             FROM artists a
+             JOIN users u ON u.artist_id = a.id
+             WHERE u.id = :user_id LIMIT 1',
+            ['user_id' => $userId]
+        );
+        $row = $statement->fetch();
+        return $row ?: null;
     }
 
     // --- Control de acceso por roles (rúbrica: Autenticación y Roles) ---
@@ -110,6 +130,11 @@ class ModeloUsuarios extends ModeloBase
         return $this->hasRole('admin');
     }
 
+    public function isTatuador(): bool
+    {
+        return $this->hasRole('tatuador');
+    }
+
     public function isStaff(): bool
     {
         return $this->hasRole('admin', 'tatuador');
@@ -119,7 +144,7 @@ class ModeloUsuarios extends ModeloBase
     public function all(): array
     {
         $statement = $this->execute(
-            'SELECT id, nombre, email, telefono, documento, fecha_nacimiento, rol, created_at
+            'SELECT id, nombre, email, telefono, documento, fecha_nacimiento, rol, artist_id, created_at
              FROM users ORDER BY id ASC'
         );
         return $statement->fetchAll();
@@ -129,7 +154,7 @@ class ModeloUsuarios extends ModeloBase
     public function find(int $id): ?array
     {
         $statement = $this->execute(
-            'SELECT id, nombre, email, telefono, documento, fecha_nacimiento, rol, created_at
+            'SELECT id, nombre, email, telefono, documento, fecha_nacimiento, rol, artist_id, created_at
              FROM users WHERE id = :id LIMIT 1',
             ['id' => $id]
         );
@@ -167,6 +192,33 @@ class ModeloUsuarios extends ModeloBase
     public function logout(): void
     {
         unset($_SESSION['user']);
+    }
+
+    public function setTemporaryPassword(int $userId): void
+    {
+        $temp = bin2hex(random_bytes(6));
+        $this->execute(
+            'UPDATE users SET temp_password = :temp, temp_password_active = 1 WHERE id = :id',
+            ['temp' => password_hash($temp, PASSWORD_DEFAULT), 'id' => $userId]
+        );
+    }
+
+    public function isTempPasswordActive(int $userId): bool
+    {
+        $stmt = $this->execute(
+            'SELECT temp_password, temp_password_active FROM users WHERE id = :id',
+            ['id' => $userId]
+        );
+        $row = $stmt->fetch();
+        return $row && (bool) $row['temp_password_active'] && $row['temp_password'] !== null;
+    }
+
+    public function deactivateTempPassword(int $userId): void
+    {
+        $this->execute(
+            'UPDATE users SET temp_password = NULL, temp_password_active = 0 WHERE id = :id',
+            ['id' => $userId]
+        );
     }
 
     public function deleteAccount(int $userId): void

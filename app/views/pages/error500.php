@@ -7,7 +7,7 @@
     </div>
     <div class="error-actions">
       <button type="button" onclick="location.reload()" class="btn-primary">Reintentar</button>
-      <a href="index.php?action=home" class="btn-ghost">Volver al inicio</a>
+      <a href="<?= BASE_URL ?>index.php?action=home" class="btn-ghost">Volver al inicio</a>
     </div>
   </div>
 </div>

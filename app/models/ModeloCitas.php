@@ -1,6 +1,6 @@
 <?php
 
-require_once APP_ROOT . '/core/ModeloBase.php';
+require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloCitas extends ModeloBase
 {
@@ -140,6 +140,65 @@ class ModeloCitas extends ModeloBase
              ORDER BY ap.fecha_cita DESC, ap.hora_cita DESC
              LIMIT 1',
             ['user_id' => $userId]
+        );
+        $row = $statement->fetch();
+        return $row ?: null;
+    }
+
+    // --- Métodos para el panel de tatuador ---
+
+    // Lista las citas asignadas a un artista específico (rúbrica: Modelo / Roles).
+    public function findByArtist(int $artistId): array
+    {
+        $statement = $this->execute(
+            'SELECT ap.id, ap.fecha_cita, ap.hora_cita, ap.estado, ap.detalle_personalizado, ap.observaciones,
+                    u.nombre AS cliente, u.email AS email_cliente, u.documento, u.telefono,
+                    s.nombre AS servicio, p.monto, p.estado AS estado_pago
+             FROM appointments ap
+             JOIN users u ON u.id = ap.user_id
+             JOIN artists a ON a.id = ap.artist_id
+             JOIN services s ON s.id = ap.service_id
+             LEFT JOIN payments p ON p.appointment_id = ap.id
+             WHERE ap.artist_id = :artist_id
+             ORDER BY ap.fecha_cita DESC, ap.hora_cita DESC',
+            ['artist_id' => $artistId]
+        );
+        return $statement->fetchAll();
+    }
+
+    // Cambia el estado de una cita (usado desde el panel de tatuador).
+    public function updateEstado(int $citaId, string $estado): bool
+    {
+        $estadosValidos = ['pendiente', 'confirmada', 'completada', 'cancelada'];
+        if (!in_array($estado, $estadosValidos, true)) {
+            return false;
+        }
+        $this->execute(
+            'UPDATE appointments SET estado = :estado WHERE id = :id',
+            ['estado' => $estado, 'id' => $citaId]
+        );
+        return true;
+    }
+
+    // Detalle completo del cliente para el expediente (rúbrica: Modelo / Roles).
+    public function getDetalleCliente(int $citaId, int $artistId): ?array
+    {
+        $statement = $this->execute(
+            'SELECT ap.id, ap.fecha_cita, ap.hora_cita, ap.estado, ap.detalle_personalizado, ap.observaciones,
+                    u.id AS user_id, u.nombre AS cliente, u.email AS email_cliente, u.documento, u.telefono, u.fecha_nacimiento,
+                    s.nombre AS servicio, s.precio_desde,
+                    c.nombre_cliente AS consent_nombre, c.documento AS consent_documento,
+                    c.fecha_nacimiento AS consent_fecha_nac, c.firma_cliente, c.acepta_riesgos,
+                    p.monto AS abono_monto, p.metodo AS abono_metodo, p.estado AS abono_estado
+             FROM appointments ap
+             JOIN users u ON u.id = ap.user_id
+             JOIN artists a ON a.id = ap.artist_id
+             JOIN services s ON s.id = ap.service_id
+             LEFT JOIN consents c ON c.appointment_id = ap.id
+             LEFT JOIN payments p ON p.appointment_id = ap.id
+             WHERE ap.id = :id AND ap.artist_id = :artist_id
+             LIMIT 1',
+            ['id' => $citaId, 'artist_id' => $artistId]
         );
         $row = $statement->fetch();
         return $row ?: null;
