@@ -162,7 +162,7 @@ function translateSourceContent() {
   }));
 }
 
-// Crear selector de idioma
+// Crear selector de idioma con un solo botón toggle
 function createLanguageSwitcher() {
   const switcher = document.querySelector('.lang-switcher');
   
@@ -179,45 +179,37 @@ function createLanguageSwitcher() {
     }
   }
 
-  const currentLang = i18n.getCurrentLanguage();
-  const langs = i18n.getAvailableLanguages();
-  const switcherElement = document.querySelector('.lang-switcher');
+  const renderToggle = () => {
+    const currentLang = i18n.getCurrentLanguage();
+    const nextLang = currentLang === 'es' ? 'en' : 'es';
+    const switcherElement = document.querySelector('.lang-switcher');
 
-  switcherElement.innerHTML = langs.map(lang => `
-    <button 
-      class="lang-btn ${lang === currentLang ? 'active' : ''}" 
-      data-lang="${lang}"
-      title="${lang === 'es' ? 'Español' : 'English'}"
-      type="button"
-    >
-      ${lang.toUpperCase()}
-    </button>
-  `).join('');
+    switcherElement.innerHTML = `
+      <button
+        class="lang-btn lang-toggle"
+        data-lang="${nextLang}"
+        title="${nextLang === 'es' ? 'Cambiar a Español' : 'Switch to English'}"
+        type="button"
+      >
+        <span class="lang-current">${currentLang.toUpperCase()}</span>
+        <span class="lang-icon">⇄</span>
+      </button>
+    `;
 
-  // Event listeners para cambiar idioma
-  switcherElement.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
+    switcherElement.querySelector('.lang-toggle').addEventListener('click', async (e) => {
       e.preventDefault();
       e.stopPropagation();
       const lang = e.currentTarget.getAttribute('data-lang');
       console.log('🌍 Cambiar idioma a:', lang);
       i18n.setLanguage(lang);
       await translatePage();
-      
-      // Actualizar botones activos
-      switcherElement.querySelectorAll('.lang-btn').forEach(b => {
-        if (b.getAttribute('data-lang') === lang) {
-          b.classList.add('active');
-        } else {
-          b.classList.remove('active');
-        }
-      });
-
-      // Event para que otros scripts sepan que el idioma cambió
+      renderToggle();
       window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
       console.log('✅ Idioma cambiado correctamente a:', lang);
     });
-  });
+  };
+
+  renderToggle();
 }
 
 // Inicializar i18n cuando el DOM esté listo

@@ -32,9 +32,8 @@ unset($_SESSION['flash']);
                 <a href="<?= BASE_URL ?>index.php?action=home#artistas">Artista</a>
                 <a href="<?= BASE_URL ?>index.php?action=contact">Contacto</a>
                 <a href="<?= BASE_URL ?>index.php?action=promotions">Promociones</a>
-            </div>
-            <div class="lang-switcher"></div>
-            <?php if ($user): ?>
+             </div>
+             <?php if ($user): ?>
         <?php
             $rol = $user['rol'] ?? 'cliente';
             $artistMode = !empty($_SESSION['artist_mode']);
@@ -73,7 +72,8 @@ unset($_SESSION['flash']);
             <a href="<?= BASE_URL ?>index.php?action=register" class="nav-cta">Agendar cita</a>
         </div>
     <?php endif; ?>
-        </nav>
+        <div class="lang-switcher"></div>
+    </nav>
     </header>
 
     <?php if ($flash): ?>

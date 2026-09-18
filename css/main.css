@@ -142,9 +142,8 @@ nav {
 /* ===== LANGUAGE SWITCHER ===== */
 .lang-switcher {
   display: flex;
-  gap: 6px;
-  margin: 0 8px 0 auto;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .lang-btn {
@@ -170,8 +169,27 @@ nav {
   vertical-align: middle;
 }
 
-.lang-btn:hover {
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border-radius: 999px;
   background: rgba(212, 18, 58, 0.1);
+  border-color: #D4123A;
+}
+
+.lang-current {
+  font-weight: 800;
+}
+
+.lang-icon {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.lang-btn:hover {
+  background: rgba(212, 18, 58, 0.15);
   border-color: #FF2E4A;
   color: #FF2E4A;
 }
