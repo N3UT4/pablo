@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ---------------------------------------------------
      5. RIPPLE — efecto de onda al hacer clic en botones
   --------------------------------------------------- */
-  const rippleSelectors = '.btn-primary, .btn-ghost, .submit-btn, .nav-cta, .tab-btn';
+  const rippleSelectors = '.btn-primary, .btn-ghost, .submit-btn, .btn-cta, .tab-btn';
   document.querySelectorAll(rippleSelectors).forEach(btn => {
     btn.classList.add('ripple-btn');
     btn.addEventListener('click', function (e) {

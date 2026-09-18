@@ -191,8 +191,8 @@ function createLanguageSwitcher() {
         title="${nextLang === 'es' ? 'Cambiar a Español' : 'Switch to English'}"
         type="button"
       >
+        <i class="fa-solid fa-globe"></i>
         <span class="lang-current">${currentLang.toUpperCase()}</span>
-        <span class="lang-icon">⇄</span>
       </button>
     `;
 

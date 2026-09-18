@@ -67,7 +67,7 @@ section {
   padding: 96px 0;
 }
 
-/* ---- Nav ---- */
+/* ==== NAVIGATION ==== */
 header {
   position: sticky;
   top: 0;
@@ -81,16 +81,37 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
-  max-width: 1120px;
+  padding: 16px 28px;
+  max-width: 1200px;
   margin: 0 auto;
   position: relative;
-  gap: 24px;
+  gap: 38px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'New Rocker', 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  flex-shrink: 0;
+}
+
+.logo span {
+  color: var(--blood-bright);
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav-links {
   display: flex;
-  gap: 32px;
+  gap: 34px;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -110,36 +131,69 @@ nav {
   border-bottom-color: var(--blood-bright);
 }
 
-.nav-cta {
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.auth-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-auth {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--bone);
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-auth:hover {
+  border-color: var(--blood-bright);
+  color: var(--bone);
+  transform: translateY(-1px);
+}
+
+.btn-cta {
   background: linear-gradient(135deg, var(--blood) 0%, var(--blood-bright) 100%);
   color: #fff;
-  padding: 12px 22px;
+  padding: 11px 22px;
   border-radius: 999px;
-  text-decoration: none;
+  font-family: 'Work Sans', sans-serif;
   font-weight: 800;
   font-size: 12px;
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  transition: all 0.2s ease;
+  text-decoration: none;
   flex-shrink: 0;
   border: 2px solid transparent;
   box-shadow: 0 10px 24px -12px rgba(212, 18, 58, 0.8);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  min-height: 44px;
-  line-height: 1.2;
-  overflow-wrap: break-word;
-  vertical-align: middle;
+  transition: all 0.2s ease;
 }
 
-.nav-cta:hover {
+.btn-cta:hover {
   background: linear-gradient(135deg, var(--blood-bright) 0%, #ff5c73 100%);
   transform: translateY(-2px);
+  box-shadow: 0 12px 28px -14px rgba(212, 18, 58, 0.9);
 }
 
-/* ===== LANGUAGE SWITCHER ===== */
+/* ==== LANGUAGE SWITCHER ==== */
 .lang-switcher {
   display: flex;
   align-items: center;
@@ -149,8 +203,8 @@ nav {
 .lang-btn {
   background: transparent;
   border: 1px solid #D4123A;
-  border-radius: 2px;
-  padding: 6px 11px;
+  border-radius: 999px;
+  padding: 8px 14px;
   color: #D4123A;
   font-size: 11px;
   font-weight: 700;
@@ -161,22 +215,12 @@ nav {
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   justify-content: center;
-  text-align: center;
   min-height: 32px;
   line-height: 1.2;
   overflow-wrap: break-word;
   vertical-align: middle;
-}
-
-.lang-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(212, 18, 58, 0.1);
-  border-color: #D4123A;
 }
 
 .lang-current {
@@ -1252,6 +1296,25 @@ footer {
   .nav-links {
     display: none;
   }
+
+  .nav-actions {
+    gap: 10px;
+  }
+
+  .auth-group {
+    gap: 8px;
+  }
+
+  .btn-auth,
+  .btn-cta {
+    padding: 9px 16px;
+    font-size: 11px;
+  }
+
+  .lang-btn.lang-toggle {
+    padding: 7px 12px;
+    font-size: 10px;
+  }
 }
 
 @media (max-width: 520px) {
@@ -1412,12 +1475,12 @@ header.scrolled {
 
 /* ---- Botones con leve elevación al pasar el mouse ---- */
 .btn-primary,
-.nav-cta {
+.btn-cta {
   transition: background .2s ease, transform .18s ease, box-shadow .2s ease;
 }
 
 .btn-primary:hover,
-.nav-cta:hover {
+.btn-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 24px -10px rgba(212, 18, 58, 0.5);
 }
@@ -1489,25 +1552,3 @@ header.scrolled {
   }
 }
 
-/* diseño de  logo*/
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'New Rocker', 'Bebas Neue', sans-serif;
-  font-size: 24px;
-  font-weight: 900;
-  letter-spacing: 2px;
-  flex-shrink: 0;
-}
-
-.logo span {
-  color: var(--blood-bright);
-}
-
-.logo-img {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-}

@@ -86,7 +86,7 @@ body{
 }
 @media (max-width: 768px){
   .lang-switcher{ margin-right:12px; }
-  .lang-btn{ padding:6px 10px; font-size:11px; }
+  .lang-btn{ padding:8px 14px; font-size:11px; }
 }
 
 .topbar-inner {

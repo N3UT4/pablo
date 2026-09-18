@@ -32,48 +32,50 @@ unset($_SESSION['flash']);
                 <a href="<?= BASE_URL ?>index.php?action=home#artistas">Artista</a>
                 <a href="<?= BASE_URL ?>index.php?action=contact">Contacto</a>
                 <a href="<?= BASE_URL ?>index.php?action=promotions">Promociones</a>
-             </div>
-             <?php if ($user): ?>
-        <?php
-            $rol = $user['rol'] ?? 'cliente';
-            $artistMode = !empty($_SESSION['artist_mode']);
-            $isArtist = ($rol === 'tatuador' || ($rol === 'admin' && $artistMode));
-        ?>
-        <?php if ($isArtist): ?>
-            <div class="artist-header" style="display:flex; gap:12px; align-items:center;">
-                <div class="artist-dropdown">
-                    <button type="button" class="artist-dropdown-btn" aria-expanded="false">
-                        Panel de Tatuador <i class="fa fa-caret-down"></i>
-                    </button>
-                    <div class="artist-dropdown-menu">
-                        <a href="<?= BASE_URL ?>index.php?action=artist-panel">Mi Agenda</a>
-                        <a href="<?= BASE_URL ?>index.php?action=artist-horarios">Mis Horarios</a>
-                        <a href="<?= BASE_URL ?>index.php?action=artist-perfil">Mi Perfil</a>
-                        <a href="<?= BASE_URL ?>index.php?action=artist-agenda">Citas Asignadas</a>
-                        <?php if ($rol === 'admin' && $artistMode): ?>
-                            <a href="<?= BASE_URL ?>index.php?action=artist-switch-mode&exit=1" style="color:var(--gold);">Salir modo tatuador</a>
-                        <?php endif; ?>
-                        <a href="<?= BASE_URL ?>index.php?action=logout" class="dropdown-logout">Cerrar sesión</a>
+            </div>
+            <div class="nav-actions">
+                <?php if ($user): ?>
+                <?php
+                    $rol = $user['rol'] ?? 'cliente';
+                    $artistMode = !empty($_SESSION['artist_mode']);
+                    $isArtist = ($rol === 'tatuador' || ($rol === 'admin' && $artistMode));
+                ?>
+                <?php if ($isArtist): ?>
+                    <div class="artist-header">
+                        <div class="artist-dropdown">
+                            <button type="button" class="artist-dropdown-btn" aria-expanded="false">
+                                Panel de Tatuador <i class="fa fa-caret-down"></i>
+                            </button>
+                            <div class="artist-dropdown-menu">
+                                <a href="<?= BASE_URL ?>index.php?action=artist-panel">Mi Agenda</a>
+                                <a href="<?= BASE_URL ?>index.php?action=artist-horarios">Mis Horarios</a>
+                                <a href="<?= BASE_URL ?>index.php?action=artist-perfil">Mi Perfil</a>
+                                <a href="<?= BASE_URL ?>index.php?action=artist-agenda">Citas Asignadas</a>
+                                <?php if ($rol === 'admin' && $artistMode): ?>
+                                    <a href="<?= BASE_URL ?>index.php?action=artist-switch-mode&exit=1" class="artist-exit">Salir modo tatuador</a>
+                                <?php endif; ?>
+                                <a href="<?= BASE_URL ?>index.php?action=logout" class="dropdown-logout">Cerrar sesión</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        <?php else: ?>
-            <div style="display:flex; gap:12px; align-items:center;">
-                <?php if ($rol === 'admin'): ?>
-                    <a href="<?= BASE_URL ?>index.php?action=artist-switch-mode" class="btn-ghost" style="padding:10px 14px; border-radius:999px;">Ver Modo Tatuador</a>
+                <?php else: ?>
+                    <div class="auth-group">
+                        <?php if ($rol === 'admin'): ?>
+                            <a href="<?= BASE_URL ?>index.php?action=artist-switch-mode" class="btn-auth">Ver Modo Tatuador</a>
+                        <?php endif; ?>
+                        <a href="<?= BASE_URL ?>index.php?action=dashboard" class="btn-cta">Dashboard</a>
+                        <a href="<?= BASE_URL ?>index.php?action=logout" class="btn-auth">Salir</a>
+                    </div>
                 <?php endif; ?>
-                <a href="<?= BASE_URL ?>index.php?action=dashboard" class="nav-cta">Dashboard</a>
-                <a href="<?= BASE_URL ?>index.php?action=logout" class="btn-ghost" style="padding:10px 14px; border-radius:999px;">Salir</a>
+                <?php else: ?>
+                    <div class="auth-group">
+                        <a href="<?= BASE_URL ?>index.php?action=login" class="btn-auth">Ingresar</a>
+                        <a href="<?= BASE_URL ?>index.php?action=register" class="btn-cta">Agendar cita</a>
+                    </div>
+                <?php endif; ?>
+                <div class="lang-switcher"></div>
             </div>
-        <?php endif; ?>
-    <?php else: ?>
-        <div style="display:flex; gap:12px; align-items:center;">
-            <a href="<?= BASE_URL ?>index.php?action=login" class="btn-ghost" style="padding:10px 14px; border-radius:999px;">Ingresar</a>
-            <a href="<?= BASE_URL ?>index.php?action=register" class="nav-cta">Agendar cita</a>
-        </div>
-    <?php endif; ?>
-        <div class="lang-switcher"></div>
-    </nav>
+        </nav>
     </header>
 
     <?php if ($flash): ?>
