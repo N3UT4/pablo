@@ -1,5 +1,7 @@
 <?php
-
+// Modelo de datos para citas/appointments.
+// Proporciona operaciones CRUD y consultas especializadas para
+// citas, reportes, métricas de dashboard y transacciones.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloCitas extends ModeloBase
@@ -9,6 +11,7 @@ class ModeloCitas extends ModeloBase
         parent::__construct();
     }
 
+    // Crea una nueva cita y retorna su ID.
     public function create(array $data): int
     {
         $this->execute(
@@ -30,6 +33,7 @@ class ModeloCitas extends ModeloBase
         return (int) $this->db->lastInsertId();
     }
 
+    // Busca una cita por ID con datos del tatuador y servicio.
     public function find(int $id): ?array
     {
         $statement = $this->execute(
@@ -46,6 +50,7 @@ class ModeloCitas extends ModeloBase
         return $row ?: null;
     }
 
+    // Lista todas las citas ordenadas por fecha descendente.
     public function all(): array
     {
         $statement = $this->execute(
@@ -60,6 +65,7 @@ class ModeloCitas extends ModeloBase
         return $statement->fetchAll();
     }
 
+    // Actualiza campos de una cita existente.
     public function update(int $id, array $data): bool
     {
         $campos = ['fecha_cita', 'hora_cita', 'detalle_personalizado', 'observaciones', 'estado'];
@@ -78,6 +84,7 @@ class ModeloCitas extends ModeloBase
         return true;
     }
 
+    // Elimina una cita por ID.
     public function delete(int $id): bool
     {
         $this->execute('DELETE FROM appointments WHERE id = :id', ['id' => $id]);
@@ -85,6 +92,7 @@ class ModeloCitas extends ModeloBase
     }
 
     // Datos para el reporte exportable de citas (rúbrica: reportes).
+    // Permite filtrar por rango de fechas.
     public function reporteCitas(?string $desde = null, ?string $hasta = null): array
     {
         $sql = 'SELECT ap.id, u.nombre AS cliente, u.email AS email_cliente,
@@ -112,6 +120,7 @@ class ModeloCitas extends ModeloBase
         return $this->execute($sql, $params)->fetchAll();
     }
 
+    // Lista las citas de un usuario específico con datos de pago incluidos.
     public function listByUser(int $userId): array
     {
         $statement = $this->execute(
@@ -129,7 +138,7 @@ class ModeloCitas extends ModeloBase
         return $statement->fetchAll();
     }
 
-    // Última cita del usuario que aún no tiene consentimiento firmado (usada por ControladorConsentimiento).
+    // Última cita del usuario que aún no tiene consentimiento firmado.
     public function latestPendingConsent(int $userId): ?array
     {
         $statement = $this->execute(
@@ -147,7 +156,7 @@ class ModeloCitas extends ModeloBase
 
     // --- Métodos para el panel de tatuador ---
 
-    // Lista las citas asignadas a un artista específico (rúbrica: Modelo / Roles).
+    // Lista las citas asignadas a un artista específico.
     public function findByArtist(int $artistId): array
     {
         $statement = $this->execute(
@@ -166,7 +175,7 @@ class ModeloCitas extends ModeloBase
         return $statement->fetchAll();
     }
 
-    // Cambia el estado de una cita (usado desde el panel de tatuador).
+    // Cambia el estado de una cita (pendiente, confirmada, completada, cancelada).
     public function updateEstado(int $citaId, string $estado): bool
     {
         $estadosValidos = ['pendiente', 'confirmada', 'completada', 'cancelada'];
@@ -180,7 +189,8 @@ class ModeloCitas extends ModeloBase
         return true;
     }
 
-    // Detalle completo del cliente para el expediente (rúbrica: Modelo / Roles).
+    // Detalle completo del cliente para el expediente del tatuador.
+    // Incluye datos de consentimiento y pago.
     public function getDetalleCliente(int $citaId, int $artistId): ?array
     {
         $statement = $this->execute(
@@ -202,5 +212,72 @@ class ModeloCitas extends ModeloBase
         );
         $row = $statement->fetch();
         return $row ?: null;
+    }
+
+    // --- Métodos para métricas y transacciones del dashboard ---
+
+    // Total de citas.
+    public function getTotalCitas(): \PDOStatement
+    {
+        return $this->execute('SELECT COUNT(*) AS c FROM appointments');
+    }
+
+    // Conteo de citas por estado.
+    public function getCountByEstado(string $estado): \PDOStatement
+    {
+        return $this->execute(
+            'SELECT COUNT(*) AS c FROM appointments WHERE estado = :estado',
+            ['estado' => $estado]
+        );
+    }
+
+    // Citas programadas desde hoy.
+    public function getCitasThisMonth(): \PDOStatement
+    {
+        return $this->execute('SELECT COUNT(*) AS c FROM appointments WHERE fecha_cita >= CURDATE()');
+    }
+
+    // Total de abonos pendientes/verificados.
+    public function getTotalAbonos(): \PDOStatement
+    {
+        return $this->execute(
+            'SELECT COALESCE(SUM(monto), 0) AS total FROM payments WHERE estado IN ("pendiente","verificado")'
+        );
+    }
+
+    // Últimas N citas con datos completos.
+    public function getLatestCitas(int $limit = 5): array
+    {
+        $statement = $this->execute(
+            "SELECT ap.id, u.nombre AS cliente, a.nombre AS tatuador, s.nombre AS servicio,
+                    ap.fecha_cita, ap.hora_cita, ap.estado,
+                    p.monto, p.estado AS estado_pago
+             FROM appointments ap
+             JOIN users u ON u.id = ap.user_id
+             JOIN artists a ON a.id = ap.artist_id
+             JOIN services s ON s.id = ap.service_id
+             LEFT JOIN payments p ON p.appointment_id = ap.id
+             ORDER BY ap.created_at DESC
+             LIMIT $limit"
+        );
+        return $statement->fetchAll();
+    }
+
+    // Lista de transacciones para administración.
+    public function getTransacciones(int $limit = 200): array
+    {
+        $statement = $this->execute(
+            "SELECT ap.id AS cita_id, u.nombre AS cliente, a.nombre AS tatuador,
+                    s.nombre AS servicio, ap.fecha_cita, ap.hora_cita, ap.estado,
+                    p.monto, p.metodo, p.estado AS estado_pago, ap.detalle_personalizado
+             FROM appointments ap
+             JOIN users u ON u.id = ap.user_id
+             JOIN artists a ON a.id = ap.artist_id
+             JOIN services s ON s.id = ap.service_id
+             LEFT JOIN payments p ON p.appointment_id = ap.id
+             ORDER BY ap.fecha_cita DESC, ap.hora_cita DESC
+             LIMIT $limit"
+        );
+        return $statement->fetchAll();
     }
 }

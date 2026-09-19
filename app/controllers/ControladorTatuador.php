@@ -1,108 +1,41 @@
 <?php
-
+// Controlador del módulo de tatuador. Gestiona el panel del tatuador,
+// agenda, horarios, perfil, y la API REST para el modo tatuador.
+// Usa AuthHelper para la verificación de acceso.
 require_once DIR_PATH . 'app/models/ModeloCitas.php';
 require_once DIR_PATH . 'app/models/ModeloHorariosTatuador.php';
 require_once DIR_PATH . 'app/models/ModeloUsuarios.php';
+require_once DIR_PATH . 'app/helpers/AuthHelper.php';
 
-// Controlador del módulo de tatuador (rúbrica: Roles / APIs REST).
-// Restringe el acceso solo a usuarios con rol 'tatuador' o admin en modo artista.
 class ControladorTatuador extends ControladorBase
 {
     private ModeloCitas $citaModel;
     private ModeloHorariosTatuador $horarioModel;
     private ModeloUsuarios $userModel;
+    private AuthHelper $authHelper;
 
     public function __construct()
     {
         $this->citaModel = new ModeloCitas();
         $this->horarioModel = new ModeloHorariosTatuador();
         $this->userModel = new ModeloUsuarios();
+        $this->authHelper = new AuthHelper($this->userModel);
     }
 
-    private function getArtistId(): int
-    {
-        $artistId = (int) ($_SESSION['user']['artist_id'] ?? $_SESSION['artist_id'] ?? 0);
-        if ($artistId <= 0) {
-            $artist = $this->userModel->findArtistByUser((int) ($_SESSION['user']['id'] ?? 0));
-            $artistId = (int) ($artist['id'] ?? 0);
-        }
-        return $artistId;
-    }
-
-    private function verifyPageAccess(): ?int
-    {
-        $user = $_SESSION['user'] ?? null;
-        if (!$user) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Debes iniciar sesión primero.'];
-            $this->redirect(BASE_URL . 'index.php?action=login');
-            return null;
-        }
-
-        $rol = $user['rol'] ?? 'cliente';
-        $artistId = $this->getArtistId();
-
-        if ($rol === 'tatuador') {
-            if ($artistId <= 0) {
-                $_SESSION['flash'] = ['type' => 'error', 'message' => 'No estás asociado a un tatuador.'];
-                $this->redirect(BASE_URL . 'index.php?action=dashboard');
-                return null;
-            }
-            return $artistId;
-        }
-
-        if ($rol === 'admin') {
-            if (!empty($_SESSION['artist_mode']) && $artistId > 0) {
-                return $artistId;
-            }
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Presiona "Ver Modo Tatuador" desde el dashboard para acceder.'];
-            $this->redirect(BASE_URL . 'index.php?action=dashboard');
-            return null;
-        }
-
-        $_SESSION['flash'] = ['type' => 'error', 'message' => 'Tu rol no tiene acceso a esta sección.'];
-        $this->redirect(BASE_URL . 'index.php?action=dashboard');
-        return null;
-    }
-
-    private function verifyApiAccess(): ?int
-    {
-        $user = $_SESSION['user'] ?? null;
-        if (!$user) {
-            $this->json(false, 'Debes iniciar sesión primero.', ['redirect' => BASE_URL . 'index.php?action=login'], 401);
-            return null;
-        }
-
-        $rol = $user['rol'] ?? 'cliente';
-        $artistId = $this->getArtistId();
-
-        if ($rol === 'tatuador') {
-            if ($artistId <= 0) {
-                $this->json(false, 'No estás asociado a un tatuador.', [], 403);
-                return null;
-            }
-            return $artistId;
-        }
-
-        if ($rol === 'admin') {
-            if (!empty($_SESSION['artist_mode']) && $artistId > 0) {
-                return $artistId;
-            }
-            $this->json(false, 'Activa el modo tatuador desde el dashboard.', ['redirect' => BASE_URL . 'index.php?action=artist-switch-mode'], 403);
-            return null;
-        }
-
-        $this->json(false, 'Tu rol no tiene acceso a esta sección.', [], 403);
-        return null;
-    }
-
+    // Dashboard principal del tatuador.
     public function dashboard(): void
     {
-        $artistId = $this->verifyPageAccess();
+        $artistId = $this->authHelper->verifyPageAccess();
         if ($artistId === null) {
             return;
         }
 
-        $artist = $this->userModel->findArtistByUser((int) ($_SESSION['user']['id'] ?? 0));
+        $artist = null;
+        try {
+            $artist = $this->userModel->findArtistByUser((int) ($_SESSION['user']['id'] ?? 0));
+        } catch (Throwable $e) {
+            error_log('[Tatuador] Error cargando artista: ' . $e->getMessage());
+        }
 
         $this->view('tatuador-dashboard', [
             'title' => 'Panel de Tatuador — ITZA TATTOO STUDIO',
@@ -114,14 +47,20 @@ class ControladorTatuador extends ControladorBase
         ]);
     }
 
+    // Agenda de citas del tatuador.
     public function agenda(): void
     {
-        $artistId = $this->verifyPageAccess();
+        $artistId = $this->authHelper->verifyPageAccess();
         if ($artistId === null) {
             return;
         }
 
-        $citas = $this->citaModel->findByArtist($artistId);
+        $citas = [];
+        try {
+            $citas = $this->citaModel->findByArtist($artistId);
+        } catch (Throwable $e) {
+            error_log('[Tatuador] Error cargando agenda: ' . $e->getMessage());
+        }
 
         $this->view('tatuador-agenda', [
             'title' => 'Mi Agenda — ITZA TATTOO STUDIO',
@@ -132,14 +71,20 @@ class ControladorTatuador extends ControladorBase
         ]);
     }
 
+    // Horarios de trabajo del tatuador.
     public function horarios(): void
     {
-        $artistId = $this->verifyPageAccess();
+        $artistId = $this->authHelper->verifyPageAccess();
         if ($artistId === null) {
             return;
         }
 
-        $horarios = $this->horarioModel->getByArtist($artistId);
+        $horarios = [];
+        try {
+            $horarios = $this->horarioModel->getByArtist($artistId);
+        } catch (Throwable $e) {
+            error_log('[Tatuador] Error cargando horarios: ' . $e->getMessage());
+        }
 
         $this->view('tatuador-horarios', [
             'title' => 'Mis Horarios — ITZA TATTOO STUDIO',
@@ -150,15 +95,22 @@ class ControladorTatuador extends ControladorBase
         ]);
     }
 
+    // Perfil del tatuador.
     public function perfil(): void
     {
-        $artistId = $this->verifyPageAccess();
+        $artistId = $this->authHelper->verifyPageAccess();
         if ($artistId === null) {
             return;
         }
 
-        $artist = $this->userModel->findArtistByUser((int) ($_SESSION['user']['id'] ?? 0));
-        $user = $this->userModel->find((int) ($_SESSION['user']['id'] ?? 0));
+        $artist = null;
+        $user = null;
+        try {
+            $artist = $this->userModel->findArtistByUser((int) ($_SESSION['user']['id'] ?? 0));
+            $user = $this->userModel->find((int) ($_SESSION['user']['id'] ?? 0));
+        } catch (Throwable $e) {
+            error_log('[Tatuador] Error cargando perfil: ' . $e->getMessage());
+        }
 
         $this->view('tatuador-perfil', [
             'title' => 'Mi Perfil — ITZA TATTOO STUDIO',
@@ -170,6 +122,7 @@ class ControladorTatuador extends ControladorBase
         ]);
     }
 
+    // Activa o desactiva el modo tatuador (para admins).
     public function switchMode(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -187,7 +140,7 @@ class ControladorTatuador extends ControladorBase
             return;
         }
 
-        $artistId = $this->getArtistId();
+        $artistId = $this->authHelper->getArtistId();
         if ($artistId <= 0) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'No hay un tatuador asociado a tu cuenta.'];
             $this->redirect(BASE_URL . 'index.php?action=dashboard');
@@ -199,9 +152,10 @@ class ControladorTatuador extends ControladorBase
         $this->redirect(BASE_URL . 'index.php?action=artist-panel');
     }
 
+    // API: Actualiza el estado de una cita (pendiente, confirmada, completada, cancelada).
     public function updateEstado(): void
     {
-        $artistId = $this->verifyApiAccess();
+        $artistId = $this->authHelper->verifyApiAccess();
         if ($artistId === null) {
             return;
         }
@@ -231,9 +185,10 @@ class ControladorTatuador extends ControladorBase
         $this->json(true, 'Estado actualizado.', ['cita_id' => $citaId, 'estado' => $estado]);
     }
 
+    // API: Guarda/actualiza los horarios del tatuador para un día.
     public function saveSchedule(): void
     {
-        $artistId = $this->verifyApiAccess();
+        $artistId = $this->authHelper->verifyApiAccess();
         if ($artistId === null) {
             return;
         }
@@ -259,9 +214,10 @@ class ControladorTatuador extends ControladorBase
         $this->json(true, 'Horario actualizado.', ['dia' => $dia]);
     }
 
+    // API: Retorna las citas del tatuador en formato JSON.
     public function citasJson(): void
     {
-        $artistId = $this->verifyApiAccess();
+        $artistId = $this->authHelper->verifyApiAccess();
         if ($artistId === null) {
             return;
         }

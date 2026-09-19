@@ -1,124 +1,162 @@
-<div class="container">
-  <div class="card">
-    <div class="card-head">
-      <span class="eyebrow">Paso final</span>
-      <h1>Agendar cita y abonar</h1>
-      <p>Elige tu tatuador, estilo, fecha y horario, y confirma tu cita con un abono.</p>
+<div class="agenda-wrap">
+  <div class="welcome-banner">
+    <h2>Agendar Cita & Abono</h2>
+    <p>Elige tu tatuador, estilo, fecha y horario, y confirma tu cita con un abono.</p>
+  </div>
+
+  <div class="container wide">
+    <div class="card">
+      <div class="card-head">
+        <span class="eyebrow">Paso final</span>
+        <h1>Reserva tu cita</h1>
+      </div>
+
+      <div class="form-progress">
+        <div class="form-step completed"><span class="step-num"><i class="fa-solid fa-check"></i></span> Datos</div>
+        <div class="form-step-divider"></div>
+        <div class="form-step completed"><span class="step-num"><i class="fa-solid fa-check"></i></span> Tatuador</div>
+        <div class="form-step-divider"></div>
+        <div class="form-step active"><span class="step-num">3</span> Abono</div>
+        <div class="form-step-divider"></div>
+        <div class="form-step"><span class="step-num">4</span> Confirmar</div>
+      </div>
+
+      <form id="abonoForm" novalidate>
+        <div class="section-title">Detalles de la cita</div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="id_tatuador">Tatuador</label>
+            <select id="id_tatuador" name="id_tatuador">
+              <option value="">Selecciona un tatuador</option>
+              <option value="1">Itza — Blackwork & tribal</option>
+              <option value="2">Itza — Realismo</option>
+              <option value="3">Itza — Fine line</option>
+              <option value="4">Itza — Color & cover-up</option>
+            </select>
+            <span class="err" id="tatuadorErr">Selecciona un tatuador.</span>
+          </div>
+          <div class="field">
+            <label for="tipo_servicio">Estilo de tatuaje</label>
+            <select id="tipo_servicio" name="tipo_servicio">
+              <option value="">Selecciona un estilo</option>
+              <option value="blackwork">Blackwork</option>
+              <option value="realismo">Realismo</option>
+              <option value="fine_line">Fine Line</option>
+              <option value="color">Color</option>
+              <option value="cover_up">Cover-up</option>
+              <option value="piercing">Piercing</option>
+              <option value="personalizado">✦ Diseño personalizado</option>
+            </select>
+            <span class="err" id="tipoServicioErr">Selecciona un estilo de tatuaje.</span>
+          </div>
+        </div>
+
+        <div id="personalizadoBox" class="field" style="display:none;">
+          <label for="detalle_personalizado">Cuéntanos tu idea de diseño personalizado</label>
+          <textarea id="detalle_personalizado" name="detalle_personalizado" placeholder="Describe tu idea: referencias, estilo, tamaño aproximado, zona del cuerpo..."></textarea>
+          <span class="err" id="personalizadoErr">Describe tu idea de diseño personalizado.</span>
+        </div>
+
+        <div class="section-title">Fecha y hora</div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="fecha_cita">Fecha</label>
+            <input type="date" id="fecha_cita" name="fecha_cita">
+            <span class="err" id="fechaErr">Elige una fecha a partir de hoy.</span>
+          </div>
+          <div class="field">
+            <label for="hora_cita">Hora <span class="optional">(8:00 am — 9:00 pm)</span></label>
+            <input type="time" id="hora_cita" name="hora_cita" min="08:00" max="21:00">
+            <span class="err" id="horaErr">El horario de atención es de 8:00 am a 9:00 pm.</span>
+          </div>
+        </div>
+
+        <div class="section-title">Resumen del pago</div>
+
+        <div class="payment-summary" id="paymentSummary">
+          <h4>Resumen de saldo</h4>
+          <div class="payment-summary-item">
+            <span class="label">Abono inicial</span>
+            <span class="value" id="summaryAbono">—</span>
+          </div>
+          <div class="payment-summary-item">
+            <span class="label">Saldo pendiente</span>
+            <span class="value" id="summaryPendiente">—</span>
+          </div>
+          <div class="payment-summary-total">
+            <span class="label">Total cita</span>
+            <span class="value" id="summaryTotal">—</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="monto">Monto del abono (COP)</label>
+          <input type="number" id="monto" name="monto" placeholder="150000" min="1" step="1000">
+          <span class="err" id="montoErr">Ingresa un monto válido.</span>
+        </div>
+
+        <div class="field">
+          <label>Método de pago</label>
+          <div class="pay-methods">
+            <div class="pay-pill">
+              <input type="radio" id="metodo_nequi" name="metodo_pago" value="nequi">
+              <label for="metodo_nequi">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM19 14h2v2h-2zM14 19h2v2h-2zM19 19h2v2h-2z"/></svg>
+                Nequi (QR)
+              </label>
+            </div>
+            <div class="pay-pill">
+              <input type="radio" id="metodo_transferencia" name="metodo_pago" value="transferencia">
+              <label for="metodo_transferencia">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 10l-4 4 4 4M3 14h13a4 4 0 0 0 0-8h-1"/></svg>
+                Transferencia
+              </label>
+            </div>
+            <div class="pay-pill">
+              <input type="radio" id="metodo_efectivo" name="metodo_pago" value="efectivo">
+              <label for="metodo_efectivo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+                Efectivo
+              </label>
+            </div>
+            <div class="pay-pill">
+              <input type="radio" id="metodo_tarjeta" name="metodo_pago" value="tarjeta">
+              <label for="metodo_tarjeta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                Tarjeta
+              </label>
+            </div>
+          </div>
+          <span class="err" id="metodoErr">Selecciona un método de pago.</span>
+        </div>
+
+        <div id="qrBox" class="qr-box">
+          <div class="qr-mock"></div>
+          <strong>Escanea con la app Nequi</strong>
+          <p>Cuenta: ITZA TATTOO STUDIO · Una vez pagues, ingresa el número de comprobante abajo.</p>
+        </div>
+
+        <div class="field">
+          <label for="comprobante">Comprobante / referencia <span class="optional">(obligatorio si pagas con Nequi)</span></label>
+          <input type="text" id="comprobante" name="comprobante" placeholder="Ej: comp_00123.png o número de aprobación">
+          <span class="err" id="comprobanteErr">Ingresa el número o nombre del comprobante.</span>
+        </div>
+
+        <div class="field">
+          <label for="observaciones">Observaciones <span class="optional">(opcional)</span></label>
+          <textarea id="observaciones" name="observaciones" placeholder="Algo más que debamos saber sobre tu cita..."></textarea>
+        </div>
+
+        <div class="payment-status pending" id="paymentStatus">
+          <i class="fa-solid fa-clock"></i>
+          <span>Pago pendiente de confirmación</span>
+        </div>
+
+        <button type="submit" class="submit-btn">Agendar cita y confirmar abono</button>
+        <p class="hint">El saldo pendiente se calcula automáticamente con <strong>SP_CALCULAR_SALDO</strong>.</p>
+      </form>
     </div>
-
-    <form id="abonoForm" novalidate>
-      <div class="section-title">Detalles de la cita</div>
-
-      <div class="row2">
-        <div class="field">
-          <label for="id_tatuador">Tatuador</label>
-          <select id="id_tatuador" name="id_tatuador">
-            <option value="">Selecciona un tatuador</option>
-            <option value="1">Itza — Blackwork & tribal</option>
-            <option value="2">Itza — Realismo</option>
-            <option value="3">Itza — Fine line</option>
-            <option value="4">Itza — Color & cover-up</option>
-          </select>
-          <span class="err" id="tatuadorErr">Selecciona un tatuador.</span>
-        </div>
-        <div class="field">
-          <label for="tipo_servicio">Estilo de tatuaje</label>
-          <select id="tipo_servicio" name="tipo_servicio">
-            <option value="">Selecciona un estilo</option>
-            <option value="blackwork">Blackwork</option>
-            <option value="realismo">Realismo</option>
-            <option value="fine_line">Fine Line</option>
-            <option value="color">Color</option>
-            <option value="cover_up">Cover-up</option>
-            <option value="piercing">Piercing</option>
-            <option value="personalizado">✦ Diseño personalizado</option>
-          </select>
-          <span class="err" id="tipoServicioErr">Selecciona un estilo de tatuaje.</span>
-        </div>
-      </div>
-
-      <div id="personalizadoBox" class="field" style="display:none;">
-        <label for="detalle_personalizado">Cuéntanos tu idea de diseño personalizado</label>
-        <textarea id="detalle_personalizado" name="detalle_personalizado" placeholder="Describe tu idea: referencias, estilo, tamaño aproximado, zona del cuerpo..."></textarea>
-        <span class="err" id="personalizadoErr">Describe tu idea de diseño personalizado.</span>
-      </div>
-
-      <div class="section-title">Fecha y hora</div>
-
-      <div class="row2">
-        <div class="field">
-          <label for="fecha_cita">Fecha</label>
-          <input type="date" id="fecha_cita" name="fecha_cita">
-          <span class="err" id="fechaErr">Elige una fecha a partir de hoy.</span>
-        </div>
-        <div class="field">
-          <label for="hora_cita">Hora <span class="optional">(8:00 am — 9:00 pm)</span></label>
-          <input type="time" id="hora_cita" name="hora_cita" min="08:00" max="21:00">
-          <span class="err" id="horaErr">El horario de atención es de 8:00 am a 9:00 pm.</span>
-        </div>
-      </div>
-
-      <div class="section-title">Abono</div>
-
-      <div class="field">
-        <label for="monto">Monto del abono (COP)</label>
-        <input type="number" id="monto" name="monto" placeholder="150000" min="1" step="1000">
-        <span class="err" id="montoErr">Ingresa un monto válido.</span>
-      </div>
-
-      <div class="field">
-        <div class="pay-methods">
-          <div class="pay-pill">
-            <input type="radio" id="metodo_nequi" name="metodo_pago" value="nequi">
-            <label for="metodo_nequi">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM19 14h2v2h-2zM14 19h2v2h-2zM19 19h2v2h-2z"/></svg>
-              Nequi (QR)
-            </label>
-          </div>
-          <div class="pay-pill">
-            <input type="radio" id="metodo_transferencia" name="metodo_pago" value="transferencia">
-            <label for="metodo_transferencia">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 10l-4 4 4 4M3 14h13a4 4 0 0 0 0-8h-1"/></svg>
-              Transferencia
-            </label>
-          </div>
-          <div class="pay-pill">
-            <input type="radio" id="metodo_efectivo" name="metodo_pago" value="efectivo">
-            <label for="metodo_efectivo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
-              Efectivo
-            </label>
-          </div>
-          <div class="pay-pill">
-            <input type="radio" id="metodo_tarjeta" name="metodo_pago" value="tarjeta">
-            <label for="metodo_tarjeta">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-              Tarjeta
-            </label>
-          </div>
-        </div>
-        <span class="err" id="metodoErr">Selecciona un método de pago.</span>
-      </div>
-
-      <div id="qrBox" class="qr-box">
-        <div class="qr-mock"></div>
-        <strong>Escanea con la app Nequi</strong>
-        <p>Cuenta: ITZA TATTOO STUDIO · Una vez pagues, ingresa el número de comprobante abajo.</p>
-      </div>
-
-      <div class="field">
-        <label for="comprobante">Comprobante / referencia <span class="optional">(obligatorio si pagas con Nequi)</span></label>
-        <input type="text" id="comprobante" name="comprobante" placeholder="Ej: comp_00123.png o número de aprobación">
-        <span class="err" id="comprobanteErr">Ingresa el número o nombre del comprobante.</span>
-      </div>
-
-      <div class="field">
-        <label for="observaciones">Observaciones <span class="optional">(opcional)</span></label>
-        <textarea id="observaciones" name="observaciones" placeholder="Algo más que debamos saber sobre tu cita..."></textarea>
-      </div>
-
-      <button type="submit" class="submit-btn">Agendar cita y confirmar abono</button>
-      <p class="hint">El saldo pendiente se calcula automáticamente con <strong>SP_CALCULAR_SALDO</strong>.</p>
-    </form>
   </div>
 </div>

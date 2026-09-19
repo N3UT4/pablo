@@ -1,5 +1,6 @@
 <?php
-
+// Modelo de datos para pagos/pagos.
+// Proporciona operaciones CRUD para la tabla payments.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloPagos extends ModeloBase
@@ -9,6 +10,8 @@ class ModeloPagos extends ModeloBase
         parent::__construct();
     }
 
+    // Registra un nuevo pago/abono para una cita.
+    // El estado inicial es siempre "pendiente".
     public function create(array $data): int
     {
         $this->execute(

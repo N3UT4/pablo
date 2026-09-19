@@ -1,5 +1,7 @@
 <?php
-
+// Modelo de datos para promociones/cupones.
+// Gestiona los cupones de descuento con fechas de vigencia
+// y el registro de redenciones por usuario.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloPromociones extends ModeloBase
@@ -9,6 +11,7 @@ class ModeloPromociones extends ModeloBase
         parent::__construct();
     }
 
+    // Lista las promociones activas y vigentes.
     public function listActive(): array
     {
         $statement = $this->execute(
@@ -22,6 +25,7 @@ class ModeloPromociones extends ModeloBase
         return $statement->fetchAll();
     }
 
+    // Busca un cupón válido por código (activo y dentro de la vigencia).
     public function findValidByCode(string $codigo): ?array
     {
         $statement = $this->execute(
@@ -38,6 +42,7 @@ class ModeloPromociones extends ModeloBase
         return $promo ?: null;
     }
 
+    // Verifica si un usuario ya canjeó una promoción.
     public function alreadyRedeemed(int $promotionId, int $userId): bool
     {
         $statement = $this->execute(
@@ -49,6 +54,7 @@ class ModeloPromociones extends ModeloBase
         return (bool) $statement->fetch();
     }
 
+    // Registra la redención de un cupón para un usuario.
     public function redeem(int $promotionId, int $userId): int
     {
         $this->execute(

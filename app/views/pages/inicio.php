@@ -1,43 +1,7 @@
 <?php
-function renderItzaGalleryCarousel(array $photos, string $carouselId, string $carouselLabel): void
-{
-    $total = count($photos);
-    if ($total === 0) {
-        echo '<p class="gallery-empty">No hay fotos disponibles en esta galería.</p>';
-        return;
-    }
-    ?>
-    <div class="gallery-carousel reveal" id="<?= htmlspecialchars($carouselId, ENT_QUOTES, 'UTF-8') ?>" data-gallery-carousel aria-roledescription="carrusel" aria-label="<?= htmlspecialchars($carouselLabel, ENT_QUOTES, 'UTF-8') ?>">
-      <div class="gallery-viewport" tabindex="0" aria-label="Fotos de <?= htmlspecialchars($carouselLabel, ENT_QUOTES, 'UTF-8') ?>">
-        <button class="gallery-control gallery-control-prev" type="button" data-gallery-prev aria-label="Anterior">
-          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <button class="gallery-control gallery-control-next" type="button" data-gallery-next aria-label="Siguiente">
-          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-        </button>
-        <div class="gallery-track">
-          <?php foreach ($photos as $index => $photo): ?>
-            <?php
-            $photoSrc = htmlspecialchars((string) ($photo['src'] ?? ''), ENT_QUOTES, 'UTF-8');
-            $photoAlt = htmlspecialchars((string) ($photo['alt'] ?? ''), ENT_QUOTES, 'UTF-8');
-            $photoCaption = htmlspecialchars((string) ($photo['caption'] ?? ''), ENT_QUOTES, 'UTF-8');
-            ?>
-            <article class="gallery-slide" role="group" aria-roledescription="diapositiva" aria-label="Foto <?= $index + 1 ?> de <?= $total ?>">
-              <button class="gallery-photo" type="button" data-lightbox-src="<?= $photoSrc ?>" data-lightbox-alt="<?= $photoAlt ?>" data-lightbox-caption="<?= $photoCaption ?>" aria-label="Ampliar <?= $photoAlt ?>">
-                <img src="<?= $photoSrc ?>" alt="<?= $photoAlt ?>" loading="lazy" decoding="async">
-              </button>
-              <span class="photo-caption"><?= $photoCaption ?></span>
-            </article>
-          <?php endforeach; ?>
-        </div>
-      </div>
-      <div class="gallery-indicators" role="group" aria-label="Seleccionar foto"></div>
-      <p class="gallery-status" aria-live="polite">Foto 1 de <?= $total ?></p>
-    </div>
-    <?php
-}
+require_once DIR_PATH . 'app/views/partials/gallery-carousel.php';
 
-    $studioPhotos = glob(DIR_PATH . 'img/[0-9]*.jpeg') ?: [];
+$studioPhotos = glob(DIR_PATH . 'img/[0-9]*.jpeg') ?: [];
 sort($studioPhotos, SORT_NATURAL);
 $studioGalleryPhotos = array_map(static function (string $photo, int $index): array {
     $photoName = basename($photo);
@@ -51,24 +15,49 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
 }, $studioPhotos, array_keys($studioPhotos));
 ?>
 <main>
-  <section class="hero">
+  <section class="hero" aria-labelledby="hero-title">
     <div class="wrap hero-grid">
-      <div>
-        <span class="eyebrow">Estudio de tatuajes · <?= htmlspecialchars(STUDIO_CITY) ?></span>
-        <h1>Tinta con<br><span>propósito</span>,<br>citas sin fricción</h1>
-        <p>Agenda tu cita, paga por QR con Nequi y firma tu consentimiento informado desde el celular. Todo en un solo lugar, sin filas ni papeleo.</p>
+      <div class="hero-copy">
+        <span class="eyebrow hero-eyebrow" data-i18n="home.eyebrow">Estudio de tatuajes • Bogotá, La Victoria • 20 de Julio</span>
+        <h1 id="hero-title"><span data-i18n="home.title_prefix">Tinta con </span><span class="hero-title-highlight" data-i18n="home.title_highlight">propósito,</span><br><span data-i18n="home.title_suffix">citas sin fricción</span></h1>
+        <p class="hero-description" data-i18n="home.description">Agenda tu cita en minutos, asegura tu cupo con un pago QR por Nequi y firma tu consentimiento informado desde el celular. Menos filas, menos papeleo y más tiempo para crear.</p>
         <div class="hero-actions">
-          <a href="<?= BASE_URL ?>index.php?action=register" class="btn-primary">Reservar mi cita</a>
-          <a href="#servicios" class="btn-ghost">Ver servicios</a>
+          <?php if ($isAuthenticated): ?>
+          <a href="<?= BASE_URL ?>index.php?action=cliente-agendar" class="btn-primary btn-primary-hero">
+            <span data-i18n="home.reserve">Reservar mi cita</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+          <?php else: ?>
+          <a href="<?= BASE_URL ?>index.php?action=register" class="btn-primary btn-primary-hero">
+            <span data-i18n="home.reserve">Reservar mi cita</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+          <?php endif; ?>
+          <a href="#servicios" class="btn-ghost btn-ghost-hero">
+            <span data-i18n="home.services">Ver servicios</span>
+            <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
-      <div class="hero-panel">
-        <img src="<?= BASE_URL ?>img/machine.svg" alt="Máquina de tatuaje" class="hero-icon">
-        <div class="row"><span class="label">Pago</span><strong>QR Nequi</strong></div>
-        <div class="row"><span class="label">Consentimiento</span><strong>Firma digital</strong></div>
-        <div class="row"><span class="label">Agenda</span><strong>24/7 online</strong></div>
-        <div class="row"><span class="label">Confirmación</span><strong>Al instante</strong></div>
-      </div>
+      <aside class="hero-panel" aria-label="Beneficios de agendar en línea" data-i18n-aria="home.benefits">
+        <div class="hero-panel-glow" aria-hidden="true"></div>
+        <div class="feature-row">
+          <span class="feature-icon" aria-hidden="true"><i class="fa-solid fa-qrcode"></i></span>
+          <div class="feature-copy"><span class="feature-label">Pago Rápido y Seguro</span><span class="feature-detail">QR Nequi</span></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-icon" aria-hidden="true"><i class="fa-solid fa-file-signature"></i></span>
+          <div class="feature-copy"><span class="feature-label">Consentimiento Sin Papeleo</span><span class="feature-detail">Firma Digital</span></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-icon" aria-hidden="true"><i class="fa-regular fa-calendar-check"></i></span>
+          <div class="feature-copy"><span class="feature-label">Agenda Cuando Tú Quieras</span><span class="feature-detail">24/7 Online</span></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-icon" aria-hidden="true"><i class="fa-solid fa-bolt"></i></span>
+          <div class="feature-copy"><span class="feature-label">Confirmación Sin Esperas</span><span class="feature-detail">Al Instante</span></div>
+        </div>
+      </aside>
     </div>
   </section>
 
@@ -194,7 +183,15 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
         <p>Conoce algunos de nuestros trabajos y el ambiente de ITZA TATTOO.</p>
         <img src="<?= BASE_URL ?>img/ornament.svg" class="sec-ornament" alt="">
       </div>
-      <?php renderItzaGalleryCarousel($studioGalleryPhotos, 'galeriaCarousel', 'Galería del estudio'); ?>
+      <?php renderItzaGalleryCarousel($studioGalleryPhotos, 'galeriaCarousel', 'Galería del estudio', !$isAuthenticated); ?>
+      <?php if (!$isAuthenticated): ?>
+      <div class="gallery-cta reveal" style="text-align:center; margin-top:1.5rem;">
+        <a href="<?= BASE_URL ?>index.php?action=login" class="btn-primary">
+          <i class="fa-solid fa-images" aria-hidden="true"></i> Ver galería completa
+        </a>
+        <p style="margin-top:.75rem; color:var(--bone-dim); font-size:.9rem;">Inicia sesión o regístrate para ver todos los trabajos</p>
+      </div>
+      <?php endif; ?>
     </div>
   </section>
 
@@ -244,41 +241,91 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
         <p>Fotos subidas por el equipo directo desde el estudio.</p>
         <img src="<?= BASE_URL ?>img/ornament.svg" class="sec-ornament" alt="">
       </div>
-      <?php renderItzaGalleryCarousel($uploadedGalleryPhotos, 'trabajosRecientesCarousel', 'Últimos trabajos'); ?>
+      <?php renderItzaGalleryCarousel($uploadedGalleryPhotos, 'trabajosRecientesCarousel', 'Últimos trabajos', !$isAuthenticated); ?>
+      <?php if (!$isAuthenticated): ?>
+      <div class="gallery-cta reveal" style="text-align:center; margin-top:1.5rem;">
+        <a href="<?= BASE_URL ?>index.php?action=login" class="btn-primary">
+          <i class="fa-solid fa-images" aria-hidden="true"></i> Ver galería completa
+        </a>
+        <p style="margin-top:.75rem; color:var(--bone-dim); font-size:.9rem;">Inicia sesión o regístrate para ver todos los trabajos</p>
+      </div>
+      <?php endif; ?>
     </div>
   </section>
   <?php endif; ?>
-  <section class="artists" id="artistas">
+  <section class="artists artist-spotlight-section" id="artistas">
     <div class="wrap">
-      <div class="sec-head reveal">
-        <span class="eyebrow">La artista</span>
-        <h2>Conoce a Itza</h2>
-        <p>La artista detrás de cada pieza de ITZA TATTOO.</p>
-        <img src="<?= BASE_URL ?>img/ornament.svg" class="sec-ornament" alt="">
-      </div>
-      <div class="artist-feature reveal">
-        <div class="artist-feature-photo">
-          <img src="<?= BASE_URL ?>img/itza%20tatto%20perfil.jpeg" alt="Itza, tatuadora principal de ITZA TATTOO" loading="lazy">
-        </div>
-        <div class="artist-feature-content">
-          <span class="eyebrow">Tatuadora principal · Fundadora</span>
-          <h3>Itza</h3>
-          <p>
-            En ITZA TATTOO, Itza convierte ideas, símbolos y recuerdos en piezas
-            diseñadas especialmente para cada persona. Su trabajo combina detalle,
-            técnica y creatividad para que cada tatuaje tenga una identidad propia.
-          </p>
-          <p>
-            Su forma de trabajar parte de escuchar la idea del cliente y transformarla
-            en un diseño personalizado, cuidando cada línea, sombra y color durante el proceso.
-          </p>
-          <div class="artist-specialties">
-            <span>Puntillismo</span>
-            <span>Blackwork</span>
-            <span>Color</span>
-            <span>Geometría</span>
-            <span>Blackout</span>
-            <span>Diseños personalizados</span>
+      <div class="artist-spotlight-card reveal">
+        <div class="artist-spotlight-glow" aria-hidden="true"></div>
+        <div class="artist-spotlight-grid">
+          <div class="artist-spotlight-media">
+            <div class="artist-photo-frame">
+              <img src="<?= BASE_URL ?>img/itza%20tatto%20perfil.jpeg" alt="Itza, tatuadora principal y fundadora de ITZA TATTOO" loading="lazy">
+              <span class="artist-role-badge">
+                <i class="fa-solid fa-crown" aria-hidden="true"></i>
+                <span>ARTISTA PRINCIPAL &amp; FUNDADORA</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="artist-spotlight-body">
+            <div class="artist-spotlight-heading">
+              <span class="artist-spotlight-eyebrow"><i class="fa-solid fa-star-of-life" aria-hidden="true"></i> Conoce a Itza · Artist spotlight</span>
+              <h2 class="artist-spotlight-name">Itza<span>.</span></h2>
+              <div class="artist-official-role">
+                <span class="artist-role-line"><i class="fa-solid fa-feather-pointed" aria-hidden="true"></i> Tatuadora principal · Fundadora</span>
+                <span class="artist-signature">Itza</span>
+              </div>
+            </div>
+
+            <div class="artist-stats-grid" aria-label="Trayectoria de Itza">
+              <div class="artist-stat-card">
+                <strong>+X</strong>
+                <span>Años</span>
+                <small>Experiencia</small>
+              </div>
+              <div class="artist-stat-card">
+                <strong>+XXX</strong>
+                <span>Piezas</span>
+                <small>Piezas creadas</small>
+              </div>
+              <div class="artist-stat-card">
+                <strong>100%</strong>
+                <span>Únicas</span>
+                <small>Diseños personalizados</small>
+              </div>
+            </div>
+
+            <div class="artist-bio">
+              <p>En ITZA TATTOO, Itza transforma ideas, símbolos y recuerdos en piezas con identidad propia. Su trayectoria combina técnica, <strong>diseño personalizado</strong> y una mirada artística que hace que cada cliente se sienta parte del proceso.</p>
+              <p>Cada proyecto nace de escuchar con <strong>atención al detalle</strong> y de llevar la <strong>creatividad</strong> a cada línea, sombra y color. El resultado es una pieza exclusiva, pensada para durar y para contar una historia.</p>
+            </div>
+
+            <div class="artist-specialties" aria-label="Especialidades de Itza">
+              <span>Neotradicional</span>
+              <span>Puntillismo</span>
+              <span>Blackwork</span>
+              <span>Color</span>
+              <span>Diseños personalizados</span>
+            </div>
+
+            <div class="artist-cta-row">
+              <?php if ($isAuthenticated): ?>
+              <a href="<?= BASE_URL ?>index.php?action=cliente-agendar" class="artist-cta-primary">
+                <span>Agendar con Itza</span>
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </a>
+              <?php else: ?>
+              <a href="<?= BASE_URL ?>index.php?action=login" class="artist-cta-primary">
+                <span>Agendar con Itza</span>
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </a>
+              <?php endif; ?>
+              <a href="#galeria" class="artist-cta-secondary">
+                <span>Ver portafolio de Itza</span>
+                <i class="fa-solid fa-images" aria-hidden="true"></i>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -294,8 +341,36 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
       <div>
         <p>Haz tu cita, firma el consentimiento y deja tu estilo en buenas manos.</p>
         <div class="hero-actions" style="margin-top:18px;">
+          <?php if ($isAuthenticated): ?>
+          <a href="<?= BASE_URL ?>index.php?action=cliente-agendar" class="btn-primary">Agendar cita</a>
+          <?php else: ?>
           <a href="<?= BASE_URL ?>index.php?action=register" class="btn-primary">Crear cuenta</a>
+          <?php endif; ?>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="legal-sections" id="legal">
+    <div class="wrap">
+      <div class="legal-heading reveal">
+        <span class="eyebrow" data-i18n="home.legal">Legal</span>
+        <h2 data-i18n="home.legal_title">Información legal</h2>
+        <p data-i18n="home.legal_intro">Conoce cómo gestionamos tus datos, citas y preferencias del sitio.</p>
+      </div>
+      <div class="legal-grid">
+        <article class="legal-card reveal" id="privacidad">
+          <h3 data-i18n="home.privacy_title">Privacidad</h3>
+          <p data-i18n="home.privacy_text">En ITZA TATTOO tratamos tus datos únicamente para gestionar citas, pagos, consentimientos y la comunicación solicitada. No compartimos tu información con terceros salvo cuando sea necesario para prestar el servicio o por obligación legal.</p>
+        </article>
+        <article class="legal-card reveal" id="terminos">
+          <h3 data-i18n="home.terms_title">Términos</h3>
+          <p data-i18n="home.terms_text">Al reservar una cita aceptas proporcionar información veraz, respetar los horarios acordados y cumplir las condiciones de pago, reprogramación y cancelación comunicadas durante el proceso.</p>
+        </article>
+        <article class="legal-card reveal" id="cookies">
+          <h3 data-i18n="home.cookies_title">Cookies</h3>
+          <p data-i18n="home.cookies_text">Este sitio utiliza almacenamiento local para recordar tu idioma y preferencias básicas. Puedes limpiar los datos del navegador cuando quieras; esta elección no afecta la prestación del servicio.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -336,19 +411,4 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
 </main>
 
 <!-- Modal Lightbox con efecto de fondo desenfocado (backdrop-filter) -->
-<div class="gallery-lightbox" id="galleryLightbox" role="dialog" aria-modal="true" aria-label="Visor de imagen" aria-describedby="galleryLightboxCaption" tabindex="-1" hidden>
-  <div class="gallery-lightbox-backdrop" data-lightbox-close></div>
-  <figure class="gallery-lightbox-figure">
-    <button class="gallery-control gallery-lightbox-nav gallery-control-prev" type="button" data-lightbox-prev aria-label="Imagen anterior">
-      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-    </button>
-    <button class="gallery-control gallery-lightbox-nav gallery-control-next" type="button" data-lightbox-next aria-label="Imagen siguiente">
-      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-    </button>
-    <button class="gallery-lightbox-close" type="button" data-lightbox-close aria-label="Cerrar visor">
-      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-    </button>
-    <img class="gallery-lightbox-image" alt="">
-    <figcaption id="galleryLightboxCaption" class="gallery-lightbox-caption"></figcaption>
-  </figure>
-</div>
+<?php require_once DIR_PATH . 'app/views/partials/modal-lightbox.php'; ?>

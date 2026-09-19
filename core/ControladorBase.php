@@ -1,8 +1,11 @@
 <?php
-
+// Clase base abstracta para todos los controladores.
+// Proporciona métodos utilitarios compartidos: renderizado de vistas,
+// redirecciones y respuestas JSON para endpoints AJAX.
 abstract class ControladorBase
 {
     // Renderiza una vista dentro del encabezado y pie compartidos.
+    // Extrae el array $data para que las variables estén disponibles en la vista.
     protected function view(string $template, array $data = []): void
     {
         extract($data, EXTR_SKIP);
@@ -18,6 +21,7 @@ abstract class ControladorBase
     }
 
     // Centraliza las redirecciones para terminar la petición inmediatamente.
+    // Soporta URLs absolutas y relativas.
     protected function redirect(string $route): void
     {
         $isAbsolute = preg_match('/^https?:\/\//i', $route) === 1 || strpos($route, '//') === 0;

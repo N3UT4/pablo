@@ -1,5 +1,7 @@
 <?php
 // === CONFIGURACIÓN AUTOMÁTICA DE BASE DE DATOS (ITZA TATTOO) ===
+// Conecta a MySQL en XAMPP y crea la base de datos si no existe,
+// luego importa las tablas desde database/database.sql si la BD está vacía.
 $auto_host = "127.0.0.1";
 $auto_user = "root";
 $auto_pass = ""; 
@@ -39,7 +41,7 @@ if (!$auto_conn->connect_error) {
         $auto_conn->query("ALTER TABLE artists ADD INDEX idx_artists_user (user_id)");
     }
 
-    // Crea artist_schedules si falta
+    // Crea artist_schedules si falta (horarios del tatuador)
     $auto_conn->query("CREATE TABLE IF NOT EXISTS artist_schedules (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         artist_id INT UNSIGNED NOT NULL,
@@ -74,6 +76,7 @@ require_once DIR_PATH . 'core/Enrutador.php';
 require_once DIR_PATH . 'app/controllers/ControladorPaginas.php';
 require_once DIR_PATH . 'app/controllers/ControladorAutenticacion.php';
 require_once DIR_PATH . 'app/controllers/ControladorTatuador.php';
+require_once DIR_PATH . 'app/controllers/ControladorDashboard.php';
 
 // Registra el error sin exponer detalles técnicos y muestra una respuesta 500 segura.
 set_exception_handler(static function (Throwable $exception): void {

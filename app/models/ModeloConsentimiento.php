@@ -1,5 +1,7 @@
 <?php
-
+// Modelo de datos para consentimientos informados.
+// Almacena los datos del consentimiento firmado por el cliente
+// incluyendo firma digital y datos del acudiente (si aplica).
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloConsentimiento extends ModeloBase
@@ -9,6 +11,7 @@ class ModeloConsentimiento extends ModeloBase
         parent::__construct();
     }
 
+    // Verifica si ya existe un consentimiento para una cita.
     public function existsForAppointment(int $appointmentId): bool
     {
         $statement = $this->execute(
@@ -18,6 +21,7 @@ class ModeloConsentimiento extends ModeloBase
         return (bool) $statement->fetch();
     }
 
+    // Registra un consentimiento informado completo.
     public function create(array $data): int
     {
         $this->execute(

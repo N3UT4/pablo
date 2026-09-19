@@ -1,5 +1,7 @@
 <?php
 // Recurso JavaScript servido por PHP.
+// Controla el acceso al panel de staff de galería,
+// permite subir fotos con drag & drop y validación de campos.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
 document.addEventListener('DOMContentLoaded', function () {
@@ -13,17 +15,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const previewContainer = document.getElementById('previewContainer');
   const preview = document.getElementById('preview');
 
+  // Desbloquea el panel de galería y guarda el código en sesión.
   function unlock(code) {
     accessGate.style.display = 'none';
     galeriaCard.style.display = 'block';
     sessionStorage.setItem('itza_staff_code', code || STAFF_CODE);
   }
 
+  // Si ya se desbloqueó antes, muestra el panel directamente.
   const savedCode = sessionStorage.getItem('itza_staff_code');
   if (savedCode === STAFF_CODE) {
     unlock(savedCode);
   }
 
+  // Botón para desbloquear con código de staff (SweetAlert2)
   unlockBtn.addEventListener('click', function () {
     Swal.fire({
       title: 'Código de acceso',
@@ -47,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Drag and drop
+  // Drag and drop: arrastrar fotos al área de subida
   uploadBox.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadBox.style.background = 'rgba(212, 18, 58, 0.1)';
@@ -68,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   fotosInput.addEventListener('change', mostrarPreview);
 
+  // Muestra vista previa de las fotos seleccionadas.
   function mostrarPreview() {
     preview.innerHTML = '';
     const files = fotosInput.files;
@@ -98,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Alterna la clase 'invalid' en el input y muestra/oculta el error.
   function setInvalid(input, errEl, isInvalid) {
     if (input.tagName === 'INPUT' || input.tagName === 'SELECT' || input.tagName === 'TEXTAREA') {
       input.classList.toggle('invalid', isInvalid);

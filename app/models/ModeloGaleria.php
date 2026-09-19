@@ -1,5 +1,6 @@
 <?php
-
+// Modelo de datos para galería.
+// Gestiona las fotos de trabajos de tatuaje con título, descripción y artista.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloGaleria extends ModeloBase
@@ -23,6 +24,7 @@ class ModeloGaleria extends ModeloBase
         return $this->execute($sql)->fetchAll();
     }
 
+    // Registra una nueva foto en la galería.
     public function create(array $data): int
     {
         $titulo = trim((string) ($data['titulo'] ?? ''));

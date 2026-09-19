@@ -1,0 +1,406 @@
+/* =====================================================
+   ARTISTS / ARTIST SPOTLIGHT
+   ===================================================== */
+
+.artists {
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.artist-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* ---- Artist Feature (large card) ---- */
+.artist-feature {
+  display: grid;
+  grid-template-columns: minmax(280px, .8fr) minmax(0, 1.2fr);
+  gap: 42px;
+  align-items: stretch;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  padding: 28px;
+}
+
+.artist-feature-photo {
+  min-height: 480px;
+  overflow: hidden;
+  background: #110a0b;
+}
+
+.artist-feature-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.artist-feature-content {
+  align-self: center;
+}
+
+.artist-feature-content h3 {
+  font-family: var(--font-logo);
+  color: var(--bone);
+  font-size: clamp(44px, 6vw, 76px);
+  letter-spacing: 2px;
+  margin: 12px 0 20px;
+}
+
+.artist-feature-content p {
+  color: var(--bone-dim);
+  max-width: 58ch;
+  margin-bottom: 14px;
+}
+
+.artist-specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.artist-specialties span {
+  border: 1px solid var(--blood);
+  color: var(--bone);
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+
+/* ---- Artist Cards (grid) ---- */
+.artist-card {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.artist-photo {
+  height: 150px;
+  background: linear-gradient(160deg, #241414, #100a0a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.artist-photo img {
+  width: 64px;
+  height: 64px;
+}
+
+.artist-card h3 {
+  margin-top: 16px;
+  font-size: 18px;
+}
+
+.artist-card span {
+  color: var(--bone-dim);
+  font-size: 13px;
+}
+
+/* =====================================================
+   ARTIST SPOTLIGHT (Landing page)
+   ===================================================== */
+
+.artist-spotlight-section {
+  background: var(--charcoal);
+}
+
+.artist-spotlight-card {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(25, 25, 25, 0.8), rgba(13, 13, 13, 0.9));
+}
+
+.artist-spotlight-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(212, 18, 58, 0.15), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 46, 74, 0.1), transparent 45%);
+  pointer-events: none;
+}
+
+.artist-spotlight-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.7fr) 1fr;
+  gap: 0;
+  align-items: stretch;
+}
+
+.artist-spotlight-media {
+  position: relative;
+  min-height: 480px;
+}
+
+.artist-photo-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.artist-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+}
+
+.artist-spotlight-card:hover .artist-photo-frame img {
+  transform: scale(1.02);
+}
+
+.artist-role-badge {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(247, 243, 236, 0.15);
+  border-radius: 999px;
+  color: var(--bone);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.artist-role-badge i {
+  color: var(--gold);
+  font-size: 14px;
+}
+
+.artist-spotlight-body {
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.artist-spotlight-heading {
+  margin-bottom: 24px;
+}
+
+.artist-spotlight-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blood-bright);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.artist-spotlight-name {
+  font-family: var(--font-logo);
+  font-size: clamp(48px, 7vw, 84px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--bone);
+  line-height: 1;
+  margin: 0;
+}
+
+.artist-spotlight-name span {
+  color: var(--blood-bright);
+}
+
+.artist-official-role {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.artist-role-line {
+  display: block;
+  color: var(--bone-dim);
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+}
+
+.artist-role-line i {
+  color: var(--blood-bright);
+  margin-right: 8px;
+}
+
+.artist-signature {
+  font-family: var(--font-logo);
+  font-size: 24px;
+  color: var(--blood-bright);
+  letter-spacing: 1px;
+}
+
+/* ---- Artist Stats Grid ---- */
+.artist-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.artist-stat-card {
+  text-align: center;
+  padding: 16px;
+  background: rgba(20, 20, 20, 0.4);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.artist-stat-card strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--bone);
+  line-height: 1;
+}
+
+.artist-stat-card span {
+  display: block;
+  color: var(--blood-bright);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.artist-stat-card small {
+  display: block;
+  color: var(--bone-dim);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* ---- Artist Bio ---- */
+.artist-bio {
+  margin-bottom: 24px;
+}
+
+.artist-bio p {
+  color: var(--bone-dim);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.artist-bio strong {
+  color: var(--bone);
+}
+
+/* ---- Artist CTA Row ---- */
+.artist-cta-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.artist-cta-primary,
+.artist-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.artist-cta-primary {
+  background: var(--blood);
+  border: 1px solid transparent;
+  color: #fff;
+  box-shadow: 0 8px 24px -10px rgba(212, 18, 58, 0.7);
+}
+
+.artist-cta-primary:hover {
+  background: var(--blood-bright);
+  box-shadow: 0 12px 30px -12px rgba(255, 46, 74, 0.85);
+  transform: translateY(-2px);
+}
+
+.artist-cta-secondary {
+  background: transparent;
+  border: 1px solid rgba(247, 243, 236, 0.18);
+  color: var(--bone);
+}
+
+.artist-cta-secondary:hover {
+  border-color: rgba(255, 46, 74, 0.5);
+  background: rgba(212, 18, 58, 0.08);
+  color: var(--bone);
+  transform: translateY(-2px);
+}
+
+/* ==== RESPONSIVE ARTISTS ==== */
+@media (max-width: 860px) {
+  .artist-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .artist-feature {
+    grid-template-columns: 1fr;
+  }
+
+  .artist-feature-photo {
+    min-height: 360px;
+  }
+
+  .artist-spotlight-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .artist-spotlight-media {
+    min-height: 320px;
+  }
+
+  .artist-spotlight-body {
+    padding: 28px 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .artist-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .artist-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .artist-cta-row {
+    flex-direction: column;
+  }
+
+  .artist-cta-primary,
+  .artist-cta-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}

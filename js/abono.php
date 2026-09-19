@@ -14,12 +14,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const qrBox = document.getElementById('qrBox');
   const metodoPills = document.querySelectorAll('input[name="metodo_pago"]');
 
+  // Alterna la clase 'invalid' en el input y muestra/oculta el error.
   function setInvalid(input, errEl, isInvalid) {
     input.classList.toggle('invalid', isInvalid);
     if (errEl) errEl.classList.toggle('show', isInvalid);
   }
 
-  // Fecha mínima: hoy
+  // Fecha mínima permitida: hoy
   const hoy = new Date();
   const yyyy = hoy.getFullYear();
   const mm = String(hoy.getMonth() + 1).padStart(2, '0');
@@ -27,20 +28,21 @@ document.addEventListener('DOMContentLoaded', function () {
   const hoyStr = `${yyyy}-${mm}-${dd}`;
   fechaInput.setAttribute('min', hoyStr);
 
-  // Mostrar/ocultar campo de diseño personalizado
+  // Mostrar/ocultar campo de diseño personalizado según el servicio seleccionado
   tipoServicio.addEventListener('change', function () {
     const esPersonalizado = tipoServicio.value === 'personalizado';
     personalizadoBox.style.display = esPersonalizado ? 'flex' : 'none';
     document.getElementById('detalle_personalizado').required = esPersonalizado;
   });
 
-  // Mostrar QR solo si el método es Nequi
+  // Mostrar QR solo si el método de pago es Nequi
   metodoPills.forEach(pill => {
     pill.addEventListener('change', () => {
       qrBox.classList.toggle('show', pill.value === 'nequi' && pill.checked);
     });
   });
 
+  // Verifica que la hora esté entre 08:00 y 21:00
   function horaEnRango(horaStr) {
     if (!horaStr) return false;
     const [h, m] = horaStr.split(':').map(Number);

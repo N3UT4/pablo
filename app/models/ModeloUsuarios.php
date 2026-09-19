@@ -1,5 +1,7 @@
 <?php
-
+// Modelo de datos para usuarios.
+// Gestiona registro, login, sesión, roles, contraseñas temporales
+// y operaciones CRUD de usuarios.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloUsuarios extends ModeloBase
@@ -9,6 +11,7 @@ class ModeloUsuarios extends ModeloBase
         parent::__construct();
     }
 
+    // Busca un usuario por email (para login).
     public function findByEmail(string $email): ?array
     {
         $statement = $this->execute(
@@ -21,7 +24,8 @@ class ModeloUsuarios extends ModeloBase
         return $user ?: null;
     }
 
-    // Usado por ControladorConsentimiento para ubicar al cliente a partir de su documento.
+    // Busca un usuario por documento de identidad.
+    // Usado por ControladorConsentimiento para ubicar al cliente.
     public function findByDocumento(string $documento): ?array
     {
         $statement = $this->execute(
@@ -33,6 +37,7 @@ class ModeloUsuarios extends ModeloBase
         return $user ?: null;
     }
 
+    // Registra un nuevo usuario con contraseña hasheada.
     public function register(array $data): array
     {
         $email = strtolower(trim((string) ($data['email'] ?? '')));
@@ -63,6 +68,20 @@ class ModeloUsuarios extends ModeloBase
         return $this->findByEmail($email);
     }
 
+    // Guarda (crea o actualiza) un usuario según si tiene ID.
+    public function save(int $id, array $data): void
+    {
+        if ($id > 0) {
+            $this->update($id, $data);
+        } else {
+            if (empty($data['password'])) {
+                throw new InvalidArgumentException('La contraseña es obligatoria al crear un usuario.');
+            }
+            $this->register($data);
+        }
+    }
+
+    // Verifica credenciales de login. Retorna el usuario o null.
     public function login(string $email, string $password): ?array
     {
         $user = $this->findByEmail(strtolower(trim($email)));
@@ -77,11 +96,14 @@ class ModeloUsuarios extends ModeloBase
         return $user;
     }
 
+    // Retorna el usuario de la sesión actual.
     public function currentUser(): ?array
     {
         return $_SESSION['user'] ?? null;
     }
 
+    // Almacena los datos del usuario en la sesión.
+    // También busca si tiene un artista asociado.
     public function setSessionUser(array $user): void
     {
         $_SESSION['user'] = [
@@ -99,6 +121,7 @@ class ModeloUsuarios extends ModeloBase
         }
     }
 
+    // Busca un artista asociado a un usuario por la relación user.artist_id.
     public function findArtistByUser(int $userId): ?array
     {
         $statement = $this->execute(
@@ -114,11 +137,13 @@ class ModeloUsuarios extends ModeloBase
 
     // --- Control de acceso por roles (rúbrica: Autenticación y Roles) ---
 
+    // Verifica si hay un usuario logueado.
     public function isLoggedIn(): bool
     {
         return !empty($_SESSION['user']['id']);
     }
 
+    // Verifica si el usuario tiene alguno de los roles indicados.
     public function hasRole(string ...$roles): bool
     {
         $actual = $_SESSION['user']['rol'] ?? null;
@@ -189,11 +214,13 @@ class ModeloUsuarios extends ModeloBase
         return true;
     }
 
+    // Elimina la sesión del usuario (logout).
     public function logout(): void
     {
         unset($_SESSION['user']);
     }
 
+    // Genera y almacena una contraseña temporal para el usuario.
     public function setTemporaryPassword(int $userId): void
     {
         $temp = bin2hex(random_bytes(6));
@@ -203,6 +230,7 @@ class ModeloUsuarios extends ModeloBase
         );
     }
 
+    // Verifica si el usuario tiene una contraseña temporal activa.
     public function isTempPasswordActive(int $userId): bool
     {
         $stmt = $this->execute(
@@ -213,6 +241,7 @@ class ModeloUsuarios extends ModeloBase
         return $row && (bool) $row['temp_password_active'] && $row['temp_password'] !== null;
     }
 
+    // Desactiva la contraseña temporal tras el cambio exitoso.
     public function deactivateTempPassword(int $userId): void
     {
         $this->execute(
@@ -221,12 +250,18 @@ class ModeloUsuarios extends ModeloBase
         );
     }
 
+    // Elimina la cuenta del usuario de la base de datos.
+    // Primero elimina datos relacionados para mantener la integridad referencial.
     public function deleteAccount(int $userId): void
     {
         if ($userId <= 0) {
             throw new InvalidArgumentException('La cuenta no es válida.');
         }
 
+        $this->execute('DELETE FROM payments WHERE appointment_id IN (SELECT id FROM appointments WHERE user_id = :id)', ['id' => $userId]);
+        $this->execute('DELETE FROM consents WHERE appointment_id IN (SELECT id FROM appointments WHERE user_id = :id)', ['id' => $userId]);
+        $this->execute('DELETE FROM appointments WHERE user_id = :id', ['id' => $userId]);
+        $this->execute('DELETE FROM promotion_redemptions WHERE user_id = :id', ['id' => $userId]);
         $this->execute('DELETE FROM users WHERE id = :id', ['id' => $userId]);
     }
 }

@@ -1,19 +1,24 @@
 <?php
-
-// Traduce la acción solicitada a un método del controlador correspondiente.
+// Punto de entrada del enrutador MVC.
+// Traduce la acción solicitada (parámetro ?action=) al método correspondiente
+// del controlador. Es el único archivo que decide qué controlador ejecutar.
 class Enrutador
 {
     public static function dispatch(): void
     {
+        // Obtiene la acción de la URL, por defecto 'home'
         $action = $_GET['action'] ?? 'home';
         $pageController = new ControladorPaginas();
         $authController = new ControladorAutenticacion();
         $tatuadorController = new ControladorTatuador();
+        $dashboardController = new ControladorDashboard();
 
         switch ($action) {
+            // --- Página principal ---
             case 'home':
                 $pageController->home();
                 break;
+            // --- Autenticación ---
             case 'login':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $authController->login();
@@ -28,9 +33,87 @@ class Enrutador
                     $pageController->register();
                 }
                 break;
+            // --- Dashboard (requiere sesión) ---
             case 'dashboard':
-                $pageController->dashboard();
+                $user = $_SESSION['user'] ?? null;
+                if (!$user) {
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => 'Debes iniciar sesión primero.'];
+                    $pageController->redirect(BASE_URL . 'index.php?action=login');
+                    return;
+                }
+                $rol = $user['rol'] ?? 'cliente';
+                // Redirige según el rol del usuario
+                if ($rol === 'tatuador') {
+                    $pageController->redirect(BASE_URL . 'index.php?action=artist-panel');
+                    return;
+                }
+                if ($rol === 'admin') {
+                    $dashboardController->adminMetrics();
+                    return;
+                }
+                $dashboardController->clienteCitas();
                 break;
+            // --- Panel Cliente ---
+            case 'cliente-citas':
+            case 'cliente-abonos':
+            case 'cliente-consentimiento':
+            case 'cliente-agendar':
+                $user = $_SESSION['user'] ?? null;
+                if (!$user) {
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => 'Inicia sesión para continuar.'];
+                    $pageController->redirect(BASE_URL . 'index.php?action=login');
+                    return;
+                }
+                // Call the appropriate method
+                if ($action === 'cliente-citas') {
+                    $dashboardController->clienteCitas();
+                } elseif ($action === 'cliente-abonos') {
+                    $dashboardController->clienteAbonos();
+                } elseif ($action === 'cliente-consentimiento') {
+                    $dashboardController->clienteConsentimiento();
+                } elseif ($action === 'cliente-agendar') {
+                    $dashboardController->clienteAgendar();
+                }
+                break;
+            // --- Panel Administrador ---
+            case 'admin':
+            case 'admin-usuarios':
+            case 'admin-servicios':
+            case 'admin-transacciones':
+            case 'admin-save-user':
+            case 'admin-save-service':
+            case 'admin-delete-service':
+                $user = $_SESSION['user'] ?? null;
+                if (!$user || ($user['rol'] ?? '') !== 'admin') {
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => 'Inicia sesión para continuar.'];
+                    $pageController->redirect(BASE_URL . 'index.php?action=login');
+                    return;
+                }
+                if ($action === 'admin') {
+                    $dashboardController->adminMetrics();
+                } elseif ($action === 'admin-usuarios') {
+                    $dashboardController->adminUsuarios();
+                } elseif ($action === 'admin-servicios') {
+                    $dashboardController->adminServicios();
+                } elseif ($action === 'admin-transacciones') {
+                    $dashboardController->adminTransacciones();
+                } elseif ($action === 'admin-save-user') {
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        $dashboardController->adminSaveUser();
+                    } else {
+                        $dashboardController->adminUsuarios();
+                    }
+                } elseif ($action === 'admin-save-service') {
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        $dashboardController->adminSaveService();
+                    } else {
+                        $dashboardController->adminServicios();
+                    }
+                } elseif ($action === 'admin-delete-service') {
+                    $dashboardController->adminDeleteService();
+                }
+                break;
+            // --- Páginas públicas ---
             case 'contact':
                 $pageController->contact();
                 break;
@@ -49,6 +132,7 @@ class Enrutador
             case 'promotions':
                 $pageController->promotions();
                 break;
+            // --- Errores ---
             case '404':
                 $pageController->notFound();
                 break;
@@ -58,79 +142,141 @@ class Enrutador
             case 'csrf-token':
                 $pageController->csrfToken();
                 break;
+            // --- Galería (API) ---
             case 'gallery-list':
                 require_once DIR_PATH . 'app/controllers/ControladorGaleria.php';
                 (new ControladorGaleria())->list();
                 break;
             case 'gallery-upload':
+                $user = $_SESSION['user'] ?? null;
+                if (!$user || !in_array($user['rol'] ?? '', ['tatuador', 'admin'], true)) {
+                    http_response_code(403);
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode(['ok' => false, 'message' => 'Acceso denegado. Solo personal autorizado.']);
+                    exit;
+                }
                 require_once DIR_PATH . 'app/controllers/ControladorGaleria.php';
                 (new ControladorGaleria())->upload();
                 break;
+            // --- Citas (abono) ---
             case 'book-appointment':
                 require_once DIR_PATH . 'app/controllers/ControladorCitas.php';
                 (new ControladorCitas())->store();
                 break;
+            // --- Consentimiento ---
             case 'submit-consent':
                 require_once DIR_PATH . 'app/controllers/ControladorConsentimiento.php';
                 (new ControladorConsentimiento())->store();
                 break;
+            // --- API / Acciones que requieren sesión ---
+            case 'book-appointment':
+            case 'submit-consent':
             case 'validate-promo':
-                require_once DIR_PATH . 'app/controllers/ControladorPromociones.php';
-                (new ControladorPromociones())->validateCode();
-                break;
             case 'redeem-promo':
-                require_once DIR_PATH . 'app/controllers/ControladorPromociones.php';
-                (new ControladorPromociones())->redeem();
-                break;
-            case 'api':
-                require_once DIR_PATH . 'app/controllers/ControladorApi.php';
-                (new ControladorApi())->handle();
-                break;
             case 'reporte-citas':
-                require_once DIR_PATH . 'app/controllers/ControladorReportes.php';
-                (new ControladorReportes())->citasCsv();
-                break;
             case 'reporte-citas-json':
-                require_once DIR_PATH . 'app/controllers/ControladorReportes.php';
-                (new ControladorReportes())->citasJson();
+                $user = $_SESSION['user'] ?? null;
+                if (!$user) {
+                    // Para endpoints AJAX, devolver JSON en lugar de redirigir
+                    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                        http_response_code(401);
+                        header('Content-Type: application/json; charset=utf-8');
+                        echo json_encode(['ok' => false, 'message' => 'Inicia sesión para continuar.', 'redirect' => BASE_URL . 'index.php?action=login']);
+                        exit;
+                    }
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => 'Inicia sesión para continuar.'];
+                    $pageController->redirect(BASE_URL . 'index.php?action=login');
+                    return;
+                }
+                if ($action === 'book-appointment') {
+                    require_once DIR_PATH . 'app/controllers/ControladorCitas.php';
+                    (new ControladorCitas())->store();
+                } elseif ($action === 'submit-consent') {
+                    require_once DIR_PATH . 'app/controllers/ControladorConsentimiento.php';
+                    (new ControladorConsentimiento())->store();
+                } elseif ($action === 'validate-promo') {
+                    require_once DIR_PATH . 'app/controllers/ControladorPromociones.php';
+                    (new ControladorPromociones())->validateCode();
+                } elseif ($action === 'redeem-promo') {
+                    require_once DIR_PATH . 'app/controllers/ControladorPromociones.php';
+                    (new ControladorPromociones())->redeem();
+                } elseif ($action === 'reporte-citas') {
+                    require_once DIR_PATH . 'app/controllers/ControladorReportes.php';
+                    (new ControladorReportes())->citasCsv();
+                } elseif ($action === 'reporte-citas-json') {
+                    require_once DIR_PATH . 'app/controllers/ControladorReportes.php';
+                    (new ControladorReportes())->citasJson();
+                }
                 break;
+            // --- Cerrar sesión ---
             case 'logout':
                 $authController->logout();
                 break;
             case 'cambiar-clave':
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $authController->changeTempPassword();
-                } else {
-                    $pageController->changePasswordForm();
-                }
-                break;
             case 'delete-account':
-                $authController->deleteAccount();
+            case 'profile':
+                $user = $_SESSION['user'] ?? null;
+                if (!$user) {
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => 'Inicia sesión para continuar.'];
+                    $pageController->redirect(BASE_URL . 'index.php?action=login');
+                    return;
+                }
+                if ($action === 'cambiar-clave') {
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        $authController->changeTempPassword();
+                    } else {
+                        $pageController->changePasswordForm();
+                    }
+                } elseif ($action === 'delete-account') {
+                    $authController->deleteAccount();
+                } elseif ($action === 'profile') {
+                    $pageController->profile();
+                }
                 break;
             // --- Módulo Tatuador ---
             case 'artist-panel':
-                $tatuadorController->dashboard();
-                break;
             case 'artist-agenda':
-                $tatuadorController->agenda();
-                break;
             case 'artist-horarios':
-                $tatuadorController->horarios();
-                break;
             case 'artist-perfil':
-                $tatuadorController->perfil();
+            case 'artist-update-estado':
+            case 'artist-save-schedule':
+            case 'artist-citas-json':
+                $user = $_SESSION['user'] ?? null;
+                if (!$user || !in_array($user['rol'] ?? '', ['tatuador', 'admin'], true)) {
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => 'Inicia sesión para continuar.'];
+                    $pageController->redirect(BASE_URL . 'index.php?action=login');
+                    return;
+                }
+                if ($action === 'artist-panel') {
+                    $tatuadorController->dashboard();
+                } elseif ($action === 'artist-agenda') {
+                    $tatuadorController->agenda();
+                } elseif ($action === 'artist-horarios') {
+                    $tatuadorController->horarios();
+                } elseif ($action === 'artist-perfil') {
+                    $tatuadorController->perfil();
+                } elseif ($action === 'artist-update-estado') {
+                    $tatuadorController->updateEstado();
+                } elseif ($action === 'artist-save-schedule') {
+                    $tatuadorController->saveSchedule();
+                } elseif ($action === 'artist-citas-json') {
+                    $tatuadorController->citasJson();
+                }
                 break;
             case 'artist-switch-mode':
                 $tatuadorController->switchMode();
                 break;
-            case 'artist-update-estado':
-                $tatuadorController->updateEstado();
-                break;
-            case 'artist-save-schedule':
-                $tatuadorController->saveSchedule();
-                break;
-            case 'artist-citas-json':
-                $tatuadorController->citasJson();
+            // --- API REST ---
+            case 'api':
+                $user = $_SESSION['user'] ?? null;
+                if (!$user) {
+                    http_response_code(401);
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode(['ok' => false, 'message' => 'Inicia sesión para continuar.', 'redirect' => BASE_URL . 'index.php?action=login']);
+                    exit;
+                }
+                require_once DIR_PATH . 'app/controllers/ControladorApi.php';
+                (new ControladorApi())->handle();
                 break;
             default:
                 $pageController->notFound();

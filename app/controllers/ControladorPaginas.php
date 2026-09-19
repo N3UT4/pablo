@@ -1,16 +1,38 @@
 <?php
-
-// Controla las páginas públicas y las respuestas de error de la aplicación.
+// Controlador de páginas públicas y respuestas de error.
+// Gestiona todas las páginas que no requieren autenticación o lógica de negocio compleja.
 class ControladorPaginas extends ControladorBase
 {
+    // Verifica si el usuario tiene sesión activa.
+    private function isAuthenticated(): bool
+    {
+        return isset($_SESSION['user']) && !empty($_SESSION['user']);
+    }
+
+    // Redirige a login con mensaje flash si no hay sesión.
+    private function requireAuth(string $redirectAction = 'login'): void
+    {
+        if (!$this->isAuthenticated()) {
+            $_SESSION['flash'] = [
+                'type' => 'error',
+                'message' => 'Inicia sesión para continuar.'
+            ];
+            $this->redirect(BASE_URL . 'index.php?action=' . $redirectAction);
+        }
+    }
+
+    // Muestra la página de inicio (landing page).
     public function home(): void
     {
+        $isAuthenticated = $this->isAuthenticated();
         $this->view('inicio', [
             'title' => 'ITZA TATTOO STUDIO',
             'currentPage' => 'home',
+            'isAuthenticated' => $isAuthenticated,
         ]);
     }
 
+    // Muestra la página de inicio de sesión.
     public function login(): void
     {
         $this->view('ingresar', [
@@ -19,6 +41,7 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    // Muestra la página de registro de nueva cuenta.
     public function register(): void
     {
         $this->view('registro', [
@@ -27,6 +50,8 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    // Muestra el dashboard del usuario (requiere sesión).
+    // Redirige a tatuador o admin según corresponda.
     public function dashboard(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -46,6 +71,7 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    // Muestra la página de contacto. Si es POST, procesa el formulario.
     public function contact(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -60,30 +86,37 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    // Muestra la página de galería de tatuajes (requiere autenticación para galería completa).
     public function gallery(): void
     {
+        $this->requireAuth('login');
         $this->view('galeria', [
             'title' => 'Galería — ITZA TATTOO STUDIO',
             'currentPage' => 'gallery',
         ]);
     }
 
+    // Muestra la página de agendar cita y abonar (requiere autenticación).
     public function booking(): void
     {
+        $this->requireAuth('login');
         $this->view('abono', [
             'title' => 'Agendar y abonar — ITZA TATTOO STUDIO',
             'currentPage' => 'booking',
         ]);
     }
 
+    // Muestra la página de consentimiento informado (requiere autenticación).
     public function consent(): void
     {
+        $this->requireAuth('login');
         $this->view('consentimiento', [
             'title' => 'Consentimiento informado — ITZA TATTOO STUDIO',
             'currentPage' => 'consent',
         ]);
     }
 
+    // Muestra el perfil del usuario (requiere sesión).
     public function profile(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -99,6 +132,7 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    // Muestra la página de promociones.
     public function promotions(): void
     {
         $this->view('promociones', [
@@ -107,6 +141,7 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    // Muestra el formulario para cambiar contraseña.
     public function changePasswordForm(): void
     {
         $user = $_SESSION['user'] ?? null;
@@ -129,6 +164,7 @@ class ControladorPaginas extends ControladorBase
         $this->json(true, 'ok', ['csrf_token' => csrf_token()]);
     }
 
+    // Muestra la página de error 404.
     public function notFound(): void
     {
         $this->view('error404', [
@@ -136,6 +172,7 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    // Muestra la página de error 500 (error del servidor).
     public function serverError(): void
     {
         $this->view('error500', [

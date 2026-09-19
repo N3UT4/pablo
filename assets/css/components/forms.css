@@ -1,0 +1,833 @@
+/* =====================================================
+   FORMS
+   ===================================================== */
+
+/* ---- Containers ---- */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.container-narrow {
+  max-width: 520px;
+}
+
+.container.wide {
+  max-width: 960px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 40px;
+}
+
+.card-head {
+  margin-bottom: 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-head .eyebrow {
+  color: var(--blood-bright);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.card-head h1 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.card-head p {
+  color: var(--bone-dim);
+  font-size: 15px;
+  margin-top: 12px;
+  max-width: 45ch;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* ---- Alerts ---- */
+.alert {
+  display: none;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+  border-left: 3px solid var(--blood-bright);
+  background: rgba(176, 20, 47, 0.12);
+  color: #F3D4D9;
+}
+
+.alert.show {
+  display: flex;
+}
+
+.alert.success {
+  border-left-color: var(--success);
+  background: rgba(46, 125, 70, 0.14);
+  color: #C9E9D2;
+}
+
+.alert svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ---- Section Titles ---- */
+.section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--blood-bright);
+  font-weight: 700;
+  margin: 28px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
+/* ---- Form Layout ---- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.row3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--bone-dim);
+  font-weight: 700;
+  display: block;
+  line-height: 1.2;
+}
+
+.field .optional {
+  text-transform: none;
+  letter-spacing: 0;
+  color: #5C5854;
+  font-weight: 400;
+}
+
+/* ---- Form Inputs ---- */
+.field input,
+.field select,
+.field textarea {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 13px 15px;
+  color: var(--bone);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  line-height: 1.5;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #5C5854;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--blood-bright);
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15);
+}
+
+.field input.invalid,
+.field select.invalid,
+.field textarea.invalid {
+  border-color: var(--blood-bright);
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.12);
+}
+
+.field .err {
+  font-size: 12px;
+  color: var(--blood-bright);
+  display: none;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.field .err.show {
+  display: block;
+}
+
+.field select {
+  cursor: pointer;
+}
+
+/* ---- Password Toggle ---- */
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input[type="password"],
+.password-wrap input[type="text"] {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--bone-dim);
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 14px;
+  z-index: 2;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+}
+
+.password-toggle:hover {
+  color: var(--blood-bright);
+}
+
+/* ---- Checkbox / Radio Rows ---- */
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-size: 13px;
+  color: var(--bone-dim);
+  line-height: 1.5;
+}
+
+.check-row input[type="checkbox"] {
+  margin-top: 2px;
+  accent-color: var(--blood-bright);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* ---- Payment Methods (pill style) ---- */
+.pay-methods {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.pay-pill {
+  position: relative;
+}
+
+.pay-pill input {
+  position: absolute;
+  opacity: 0;
+}
+
+.pay-pill label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px 8px;
+  font-size: 12px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+  color: var(--bone-dim);
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+}
+
+.pay-pill input:checked + label {
+  border-color: var(--blood-bright);
+  background: rgba(230, 57, 70, 0.1);
+  color: var(--bone);
+}
+
+.pay-pill svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ---- QR Box ---- */
+.qr-box {
+  display: none;
+  background: var(--panel-2);
+  border: 1px dashed var(--blood);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.qr-box.show {
+  display: block;
+}
+
+.qr-box .qr-mock {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 12px;
+  background:
+    repeating-conic-gradient(#F7F3EC 0% 25%, #0A0A0A 0% 50%) 0 0/20px 20px;
+  border: 4px solid var(--bone);
+  border-radius: var(--radius-sm);
+}
+
+.qr-box p {
+  font-size: 12px;
+  color: var(--bone-dim);
+}
+
+.qr-box strong {
+  color: var(--blood-bright);
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+/* ---- Guardian Box (minor consent) ---- */
+.guardian-box {
+  display: none;
+  background: rgba(176, 20, 47, 0.06);
+  border: 1px solid var(--blood);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 4px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guardian-box.show {
+  display: flex;
+}
+
+.guardian-note {
+  font-size: 12px;
+  color: var(--blood-bright);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* ---- Digital Signature ---- */
+.sign-box {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.sign-line {
+  border-bottom: 1px dashed var(--bone-dim);
+  padding: 24px 8px 8px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--blood-bright);
+  letter-spacing: 1px;
+  min-height: 20px;
+}
+
+.sign-box small {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  color: var(--bone-dim);
+  font-size: 11px;
+}
+
+/* ---- Submit Button ---- */
+.submit-btn {
+  margin-top: 12px;
+  background: var(--blood);
+  color: #fff;
+  border: 2px solid var(--blood);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  font-family: var(--font-primary);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 52px;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: break-word;
+  vertical-align: middle;
+  text-decoration: none;
+}
+
+.submit-btn:hover {
+  background: var(--blood-bright);
+  border-color: var(--blood-bright);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(212, 18, 58, 0.4);
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* ---- Hint ---- */
+.hint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--bone-dim);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.hint a {
+  color: var(--blood-bright);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.hint a:hover {
+  color: var(--blood);
+}
+
+/* ---- Error Actions ---- */
+.error-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+/* ---- Staff Gate (consentimiento) ---- */
+.staff-label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.gate-card {
+  text-align: center;
+}
+
+.gate-card .submit-btn {
+  max-width: 320px;
+  margin: 0 auto 16px;
+}
+
+/* ---- Upload Box (gallery) ---- */
+.upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-2);
+  border: 2px dashed var(--blood);
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  cursor: pointer;
+  transition: all .2s ease;
+  text-align: center;
+}
+
+.upload-box:hover {
+  background: rgba(230, 57, 70, 0.06);
+  border-color: var(--blood-bright);
+}
+
+.upload-box svg {
+  width: 40px;
+  height: 40px;
+  color: var(--blood-bright);
+}
+
+.upload-box strong {
+  color: var(--bone);
+  font-size: 14px;
+}
+
+.upload-box span {
+  font-size: 12px;
+  color: var(--bone-dim);
+}
+
+/* =====================================================
+   FORM ENHANCEMENTS — STEPPER & PAYMENT SUMMARY
+   ===================================================== */
+
+/* ---- Stepper de progreso del formulario ---- */
+.form-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 32px;
+}
+
+.form-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--bone-dim);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.form-step .step-num {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bone-dim);
+  flex-shrink: 0;
+}
+
+.form-step.active .step-num {
+  background: var(--blood);
+  border-color: var(--blood);
+  color: #fff;
+}
+
+.form-step.active {
+  color: var(--bone);
+}
+
+.form-step.completed .step-num {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+
+.form-step.completed {
+  color: var(--bone-dim);
+}
+
+.form-step-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--line);
+  margin: 0 8px;
+}
+
+/* ---- Caja resumen de pago ---- */
+.payment-summary {
+  background: var(--panel-2);
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.payment-summary h4 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin: 0 0 16px;
+}
+
+.payment-summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.payment-summary-item:last-of-type {
+  border-bottom: none;
+}
+
+.payment-summary-item .label {
+  color: var(--bone-dim);
+}
+
+.payment-summary-item .value {
+  color: var(--bone);
+  font-weight: 600;
+}
+
+.payment-summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  margin-top: 6px;
+  border-top: 2px solid var(--gold);
+}
+
+.payment-summary-total .label {
+  color: var(--gold);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 11px;
+}
+
+.payment-summary-total .value {
+  color: var(--bone);
+  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 28px;
+}
+
+/* ---- Indicadores estado de pago ---- */
+.payment-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.payment-status.pending {
+  background: rgba(242, 177, 52, 0.10);
+  border: 1px solid rgba(242, 177, 52, 0.25);
+  color: var(--gold);
+}
+
+.payment-status.paid {
+  background: rgba(46, 125, 70, 0.12);
+  border: 1px solid rgba(46, 125, 70, 0.3);
+  color: #6ee7a0;
+}
+
+.payment-status i {
+  font-size: 16px;
+}
+
+/* ---- Visualización monto ---- */
+.amount-display {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--bone);
+  letter-spacing: 1px;
+}
+
+.amount-display .currency {
+  font-size: 18px;
+  color: var(--bone-dim);
+}
+
+/* ---- Tarjeta balance ---- */
+.balance-card {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.balance-card .balance-label {
+  color: var(--bone-dim);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.balance-card .balance-value {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--bone);
+  line-height: 1;
+  margin-top: 4px;
+}
+
+.balance-card .balance-value.paid {
+  color: #6ee7a0;
+}
+
+.balance-card .balance-value.pending {
+  color: var(--gold);
+}
+
+.balance-card .balance-badge {
+  flex-shrink: 0;
+}
+
+/* ---- Estado vacío ---- */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--bone-dim);
+}
+
+.empty-state i {
+  font-size: 40px;
+  color: var(--line);
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--bone);
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ---- Checkbox label improvements ---- */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.checkbox-label .checkmark {
+  display: none;
+}
+
+/* ==== RESPONSIVE FORMS ==== */
+@media (max-width: 640px) {
+  .row2,
+  .row3 {
+    grid-template-columns: 1fr;
+  }
+
+  .pay-methods {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .card {
+    padding: 28px 20px;
+  }
+
+  .form-progress {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .form-step-divider {
+    display: none;
+  }
+
+  .form-step {
+    font-size: 10px;
+  }
+
+  .balance-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .artist-header-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .payment-summary {
+    padding: 18px;
+  }
+
+  .payment-summary-total .value {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-card .stat-number {
+    font-size: 22px;
+  }
+}

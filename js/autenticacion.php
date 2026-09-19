@@ -1,5 +1,7 @@
 <?php
 // Recurso JavaScript servido por PHP.
+// Valida el formulario de login en el navegador.
+// Muestra/oculta errores y guarda datos de sesión en localStorage.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
 document.addEventListener('DOMContentLoaded', function () {
@@ -8,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  // Alterna la clase 'invalid' en el input y muestra/oculta el error.
   function setInvalid(input, errEl, isInvalid) {
     input.classList.toggle('invalid', isInvalid);
     if (errEl) errEl.classList.toggle('show', isInvalid);
@@ -32,9 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
+    // Guarda datos de sesión en localStorage para uso de la app
     localStorage.setItem('itza_session', JSON.stringify({ email: email.value.trim(), loggedAt: Date.now() }));
   });
 
+  // Limpia el estado de error al empezar a escribir
   document.querySelectorAll('input').forEach(inp => {
     inp.addEventListener('input', () => inp.classList.remove('invalid'));
   });

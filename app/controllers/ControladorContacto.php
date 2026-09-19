@@ -1,8 +1,8 @@
 <?php
-
+// Controlador del formulario de contacto.
+// Procesa los mensajes de contacto enviados por los visitantes.
 require_once DIR_PATH . 'app/models/ModeloContacto.php';
 
-// Atiende el formulario de contacto (js/contacto.js).
 class ControladorContacto extends ControladorBase
 {
     private ModeloContacto $contactModel;
@@ -12,6 +12,7 @@ class ControladorContacto extends ControladorBase
         $this->contactModel = new ModeloContacto();
     }
 
+    // Recibe y valida el formulario de contacto, guarda el mensaje en la BD.
     public function store(): void
     {
         try {

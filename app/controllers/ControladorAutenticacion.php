@@ -1,5 +1,6 @@
 <?php
-
+// Controlador de autenticación: registro, login, logout, cambio de contraseña
+// y eliminación de cuenta. Extiende ControladorBase para usar view(), redirect() y json().
 require_once DIR_PATH . 'app/models/ModeloUsuarios.php';
 
 class ControladorAutenticacion extends ControladorBase
@@ -11,6 +12,7 @@ class ControladorAutenticacion extends ControladorBase
         $this->userModel = new ModeloUsuarios();
     }
 
+    // Registra un nuevo usuario cliente. Valida datos, crea cuenta y redirige al dashboard.
     public function register(): void
     {
         try {
@@ -27,6 +29,7 @@ class ControladorAutenticacion extends ControladorBase
                 'password' => $_POST['password_hash'] ?? '',
             ];
 
+            // Validación de campos obligatorios y formato
             if (
                 trim($data['nombre']) === ''
                 || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)
@@ -54,6 +57,7 @@ class ControladorAutenticacion extends ControladorBase
         }
     }
 
+    // Procesa el inicio de sesión. Valida email y contraseña contra la base de datos.
     public function login(): void
     {
         try {
@@ -72,6 +76,7 @@ class ControladorAutenticacion extends ControladorBase
             $this->userModel->setSessionUser($user);
             $_SESSION['flash'] = ['type' => 'success', 'message' => 'Inicio de sesión correcto.'];
 
+            // Redirige según el rol del usuario
             if (($user['rol'] ?? '') === 'tatuador') {
                 $this->redirect(BASE_URL . 'index.php?action=artist-panel');
             }
@@ -86,6 +91,7 @@ class ControladorAutenticacion extends ControladorBase
         }
     }
 
+    // Cierra la sesión del usuario y redirige al inicio.
     public function logout(): void
     {
         $this->userModel->logout();
@@ -93,6 +99,7 @@ class ControladorAutenticacion extends ControladorBase
         $this->redirect(BASE_URL . 'index.php?action=home');
     }
 
+    // Muestra el formulario para generar una contraseña temporal.
     public function showTempPasswordForm(): void
     {
         try {
@@ -121,6 +128,7 @@ class ControladorAutenticacion extends ControladorBase
         }
     }
 
+    // Cambia la contraseña temporal por una nueva definida por el usuario.
     public function changeTempPassword(): void
     {
         try {
@@ -166,6 +174,7 @@ class ControladorAutenticacion extends ControladorBase
         }
     }
 
+    // Elimina la cuenta del usuario y destruye la sesión.
     public function deleteAccount(): void
     {
         try {

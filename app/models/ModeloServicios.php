@@ -1,5 +1,7 @@
 <?php
-
+// Modelo de datos para servicios.
+// Gestiona los servicios de tatuaje (blackwork, realismo, etc.)
+// con sus precios y descripciones.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloServicios extends ModeloBase
@@ -9,6 +11,7 @@ class ModeloServicios extends ModeloBase
         parent::__construct();
     }
 
+    // Lista todos los servicios activos.
     public function listActive(): array
     {
         $statement = $this->execute(
@@ -17,7 +20,7 @@ class ModeloServicios extends ModeloBase
         return $statement->fetchAll();
     }
 
-    // El formulario de abono envía el "slug" del estilo (blackwork, realismo, etc.).
+    // Busca un servicio por su slug (usado en el formulario de abono).
     public function findBySlug(string $slug): ?array
     {
         $statement = $this->execute(
@@ -26,5 +29,29 @@ class ModeloServicios extends ModeloBase
         );
         $service = $statement->fetch();
         return $service ?: null;
+    }
+
+    // Crea o actualiza un servicio.
+    public function save(int $id, string $nombre, string $slug, float $precioDesde, string $descripcion): bool
+    {
+        if ($id > 0) {
+            $this->execute(
+                'UPDATE services SET nombre = :nombre, slug = :slug, precio_desde = :precio_desde, descripcion = :descripcion WHERE id = :id',
+                ['nombre' => $nombre, 'slug' => $slug, 'precio_desde' => $precioDesde, 'descripcion' => $descripcion, 'id' => $id]
+            );
+        } else {
+            $this->execute(
+                'INSERT INTO services (nombre, slug, descripcion, precio_desde) VALUES (:nombre, :slug, :descripcion, :precio_desde)',
+                ['nombre' => $nombre, 'slug' => $slug, 'descripcion' => $descripcion, 'precio_desde' => $precioDesde]
+            );
+        }
+        return true;
+    }
+
+    // Elimina un servicio por ID.
+    public function delete(int $id): bool
+    {
+        $this->execute('DELETE FROM services WHERE id = :id', ['id' => $id]);
+        return true;
     }
 }

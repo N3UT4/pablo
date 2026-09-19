@@ -1,11 +1,10 @@
 <?php
-
+// Reportes exportables del sistema.
+// Permite descargar reportes de citas en CSV (Excel) y JSON.
+// Solo accesible para administradores y tatuadores.
+// Parámetros opcionales: desde=YYYY-MM-DD&hasta=YYYY-MM-DD
 require_once DIR_PATH . 'app/models/ModeloCitas.php';
 
-// Reportes exportables (rúbrica: generación de reportes).
-//   index.php?action=reporte-citas        -> descarga CSV (Excel)
-//   index.php?action=reporte-citas-json   -> reporte en JSON
-// Parámetros opcionales: desde=YYYY-MM-DD&hasta=YYYY-MM-DD
 class ControladorReportes extends ControladorBase
 {
     private ModeloCitas $appointmentModel;
@@ -20,6 +19,7 @@ class ControladorReportes extends ControladorBase
         $this->appointmentModel = new ModeloCitas();
     }
 
+    // Extrae los parámetros de filtro de fecha (desde/hasta) de la URL.
     private function filtros(): array
     {
         $desde = trim((string) ($_GET['desde'] ?? '')) ?: null;
@@ -46,6 +46,7 @@ class ControladorReportes extends ControladorBase
     }
 
     // Reporte exportable en CSV (se abre en Excel).
+    // Incluye BOM para que Excel muestre bien las tildes.
     public function citasCsv(): void
     {
         try {

@@ -17,6 +17,7 @@ window.APP_BASE_URL = <?= json_encode(BASE_URL) ?>;
 const ItzaAPI = (function () {
   let cachedToken = null;
 
+  // Obtiene el csrf_token de la sesión PHP (con caché).
   async function getCsrfToken() {
     if (cachedToken) return cachedToken;
     const res = await fetch(window.APP_BASE_URL + 'index.php?action=csrf-token', { credentials: 'same-origin' });

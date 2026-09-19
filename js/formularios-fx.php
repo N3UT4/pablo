@@ -1,5 +1,8 @@
 <?php
 // Recurso JavaScript servido por PHP.
+// Añade efectos visuales a los formularios:
+// fade-in de tarjetas, ripple en botones, pop en métodos de pago,
+// elevación al enfocar campos.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
 document.addEventListener('DOMContentLoaded', function () {

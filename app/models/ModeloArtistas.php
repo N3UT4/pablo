@@ -1,5 +1,6 @@
 <?php
-
+// Modelo de datos para artistas/tatuadores.
+// Lista artistas activos y verifica su existencia.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloArtistas extends ModeloBase
@@ -9,6 +10,7 @@ class ModeloArtistas extends ModeloBase
         parent::__construct();
     }
 
+    // Lista todos los artistas activos.
     public function listActive(): array
     {
         $statement = $this->execute(
@@ -17,6 +19,7 @@ class ModeloArtistas extends ModeloBase
         return $statement->fetchAll();
     }
 
+    // Verifica que un artista exista y esté activo.
     public function exists(int $artistId): bool
     {
         $statement = $this->execute(

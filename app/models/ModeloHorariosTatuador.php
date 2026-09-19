@@ -1,5 +1,7 @@
 <?php
-
+// Modelo de datos para horarios del tatuador.
+// Gestiona la disponibilidad semanal de cada tatuador
+// usando la tabla artist_schedules con upsert (ON DUPLICATE KEY UPDATE).
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloHorariosTatuador extends ModeloBase
@@ -9,6 +11,8 @@ class ModeloHorariosTatuador extends ModeloBase
         parent::__construct();
     }
 
+    // Obtiene los horarios de un artista ordenados por día de la semana.
+    // El campo dia_semana usa: 1=Lunes, 2=Martes, ..., 6=Sábado, 0=Domingo.
     public function getByArtist(int $artistId): array
     {
         $statement = $this->execute(
@@ -21,6 +25,7 @@ class ModeloHorariosTatuador extends ModeloBase
         return $statement->fetchAll();
     }
 
+    // Guarda/actualiza el horario de un día específico (upsert).
     public function save(int $artistId, int $dia, string $horaInicio, string $horaFin, bool $disponible): bool
     {
         $this->execute(
@@ -41,6 +46,7 @@ class ModeloHorariosTatuador extends ModeloBase
         return true;
     }
 
+    // Alterna la disponibilidad de un día sin cambiar horarios.
     public function toggleDay(int $artistId, int $dia, bool $disponible): bool
     {
         $this->execute(

@@ -1,4 +1,11 @@
+/* ============================================
+   PÁGINA DE ERROR (404 / 500)
+   Estilos para pantallas de error con
+   ilustración, código de error y acciones.
+============================================ */
+
 .error-body{
+  /* Contenedor principal centrado verticalmente */
   min-height:100vh;
   display:flex;
   flex-direction:column;
@@ -15,12 +22,14 @@
 .error-wrap{ max-width:520px; }
 
 .error-logo{
+  /* Logo de ITZA TATTOO en la página de error */
   display:inline-block;
   text-decoration:none;
   margin-bottom:40px;
 }
 
 .error-content{
+  /* Tarjeta principal del error */
   background: var(--panel, #161616);
   border:1px solid var(--line, #323232);
   border-radius:6px;
@@ -28,6 +37,7 @@
 }
 
 .error-illustration{
+  /* Ilustración animada (skull o similar) */
   width:160px;
   height:auto;
   margin:0 auto 8px;
@@ -36,6 +46,7 @@
 }
 
 .error-code{
+  /* Código de error grande (404, 500, etc.) */
   display:block;
   font-family:'Bebas Neue', sans-serif;
   font-size:88px;
@@ -49,6 +60,7 @@
 }
 
 .error-content h1{
+  /* Título de la página de error */
   font-family:'Bebas Neue', sans-serif;
   font-size:26px;
   letter-spacing:0.5px;
@@ -57,6 +69,7 @@
 }
 
 .error-content p{
+  /* Descripción del error */
   color: var(--bone-dim, #BDB6AC);
   font-size:14px;
   line-height:1.6;
@@ -65,6 +78,7 @@
 }
 
 .error-actions{
+  /* Botones de acción (volver al inicio, etc.) */
   display:flex;
   gap:14px;
   justify-content:center;
@@ -79,6 +93,7 @@
 }
 
 .error-support{
+  /* Mensaje de soporte adicional */
   margin-top:20px !important;
   font-size:12px !important;
 }

@@ -1,17 +1,20 @@
 <?php
 // Recurso JavaScript servido por PHP.
+// Valida y guarda los datos del perfil del usuario.
+// Permite actualizar información de contacto y cambiar contraseña.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('perfilForm');
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  // Alterna la clase 'invalid' en el input y muestra/oculta el error.
   function setInvalid(input, errEl, isInvalid) {
     input.classList.toggle('invalid', isInvalid);
     if (errEl) errEl.classList.toggle('show', isInvalid);
   }
 
-  // Cargar datos guardados en localStorage
+  // Carga datos guardados en localStorage
   function cargarDatos() {
     const session = JSON.parse(localStorage.getItem('itza_session') || '{}');
     if (session.email) document.getElementById('email_perfil').value = session.email;
@@ -23,43 +26,50 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     let ok = true;
 
+    // Validación del nombre (mínimo 2 palabras)
     const nombre = document.getElementById('nombre_perfil');
     const nombreValid = nombre.value.trim().split(' ').filter(Boolean).length >= 2;
     setInvalid(nombre, document.getElementById('nombrePerfilErr'), !nombreValid);
     if (!nombreValid) ok = false;
 
+    // Validación del email
     const email = document.getElementById('email_perfil');
     const emailValid = emailRe.test(email.value.trim());
     setInvalid(email, document.getElementById('emailPerfilErr'), !emailValid);
     if (!emailValid) ok = false;
 
+    // Validación del teléfono (10 dígitos)
     const telefono = document.getElementById('telefono_perfil');
     const telDigits = telefono.value.replace(/\D/g, '');
     const telValid = telDigits.length === 10;
     setInvalid(telefono, document.getElementById('telefonoPerfilErr'), !telValid);
     if (!telValid) ok = false;
 
+    // Validación del documento (mínimo 6 dígitos)
     const documento = document.getElementById('documento_perfil');
     const docValid = documento.value.trim().replace(/\D/g, '').length >= 6;
     setInvalid(documento, document.getElementById('documentoPerfilErr'), !docValid);
     if (!docValid) ok = false;
 
+    // Validación de la fecha de nacimiento
     const fechaNacimiento = document.getElementById('fecha_nacimiento_perfil');
     const fnValid = !!fechaNacimiento.value;
     setInvalid(fechaNacimiento, document.getElementById('fechaNacimientoPerfilErr'), !fnValid);
     if (!fnValid) ok = false;
 
+    // Validación de la ciudad (mínimo 2 caracteres)
     const ciudad = document.getElementById('ciudad');
     const ciudadValid = ciudad.value.trim().length >= 2;
     setInvalid(ciudad, document.getElementById('ciudadErr'), !ciudadValid);
     if (!ciudadValid) ok = false;
 
+    // Validación de la dirección (mínimo 5 caracteres)
     const direccion = document.getElementById('direccion');
     const direccionValid = direccion.value.trim().length >= 5;
     setInvalid(direccion, document.getElementById('direccionErr'), !direccionValid);
     if (!direccionValid) ok = false;
 
-    // Validar cambio de contraseña si se intenta cambiar
+    // Validación de cambio de contraseña (si se intenta cambiar)
     const passActual = document.getElementById('password_actual');
     const passNueva = document.getElementById('password_nueva');
     const passConfirm = document.getElementById('password_confirm');
@@ -80,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Guardar datos en localStorage
+    // Guarda datos en localStorage
     localStorage.setItem('itza_session', JSON.stringify({
       email: email.value.trim(),
       nombre: nombre.value.trim(),

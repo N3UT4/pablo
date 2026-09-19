@@ -1,0 +1,38 @@
+:root {
+  /* === COLORES BASE (Cyberpunk/Dark Theme) === */
+  --ink: #0A0A0A;
+  --charcoal: #0D0D0D;
+  --charcoal-2: #121212;
+  --panel: #141414;
+  --panel-2: #1C1C1C;
+  --blood: #D4123A;
+  --blood-bright: #FF2E4A;
+  --bone: #F7F3EC;
+  --bone-dim: #BDB6AC;
+  --line: #323232;
+  --gold: #F2B134;
+  --gold-dim: #8A6A1E;
+  --success: #2E7D46;
+  --muted: #8B857D;
+  --page-bg: #0D0D0D;
+
+  /* === ESPACIADO Y DIMENSIONES === */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+  --control-size: 44px;
+  --header-height: 76px;
+  --content-max: 1120px;
+  --narrow-max: 760px;
+  --section-space: 96px;
+
+  /* === FUENTES === */
+  --font-primary: 'Work Sans', sans-serif;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-logo: 'New Rocker', 'Bebas Neue', sans-serif;
+
+  /* === TRANSICIONES BASE === */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}

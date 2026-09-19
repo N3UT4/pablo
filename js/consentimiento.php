@@ -1,5 +1,7 @@
 <?php
 // Recurso JavaScript servido por PHP.
+// Controla el acceso al formulario de consentimiento mediante
+// código de staff, valida los campos y envía el consentimiento al backend.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
 document.addEventListener('DOMContentLoaded', function () {
@@ -8,17 +10,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const consentCard = document.getElementById('consentCard');
   const unlockBtn = document.getElementById('unlockBtn');
 
+  // Desbloquea el formulario de consentimiento y guarda el código en sesión.
   function unlock(code) {
     accessGate.style.display = 'none';
     consentCard.style.display = 'block';
     sessionStorage.setItem('itza_staff_code', code || STAFF_CODE);
   }
 
+  // Si ya se desbloqueó antes, muestra el formulario directamente.
   const savedCode = sessionStorage.getItem('itza_staff_code');
   if (savedCode === STAFF_CODE) {
     unlock(savedCode);
   }
 
+  // Botón para desbloquear con código de staff (SweetAlert2)
   unlockBtn.addEventListener('click', function () {
     Swal.fire({
       title: 'Código de acceso',
@@ -47,11 +52,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const guardianBox = document.getElementById('guardianBox');
   const guardianNote = document.getElementById('guardianNote');
 
+  // Alterna la clase 'invalid' en el input y muestra/oculta el error.
   function setInvalid(input, errEl, isInvalid) {
     input.classList.toggle('invalid', isInvalid);
     if (errEl) errEl.classList.toggle('show', isInvalid);
   }
 
+  // Calcula la edad a partir de la fecha de nacimiento.
   function calcularEdad(fechaStr) {
     const nacimiento = new Date(fechaStr);
     const hoy = new Date();
@@ -65,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let esMenorDe15 = false;
   let esJoven = false;
 
+  // Muestra/oculta el formulario del acudiente si el cliente es menor de 18 años.
   fechaNacimiento.addEventListener('change', function () {
     if (!fechaNacimiento.value) return;
     const edad = calcularEdad(fechaNacimiento.value);
@@ -115,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setInvalid(firmaCliente, document.getElementById('firmaClienteErr'), !firmaValid);
     if (!firmaValid) ok = false;
 
+    // Si es menor de edad, valida los campos del acudiente.
     if (esJoven) {
       const acudienteNombre = document.getElementById('acudiente_nombre');
       const acudienteNombreValid = acudienteNombre.value.trim().split(' ').filter(Boolean).length >= 2;
@@ -137,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!firmaAcudienteValid) ok = false;
     }
 
+    // No se permite procedimiento sin acompañante legal si es menor de 15 años.
     if (esMenorDe15) {
       itzaError('El cliente es menor de 15 años. No se puede agendar sin acompañante legal.');
       return;

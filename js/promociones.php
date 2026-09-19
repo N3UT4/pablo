@@ -14,11 +14,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const codigoCuponInput = document.getElementById('codigo_cupon');
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  // Alterna la clase 'invalid' en el input y muestra/oculta el error.
   function setInvalid(input, errEl, isInvalid) {
     input.classList.toggle('invalid', isInvalid);
     if (errEl) errEl.classList.toggle('show', isInvalid);
   }
 
+  // Muestra los datos del cupón válido en la interfaz.
   function mostrarCupon(promo) {
     document.getElementById('nombrePromo').textContent = promo.nombre;
     document.getElementById('montoPromo').textContent = promo.descuento ? `-${promo.descuento}` : '';
@@ -30,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     sinCuponDiv.style.display = 'none';
   }
 
+  // Oculta los datos del cupón y muestra el estado sin cupón.
   function ocultarCupon() {
     cuponValidoDiv.style.display = 'none';
     formAplicacion.style.display = 'none';
@@ -38,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let cuponVigente = null;
 
+  // Botón "Validar cupón": busca el código en la tabla promotions.
   validarBtn.addEventListener('click', async function (e) {
     e.preventDefault();
     const codigo = codigoCuponInput.value.trim();
@@ -70,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Envío del formulario: guarda la redención del cupón para el usuario autenticado.
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     const codigo = codigoCuponInput.value.trim();

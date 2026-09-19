@@ -1,5 +1,8 @@
 <?php
 // Recurso JavaScript servido por PHP.
+// Añade animaciones a la landing page:
+// scroll reveal, efecto de header al hacer scroll,
+// animación de línea de aguja, tilt 3D, ripple y subrayado animado.
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
 document.addEventListener('DOMContentLoaded', function () {
@@ -97,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ---------------------------------------------------
      7. HERO PANEL — filas aparecen en cascada
   --------------------------------------------------- */
-  document.querySelectorAll('.hero-panel .row').forEach((row, i) => {
+  document.querySelectorAll('.feature-row').forEach((row, i) => {
     row.style.animation = `slideInRight .5s ease ${0.2 + i * 0.1}s both`;
   });
 

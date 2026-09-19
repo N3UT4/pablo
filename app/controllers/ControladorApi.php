@@ -1,18 +1,18 @@
 <?php
-
-require_once DIR_PATH . 'app/models/ModeloCitas.php';
-require_once DIR_PATH . 'app/models/ModeloUsuarios.php';
-require_once DIR_PATH . 'app/models/ModeloServicios.php';
-require_once DIR_PATH . 'app/models/ModeloArtistas.php';
-
-// API REST del proyecto (rúbrica: APIs REST, Formato JSON).
+// API REST del proyecto.
 // Expone el recurso "citas" (appointments) con los métodos HTTP:
 //   GET    index.php?action=api&recurso=citas          -> listar
 //   GET    index.php?action=api&recurso=citas&id=1     -> ver una
 //   POST   index.php?action=api&recurso=citas          -> crear (JSON body)
 //   PUT    index.php?action=api&recurso=citas&id=1     -> actualizar (JSON body)
 //   DELETE index.php?action=api&recurso=citas&id=1     -> eliminar
+// También expone servicios y artistas (solo lectura).
 // Todas las respuestas son JSON: { ok, message, data }.
+require_once DIR_PATH . 'app/models/ModeloCitas.php';
+require_once DIR_PATH . 'app/models/ModeloUsuarios.php';
+require_once DIR_PATH . 'app/models/ModeloServicios.php';
+require_once DIR_PATH . 'app/models/ModeloArtistas.php';
+
 class ControladorApi extends ControladorBase
 {
     private ModeloCitas $appointmentModel;
@@ -31,6 +31,7 @@ class ControladorApi extends ControladorBase
     // Punto de entrada único de la API.
     public function handle(): void
     {
+        // CORS headers para permitir acceso desde dominios externos
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type');
@@ -39,6 +40,14 @@ class ControladorApi extends ControladorBase
         if ($method === 'OPTIONS') {
             http_response_code(204);
             exit;
+        }
+
+        // Verificar autenticación para métodos que mutan datos.
+        if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
+            if (empty($_SESSION['user']['id'])) {
+                $this->json(false, 'Autenticación requerida.', [], 401);
+                return;
+            }
         }
 
         $recurso = strtolower(trim((string) ($_GET['recurso'] ?? '')));
@@ -98,6 +107,7 @@ class ControladorApi extends ControladorBase
 
                 if ($userId <= 0 || $artistId <= 0 || $serviceId <= 0 || $fecha === '' || $hora === '') {
                     $this->json(false, 'Faltan campos obligatorios: user_id, artist_id, service_id, fecha_cita, hora_cita.', [], 422);
+                    return;
                 }
 
                 $newId = $this->appointmentModel->create([
