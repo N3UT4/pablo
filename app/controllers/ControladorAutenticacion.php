@@ -1,4 +1,23 @@
 <?php
+// =====================================================================
+// FILE: app/controllers/ControladorAutenticacion.php
+// =====================================================================
+// DESCRIPCIÓN: Controlador que gestiona todas las operaciones de autenticación: registro de usuarios, inicio de sesión, cierre de sesión, generación y cambio de contraseñas temporales, y eliminación de cuenta. Valida tokens CSRF, verifica formatos de entrada y maneja errores con mensajes amigables.
+// UBICACIÓN MVC: Controller
+// ¿POR QUÉ EXISTE? Centraliza la lógica de seguridad de acceso en un solo controlador. Separa las operaciones de autenticación del resto de la lógica de negocio (dashboard, tatuador).
+// CÓMO SE USA: El Enrutador despacha las acciones 'login', 'register', 'logout', 'cambiar-clave' y 'delete-account' a los métodos de este controlador. Para login/register se verifica el método POST.
+// MÉTODOS CLAVE:
+//   - register(): valida CSRF + datos del formulario → llama a ModeloUsuarios::register() → setSessionUser() → redirect a dashboard.
+//   - login(): valida CSRF → ModeloUsuarios::login() → verifica password con password_verify → setSessionUser → redirect según rol.
+//   - logout(): destruye la sesión del usuario → redirect a home.
+//   - showTempPasswordForm(): genera una contraseña temporal y la muestra al usuario.
+//   - changeTempPassword(): cambia la contraseña temporal por una nueva (valida CSRF + match de contraseñas).
+//   - deleteAccount(): elimina la cuenta (valida CSRF + POST → ModeloUsuarios::deleteAccount → regenera sesión).
+// VALIDACIONES: email con filter_var, documento numérico, password mínimo 6 caracteres, confirmación de password.
+// SEGURIDAD: verify_csrf_token() en todos los POST. password_hash/password_verify para contraseñas. session_regenerate_id(true) al borrar cuenta.
+// RECURSOS: ModeloUsuarios (inyectado en constructor).
+// =====================================================================
+
 // Controlador de autenticación: registro, login, logout, cambio de contraseña
 // y eliminación de cuenta. Extiende ControladorBase para usar view(), redirect() y json().
 require_once DIR_PATH . 'app/models/ModeloUsuarios.php';

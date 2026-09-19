@@ -1,4 +1,25 @@
 <?php
+// =====================================================================
+// FILE: app/controllers/ControladorDashboard.php
+// =====================================================================
+// DESCRIPCIÓN: Controlador principal del dashboard. Gestiona las vistas del cliente (mis citas, abonos, consentimiento, agendar), las operaciones de administración (métricas, usuarios, servicios, transacciones) y las operaciones CRUD que requieren permisos de admin. Desacopla la lógica de negocio a DashboardService y los chequeos de acceso a AuthHelper.
+// UBICACIÓN MVC: Controller
+// ¿POR QUÉ EXISTE? Unifica el manejo de la sección privada de la aplicación. Los clientes ven sus citas y pagos; los administradores gestionan usuarios, servicios y transacciones; los tatuadores acceden a su panel específico (ver ControladorTatuador).
+// CÓMO SE USA: El Enrutador despacha las acciones de dashboard, cliente-*, admin-* a los métodos de este controlador. Cada método llama a AuthHelper::guard() para verificar roles antes de ejecutar.
+// DEPENDENCIAS:
+//   - Models: ModeloUsuarios, ModeloCitas, ModeloPagos, ModeloConsentimiento, ModeloServicios
+//   - Service: DashboardService (consulta métricas, transacciones, usuarios, servicios)
+//   - Helper: AuthHelper (verificación de roles y acceso)
+// MÉTODOS CLAVE:
+//   - clienteCitas/abonos/consentimiento/agendar: vistas de usuario cliente, protegidas por AuthHelper.
+//   - adminMetrics: métricas del dashboard (total citas, estados, abonos, últimas citas).
+//   - adminUsuarios/adminServicios/adminTransacciones: listados para gestión.
+//   - adminSaveUser/adminSaveService: crea/actualiza usuarios/servicios (valida CSRF + campos).
+//   - adminDeleteService: elimina un servicio por ID.
+// ESTRUCTURA DE DATOS: Cada método pasa un array $data a view() con 'title', 'pageTitle', 'currentPage', y los datos específicos (citas, usuarios, servicios, transacciones, metrics, user).
+// SEGURIDAD: AuthHelper::guard('admin', 'login') impide acceso no autorizado. verify_csrf_token() en adminSaveUser y adminSaveService.
+// =====================================================================
+
 // Controlador del dashboard principal. Gestiona las vistas del cliente,
 // administrador y las operaciones CRUD de usuarios, servicios y transacciones.
 // Usa DashboardService y AuthHelper para desacoplar lógica de negocio y acceso.
@@ -183,6 +204,7 @@ class ControladorDashboard extends ControladorBase
     {
         $this->authHelper->guard('admin', 'login');
 
+        // Verificación de token CSRF: protege contra ataques Cross-Site Request Forgery
         if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'La sesión del formulario expiró.'];
             $this->redirect(BASE_URL . 'index.php?action=admin-usuarios');
@@ -235,6 +257,7 @@ class ControladorDashboard extends ControladorBase
     {
         $this->authHelper->guard('admin', 'login');
 
+        // Verificación de token CSRF: protege contra ataques Cross-Site Request Forgery
         if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'La sesión del formulario expiró.'];
             $this->redirect(BASE_URL . 'index.php?action=admin-servicios');

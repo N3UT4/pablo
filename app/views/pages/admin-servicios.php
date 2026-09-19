@@ -2,6 +2,9 @@
 $servicios = $servicios ?? [];
 ?>
 <div class="container container-narrow" style="padding-top:24px;">
+  <div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  </div>
 
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
         <div class="glass-card" style="flex:1;min-width:280px;margin:0;">

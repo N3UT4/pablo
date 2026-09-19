@@ -1,4 +1,24 @@
 <?php
+// =====================================================================
+// FILE: app/models/ModeloUsuarios.php
+// =====================================================================
+// DESCRIPCIÓN: Modelo de datos para la tabla 'users'. Gestiona registro de usuarios, autenticación (login), manejo de sesión, verificación de roles, contraseñas temporales y operaciones CRUD completas (create, read, update, delete) de usuarios.
+// UBICACIÓN MVC: Model
+// ¿POR QUÉ EXISTE? Encapsula todas las operaciones de la base de datos relacionadas con usuarios. Evita escribir SQL directamente en los controladores y centraliza la lógica de autenticación y roles.
+// CÓMO SE USA: Instanciado por ControladorAutenticacion y ControladorDashboard (inyectado como dependencia). Los métodos retornan arrays asociativos o PDOStatement para operaciones de conteo.
+// CAMPOS DE LA TABLA users:
+//   id, nombre, email, password, telefono, documento, fecha_nacimiento, rol,
+//   artist_id, temp_password, temp_password_active, created_at
+// MÉTODOS CLAVE POR CATEGORÍA:
+//   Autenticación: findByEmail(), login(), register(), setSessionUser(), currentUser(), logout()
+//   Roles: isLoggedIn(), hasRole(), isAdmin(), isTatuador(), isStaff()
+//   CRUD: all(), find(), save(), update(), deleteAccount()
+//   Contraseña temporal: setTemporaryPassword(), isTempPasswordActive(), deactivateTempPassword()
+//   Relación artista: findArtistByUser() — JOIN users ↔ artists
+// SEGURIDAD: Las contraseñas se hashean con password_hash(PASSWORD_DEFAULT). El login usa password_verify(). Los emails se normalizan a minúsculas. El borrado de cuenta elimina primero datos relacionados para mantener integridad referencial.
+// RECURSOS: Hereda de ModeloBase (conexión PDO, método execute()).
+// =====================================================================
+
 // Modelo de datos para usuarios.
 // Gestiona registro, login, sesión, roles, contraseñas temporales
 // y operaciones CRUD de usuarios.
@@ -12,8 +32,11 @@ class ModeloUsuarios extends ModeloBase
     }
 
     // Busca un usuario por email (para login).
+    // Normaliza el email a minúsculas y elimina espacios.
+    // Retorna el hash de password para poder verificarlo en login().
     public function findByEmail(string $email): ?array
     {
+        // SELECT con parámetro nombrado :email — evita inyección SQL
         $statement = $this->execute(
             'SELECT id, nombre, email, password, telefono, documento, fecha_nacimiento, rol, artist_id, created_at
              FROM users WHERE email = :email LIMIT 1',
@@ -28,6 +51,7 @@ class ModeloUsuarios extends ModeloBase
     // Usado por ControladorConsentimiento para ubicar al cliente.
     public function findByDocumento(string $documento): ?array
     {
+        // SELECT con parámetro nombrado :documento
         $statement = $this->execute(
             'SELECT id, nombre, email, telefono, documento FROM users WHERE documento = :documento LIMIT 1',
             ['documento' => trim($documento)]
@@ -38,20 +62,24 @@ class ModeloUsuarios extends ModeloBase
     }
 
     // Registra un nuevo usuario con contraseña hasheada.
+    // Normaliza email a minúsculas. Lanza excepción si el email ya existe.
     public function register(array $data): array
     {
         $email = strtolower(trim((string) ($data['email'] ?? '')));
         $nombre = trim((string) ($data['nombre'] ?? ''));
         $password = (string) ($data['password'] ?? '');
 
+        // Validación de datos obligatorios antes de tocar la BD
         if ($email === '' || $nombre === '' || $password === '') {
             throw new InvalidArgumentException('Faltan datos obligatorios.');
         }
 
+        // Previene duplicados de email
         if ($this->findByEmail($email)) {
             throw new InvalidArgumentException('Este correo ya está registrado.');
         }
 
+        // INSERT con parámetros nombrados: password se hashea con PASSWORD_DEFAULT (bcrypt/argon2)
         $this->execute(
             'INSERT INTO users (nombre, email, password, telefono, documento, fecha_nacimiento)
              VALUES (:nombre, :email, :password, :telefono, :documento, :fecha_nacimiento)',
@@ -103,7 +131,8 @@ class ModeloUsuarios extends ModeloBase
     }
 
     // Almacena los datos del usuario en la sesión.
-    // También busca si tiene un artista asociado.
+    // También busca si tiene un artista asociado y guarda el artist_id en sesión.
+    // Estructura de $_SESSION['user']: {id, nombre, email, rol, artist_id?}
     public function setSessionUser(array $user): void
     {
         $_SESSION['user'] = [
@@ -144,8 +173,10 @@ class ModeloUsuarios extends ModeloBase
     }
 
     // Verifica si el usuario tiene alguno de los roles indicados.
+    // Lee el rol desde $_SESSION['user']['rol'].
     public function hasRole(string ...$roles): bool
     {
+        // in_array con true para comparación estricta (evita coerción de tipos)
         $actual = $_SESSION['user']['rol'] ?? null;
         return $actual !== null && in_array($actual, $roles, true);
     }
@@ -188,10 +219,14 @@ class ModeloUsuarios extends ModeloBase
     }
 
     // Actualización de datos y/o rol. CRUD - Update.
+    // Construye dinámicamente la cláusula SET solo con los campos presentes en $data.
+    // Si $data['password'] está presente, la hashea antes de guardar.
     public function update(int $id, array $data): bool
     {
+        // Lista blanca de campos actualizables (protege contra inyección por campo)
         $campos = ['nombre', 'email', 'telefono', 'documento', 'fecha_nacimiento', 'rol'];
         $sets = [];
+        // Parámetros con 'id' siempre presente para el WHERE
         $params = ['id' => $id];
 
         foreach ($campos as $campo) {
@@ -252,16 +287,22 @@ class ModeloUsuarios extends ModeloBase
 
     // Elimina la cuenta del usuario de la base de datos.
     // Primero elimina datos relacionados para mantener la integridad referencial.
+    // Orden: payments → consents → appointments → promotion_redemptions → users
     public function deleteAccount(int $userId): void
     {
         if ($userId <= 0) {
             throw new InvalidArgumentException('La cuenta no es válida.');
         }
 
+        // DELETE en cascada manual: elimina pagos de citas del usuario
         $this->execute('DELETE FROM payments WHERE appointment_id IN (SELECT id FROM appointments WHERE user_id = :id)', ['id' => $userId]);
+        // Elimina consentimientos de las citas del usuario
         $this->execute('DELETE FROM consents WHERE appointment_id IN (SELECT id FROM appointments WHERE user_id = :id)', ['id' => $userId]);
+        // Elimina las citas del usuario
         $this->execute('DELETE FROM appointments WHERE user_id = :id', ['id' => $userId]);
+        // Elimina canjes de promociones del usuario
         $this->execute('DELETE FROM promotion_redemptions WHERE user_id = :id', ['id' => $userId]);
+        // Finalmente elimina el usuario
         $this->execute('DELETE FROM users WHERE id = :id', ['id' => $userId]);
     }
 }

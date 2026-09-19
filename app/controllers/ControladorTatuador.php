@@ -1,4 +1,27 @@
 <?php
+// =====================================================================
+// FILE: app/controllers/ControladorTatuador.php
+// =====================================================================
+// DESCRIPCIÓN: Controlador del módulo de tatuador. Gestiona el panel del tatuador (dashboard), la agenda de citas, los horarios de trabajo, el perfil del artista, y las APIs REST para actualizar el estado de citas, guardar horarios y obtener citas en formato JSON.
+// UBICACIÓN MVC: Controller
+// ¿POR QUÉ EXISTE? Proporciona una interfaz dedicada al tatuador para gestionar su agenda, horarios y perfil. Requiere que el usuario tenga rol 'tatuador' (o 'admin' con modo tatuador activado).
+// CÓMO SE USA: El Enrutador despacha las acciones artist-panel, artist-agenda, artist-horarios, artist-perfil, artist-update-estado, artist-save-schedule, artist-citas-json y artist-switch-mode a los métodos de este controlador.
+// DEPENDENCIAS:
+//   - Models: ModeloCitas, ModeloHorariosTatuador, ModeloUsuarios
+//   - Helper: AuthHelper (verificación de acceso de página y API)
+// MÉTODOS CLAVE:
+//   - dashboard(): carga el artista asociado y muestra el panel principal.
+//   - agenda(): lista las citas asignadas al tatuador (ModeloCitas::findByArtist).
+//   - horarios(): muestra los horarios de trabajo (ModeloHorariosTatuador::getByArtist).
+//   - perfil(): muestra el perfil del artista y del usuario.
+//   - switchMode(): activa/desactiva el "modo tatuador" para administradores.
+//   - updateEstado(): API REST — actualiza el estado de una cita (valida CSRF, método POST, pertenencia al artista).
+//   - saveSchedule(): API REST — guarda/actualiza un horario semanal (valida CSRF, día 0-6).
+//   - citasJson(): API REST — retorna las citas del tatuador en JSON.
+// AUTORIZACIÓN: verifyPageAccess() para vistas (redirige si no autorizado), verifyApiAccess() para APIs (retorna JSON 401/403 si no autorizado).
+// SEGURIDAD: verify_csrf_token() en updateEstado y saveSchedule. Verificación de que la cita pertenece al artista antes de modificar.
+// =====================================================================
+
 // Controlador del módulo de tatuador. Gestiona el panel del tatuador,
 // agenda, horarios, perfil, y la API REST para el modo tatuador.
 // Usa AuthHelper para la verificación de acceso.
@@ -176,6 +199,7 @@ class ControladorTatuador extends ControladorBase
             $this->json(false, 'Datos inválidos.', [], 422);
         }
 
+        // Verifica que la cita exista y pertenezca al artista autenticado (protege contra acceso a otras citas)
         $cita = $this->citaModel->find($citaId);
         if (!$cita || (int) $cita['artist_id'] !== $artistId) {
             $this->json(false, 'Cita no encontrada o no asignada a ti.', [], 404);
@@ -206,6 +230,7 @@ class ControladorTatuador extends ControladorBase
         $horaFin = (string) ($_POST['hora_fin'] ?? '17:00:00');
         $disponible = (int) ($_POST['disponible'] ?? 1) === 1;
 
+        // Valida que el día esté en el rango 0-6 (0=domingo, 6=sábado)
         if ($dia < 0 || $dia > 6) {
             $this->json(false, 'Día inválido.', [], 422);
         }

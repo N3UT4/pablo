@@ -1,5 +1,29 @@
 <?php
+// =====================================================================
+// FILE: config/config.php
+// =====================================================================
+// DESCRIPCIÓN: Archivo de configuración global de la aplicación ITZA TATTOO. Carga variables de entorno desde .env, inicia la sesión con cookies seguras (HttpOnly, SameSite, Secure), define constantes globales para URLs, rutas, credenciales de BD, datos del estudio, y proporciona funciones helper para CSRF y utilidades.
+// UBICACIÓN MVC: Config
+// ¿POR QUÉ EXISTE? Centraliza toda la configuración en un solo archivo. Es el primer archivo que carga index.php y cualquier layout/partial que necesite acceder a constantes. También define funciones globales reutilizables.
+// CÓMO SE USA: Requerido automáticamente por index.php (require_once) y por encabezado.php. Las constantes (BASE_URL, DIR_PATH, DB_HOST, etc.) y funciones (csrf_token(), verify_csrf_token(), estado_cita()) están disponibles globalmente.
+// CONSTANTES DEFINIDAS:
+//   - BASE_URL: URL base del proyecto (http/https + host + carpeta).
+//   - DIR_PATH: ruta física absoluta al directorio raíz del proyecto.
+//   - APP_ROOT, APP_URL, APP_ENV: ruta raíz, URL y entorno (development/production).
+//   - DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, DB_PASS: credenciales de la BD.
+//   - STUDIO_CITY, STUDIO_ADDRESS, STUDIO_PHONE, STUDIO_WHATSAPP, STUDIO_INSTAGRAM, STUDIO_FACEBOOK, STUDIO_TIKTOK, STUDIO_MAPS: datos de contacto del estudio.
+//   - STAFF_ACCESS_CODE: código de acceso para staff.
+//   - GALLERY_UPLOAD_PATH, GALLERY_UPLOAD_DIR, GALLERY_UPLOAD_URL: rutas de uploads.
+//   - STUDIO_HOURS: horario de atención del estudio.
+// FUNCIONES HELPER:
+//   - itza_env($key, $default): lee variables de .env o el default.
+//   - csrf_token(): retorna el token CSRF de la sesión actual.
+//   - verify_csrf_token($token): compara con hash_equals() (timing-safe).
+//   - estado_cita($estado): traduce estados internos a etiquetas humanas.
+// SEGURIDAD: La sesión usa session_set_cookie_params con httponly=true, samesite='Lax', secure según protocolo. El token CSRF se genera con random_bytes(32) (32 bytes de entropía criptográfica).
+// =====================================================================
 
+// Carga las variables de entorno desde el archivo .env ubicado en la raíz del proyecto
 $envFile = dirname(__DIR__) . '/.env';
 if (is_file($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -39,18 +63,25 @@ function itza_env(string $key, ?string $default = null): ?string
     return $value;
 }
 
+// Detecta si la petición viene por HTTPS (considera X-Forwarded-Proto para proxies)
 $forwardedProtocol = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
     ? strtolower((string) $_SERVER['HTTP_X_FORWARDED_PROTO'])
     : '';
 $requestProtocol = isset($_SERVER['REQUEST_SCHEME'])
     ? strtolower((string) $_SERVER['REQUEST_SCHEME'])
     : '';
+// Detecta el puerto del servidor para construir la URL base correctamente
 $serverPort = isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 0;
+// Determina el protocolo (http/https) basado en múltiples indicadores del servidor
 $isHttps = (!empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off')
     || $serverPort === 443
     || strpos($forwardedProtocol, 'https') === 0
     || $requestProtocol === 'https';
 
+// Inicia la sesión con parámetros de cookie seguros:
+//   httponly=true  → JavaScript no puede acceder a la cookie de sesión
+//   samesite=Lax  → la cookie no se envía en peticiones cross-site (protege CSRF)
+//   secure        → solo se envía sobre HTTPS si la app usa HTTPS
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_set_cookie_params([
         'httponly' => true,
@@ -60,11 +91,13 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+// Obtiene el host (dominio/puerto) desde el encabezado HTTP_HOST
 $host = trim((string) ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost'));
 if ($host === '') {
     $host = 'localhost';
 }
 $hostHasPort = preg_match('/:\d+$/', $host) === 1;
+// Si el host no incluye puerto y el puerto no es 80/443, lo agrega (ej: localhost:8080)
 if (!$hostHasPort && $serverPort > 0 && !in_array($serverPort, [80, 443], true)) {
     $host .= ':' . $serverPort;
 }
@@ -84,9 +117,13 @@ if ($scriptDirectory !== '' && $scriptDirectory !== '.') {
 $baseUrlPath = $projectFolder === '' ? '' : '/' . $projectFolder;
 $protocol = $isHttps ? 'https://' : 'http://';
 
+// Define BASE_URL: protocolo + host + ruta de la carpeta del proyecto + '/'
+// Se usa para construir URLs absolutas en links, assets y redirects.
 if (!defined('BASE_URL')) {
     define('BASE_URL', $protocol . $host . $baseUrlPath . '/');
 }
+// Define DIR_PATH: ruta física absoluta al directorio raíz del proyecto (con separador)
+// Se usa en require_once para cargar archivos de forma segura y portable.
 if (!defined('DIR_PATH')) {
     define('DIR_PATH', rtrim(dirname(__DIR__), '/\\') . DIRECTORY_SEPARATOR);
 }
@@ -118,6 +155,7 @@ if (!defined('DB_USER')) {
 if (!defined('DB_PASSWORD')) {
     define('DB_PASSWORD', itza_env('DB_PASSWORD', itza_env('DB_PASS', '')));
 }
+// Define DB_PASSWORD: alias alternativo de la contraseña de BD (compatibilidad con código antiguo)
 if (!defined('DB_PASS')) {
     define('DB_PASS', DB_PASSWORD);
 }
@@ -166,6 +204,8 @@ define('STUDIO_HOURS', [
     '5:00 p. m. - 9:00 p. m.',
 ]);
 
+// Genera un token CSRF único por sesión usando 32 bytes de entropía criptográfica.
+// Se almacena en $_SESSION y se incluye en formularios como campo oculto.
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }

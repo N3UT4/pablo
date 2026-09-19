@@ -19,6 +19,9 @@ foreach ($citas as $cita) {
 }
 ?>
 <div class="container container-narrow" style="padding-top:24px;">
+  <div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  </div>
 
     <?php if (!empty($citas)): ?>
         <div class="dash-stats" style="margin-bottom:20px;">

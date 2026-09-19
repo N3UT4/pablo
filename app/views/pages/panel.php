@@ -2,6 +2,9 @@
 $user = $user ?? null;
 ?>
 <div class="container container-narrow" style="padding-top:24px;">
+  <div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  </div>
   <div class="glass-card glow-hover">
     <div class="welcome-banner" style="margin-bottom:24px;">
       <h2>¡Bienvenido<?= ($user['rol'] ?? '') === 'tatuador' ? '' : '' ?> a ITZA TATTOO!</h2>

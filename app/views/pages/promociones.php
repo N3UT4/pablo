@@ -1,4 +1,7 @@
 <div class="container container-narrow">
+  <div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  </div>
   <div class="card">
     <div class="card-head">
       <span class="eyebrow">Descuentos exclusivos</span>
@@ -73,18 +76,31 @@
       </div>
     </form>
 
-    <div style="border-top: 1px solid var(--line); margin-top: 40px; padding-top: 24px;">
-      <div class="section-title">Promociones activas</div>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div style="background: var(--panel-2); border-left: 3px solid var(--gold); padding: 12px 14px; border-radius: 2px;">
-          <strong style="color: var(--gold);">WELCOME20</strong> — Descuento 20% para clientes nuevos
-        </div>
-        <div style="background: var(--panel-2); border-left: 3px solid var(--success); padding: 12px 14px; border-radius: 2px;">
-          <strong style="color: var(--success);">REFERIDOS</strong> — Descuento por cada amigo que refiera
-        </div>
-        <div style="background: var(--panel-2); border-left: 3px solid var(--blood-bright); padding: 12px 14px; border-radius: 2px;">
-          <strong style="color: var(--blood-bright);">LOYALTY</strong> — Descuentos progresivos por sesiones
-        </div>
+    <div class="card" style="margin-top: 24px; padding: 16px; border: 1px dashed rgba(247,243,236,0.15);">
+      <div class="section-title">🧪 Demostración de errores</div>
+      <p style="color: var(--bone-dim); font-size: 12px; margin-bottom: 12px;">Botones para presentar las páginas de error</p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn-outline btn-sm" onclick="window.location.href='<?= BASE_URL ?>index.php?action=demo-404'">
+          <i class="fa-solid fa-triangle-exclamation"></i> Mostrar Error 404
+        </button>
+        <button type="button" class="btn-outline btn-sm" onclick="window.location.href='<?= BASE_URL ?>index.php?action=demo-500'" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);">
+          <i class="fa-solid fa-server"></i> Mostrar Error 500
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid var(--line); margin-top: 40px; padding-top: 24px;">
+    <div class="section-title">Promociones activas</div>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="background: var(--panel-2); border-left: 3px solid var(--gold); padding: 12px 14px; border-radius: 2px;">
+        <strong style="color: var(--gold);">WELCOME20</strong> — Descuento 20% para clientes nuevos
+      </div>
+      <div style="background: var(--panel-2); border-left: 3px solid var(--success); padding: 12px 14px; border-radius: 2px;">
+        <strong style="color: var(--success);">REFERIDOS</strong> — Descuento por cada amigo que refiera
+      </div>
+      <div style="background: var(--panel-2); border-left: 3px solid var(--blood-bright); padding: 12px 14px; border-radius: 2px;">
+        <strong style="color: var(--blood-bright);">LOYALTY</strong> — Descuentos progresivos por sesiones
       </div>
     </div>
   </div>

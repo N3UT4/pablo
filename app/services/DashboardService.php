@@ -1,4 +1,31 @@
 <?php
+// =====================================================================
+// FILE: app/services/DashboardService.php
+// =====================================================================
+// DESCRIPCIÓN: Service de negocio del dashboard. Extrae la lógica de consulta y agregación de datos del ControladorDashboard, centralizando el cálculo de métricas, listados de transacciones/usuarios/servicios en un único lugar.
+// UBICACIÓN MVC: Service (capa de lógica de negocio)
+// ¿POR QUÉ EXISTE? Mantiene los controladores delgados (thin controllers). Los controladores solo verifican permisos, llaman al service y pasan los datos a la vista. Si la lógica de negocio cambia, solo se modifica aquí.
+// CÓMO SE USA: Instanciado por ControladorDashboard en el constructor, recibiendo ModeloCitas, ModeloUsuarios y ModeloServicios como dependencias.
+// MÉTODOS CLAVE:
+//   - getMetrics(): retorna un array con total_citas, citas por estado (pendientes/confirmadas/completadas/canceladas), citas_mes, total_abonos, y últimas 5 citas.
+//   - getTransacciones($limit): delega a ModeloCitas::getTransacciones() para listar pagos/asociados a citas.
+//   - getUsuarios(): delega a ModeloUsuarios::all() para listar todos los usuarios.
+//   - getServicios(): delega a ModeloServicios::listActive() para listar servicios activos.
+// ESTRUCTURA DE DATOS de getMetrics():
+//   {
+//     total_citas: int,        // COUNT(*) de appointments
+//     pendientes: int,         // COUNT con estado='pendiente'
+//     confirmadas: int,        // COUNT con estado='confirmada'
+//     completadas: int,        // COUNT con estado='completada'
+//     canceladas: int,         // COUNT con estado='cancelada'
+//     citas_mes: int,          // COUNT con fecha_cita >= CURDATE()
+//     total_abonos: float,     // SUM(monto) de payments con estado pendiente/verificado
+//     ultimas_citas: array     // 5 citas más recientes con datos completos
+//   }
+// MANEJO DE ERRORES: cada método envuelve las llamadas en try/catch y retorna valores por defecto (0, [], 0.0) si la BD falla, registrando el error con error_log().
+// RECURSOS: ModeloCitas, ModeloUsuarios, ModeloServicios (inyectados en constructor).
+// =====================================================================
+
 // Service: Operaciones del dashboard (métricas, transacciones, gestión).
 // Extrae la lógica de negocio y consultas SQL de ControladorDashboard.
 class DashboardService
@@ -15,6 +42,9 @@ class DashboardService
     }
 
     // Métricas generales del dashboard (solo admin).
+    // Inicializa con valores por defecto para evitar errores si la BD falla.
+    // Estructura: total_citas, estados (pendientes/confirmadas/completadas/canceladas),
+    //             citas_mes, total_abonos, ultimas_citas
     public function getMetrics(): array
     {
         $metrics = [

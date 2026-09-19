@@ -1,4 +1,7 @@
 <div class="container container-narrow">
+  <div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  </div>
   <div class="card">
     <div class="card-head">
       <span class="eyebrow">Seguridad</span>

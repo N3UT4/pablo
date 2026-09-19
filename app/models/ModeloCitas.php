@@ -1,5 +1,29 @@
 <?php
-// Modelo de datos para citas/appointments.
+// =====================================================================
+// FILE: app/models/ModeloCitas.php
+// =====================================================================
+// DESCRIPCIÓN: Modelo de datos para la tabla 'appointments' (citas). Proporciona operaciones CRUD completas, consultas con JOINs a usuarios, artistas y servicios, reportes exportables con filtro por fechas, listados para el panel de tatuador, y métodos de métricas/transacciones para el dashboard administrativo.
+// UBICACIÓN MVC: Model
+// ¿POR QUÉ EXISTE? Encapsula todas las consultas SQL relacionadas con citas. Los controladores (ControladorTatuador, ControladorDashboard) y el DashboardService delegan las consultas de citas a este modelo.
+// CÓMO SE USA: Instanciado por ControladorTatuador, ControladorDashboard y DashboardService. Los métodos retornan arrays asociativos (fetchAll) o PDOStatement (para conteos).
+// CAMPOS DE LA TABLA appointments:
+//   id, user_id, artist_id, service_id, fecha_cita, hora_cita, detalle_personalizado, observaciones, estado, created_at
+// ESTADOS DE CITA: pendiente, confirmada, completada, cancelada
+// MÉTODOS CLAVE POR CATEGORÍA:
+//   CRUD: create(), find(), all(), update(), delete()
+//   Reportes: reporteCitas() — CSV con subquery de total abonado
+//   Cliente: listByUser(), latestPendingConsent()
+//   Tatuador: findByArtist(), getDetalleCliente()
+//   Métricas: getTotalCitas(), getCountByEstado(), getCitasThisMonth(), getTotalAbonos(), getLatestCitas(), getTransacciones()
+// CONSULTAS COMPLEJAS:
+//   - reporteCitas(): subquery SELECT IFNULL(SUM(monto)) para calcular abonos por cita
+//   - listByUser()/findByArtist(): LEFT JOIN payments para datos de pago
+//   - getDetalleCliente(): múltiples LEFT JOIN (consents, payments) para el expediente del tatuador
+// NOTA: getLatestCitas() y getTransacciones() usan LIMIT con variable PHP interpolada (no parámetro). Aunque el valor es siempre int, es una práctica que debería revisarse.
+// RECURSOS: Hereda de ModeloBase (conexión PDO, método execute()).
+// =====================================================================
+
+// Modelo de datos para citas/appointment.
 // Proporciona operaciones CRUD y consultas especializadas para
 // citas, reportes, métricas de dashboard y transacciones.
 require_once DIR_PATH . 'core/ModeloBase.php';
@@ -14,6 +38,7 @@ class ModeloCitas extends ModeloBase
     // Crea una nueva cita y retorna su ID.
     public function create(array $data): int
     {
+        // INSERT con parámetros nombrados — estado por defecto 'pendiente'
         $this->execute(
             'INSERT INTO appointments
                 (user_id, artist_id, service_id, fecha_cita, hora_cita, detalle_personalizado, observaciones, estado)
@@ -34,6 +59,7 @@ class ModeloCitas extends ModeloBase
     }
 
     // Busca una cita por ID con datos del tatuador y servicio.
+    // SELECT con JOINs a artists y services para obtener nombres legibles
     public function find(int $id): ?array
     {
         $statement = $this->execute(
@@ -51,6 +77,7 @@ class ModeloCitas extends ModeloBase
     }
 
     // Lista todas las citas ordenadas por fecha descendente.
+    // SELECT con JOINs a users, artists y services — ordena por fecha/hora descendente
     public function all(): array
     {
         $statement = $this->execute(
@@ -68,6 +95,7 @@ class ModeloCitas extends ModeloBase
     // Actualiza campos de una cita existente.
     public function update(int $id, array $data): bool
     {
+        // Construye la cláusula SET dinámicamente solo con campos presentes (lista blanca)
         $campos = ['fecha_cita', 'hora_cita', 'detalle_personalizado', 'observaciones', 'estado'];
         $sets = [];
         $params = ['id' => $id];
@@ -95,6 +123,8 @@ class ModeloCitas extends ModeloBase
     // Permite filtrar por rango de fechas.
     public function reporteCitas(?string $desde = null, ?string $hasta = null): array
     {
+        // Subquery: calcula el total abonado por cita (SUM de pagos pendientes/verificados)
+        // La cláusula WHERE 1=1 permite concatenar filtros de fecha dinámicamente
         $sql = 'SELECT ap.id, u.nombre AS cliente, u.email AS email_cliente,
                        a.nombre AS tatuador, s.nombre AS servicio,
                        ap.fecha_cita, ap.hora_cita, ap.estado,
@@ -191,6 +221,8 @@ class ModeloCitas extends ModeloBase
 
     // Detalle completo del cliente para el expediente del tatuador.
     // Incluye datos de consentimiento y pago.
+    // SELECT con múltiples LEFT JOINs: consents (firma/legal) y payments (abono)
+    // Permite ver el expediente completo de un cliente para el tatuador
     public function getDetalleCliente(int $citaId, int $artistId): ?array
     {
         $statement = $this->execute(
@@ -248,6 +280,8 @@ class ModeloCitas extends ModeloBase
     // Últimas N citas con datos completos.
     public function getLatestCitas(int $limit = 5): array
     {
+        // LIMIT con variable PHP interpolada directamente en el string SQL.
+        // Aunque $limit es siempre int, esto sería vulnerable si se pasara string.
         $statement = $this->execute(
             "SELECT ap.id, u.nombre AS cliente, a.nombre AS tatuador, s.nombre AS servicio,
                     ap.fecha_cita, ap.hora_cita, ap.estado,

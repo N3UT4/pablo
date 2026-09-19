@@ -4,7 +4,10 @@
     <p>Regístrate para poder agendar tu cita, hacer seguimiento de tus pagos y firmar tu consentimiento digital.</p>
   </div>
 
-  <div class="container wide">
+  <div class="container wide" style="margin-top:24px;">
+  <div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  </div>
     <div class="card">
       <div class="card-head">
         <span class="eyebrow">Paso 1</span>

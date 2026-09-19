@@ -58,14 +58,6 @@
                 e.stopPropagation();
                 toggleDropdown();
             });
-            dropdown.addEventListener('mouseenter', () => {
-                dropdown.classList.add('is-open');
-                dropdownBtn.setAttribute('aria-expanded', 'true');
-            });
-            dropdown.addEventListener('mouseleave', () => {
-                dropdown.classList.remove('is-open');
-                dropdownBtn.setAttribute('aria-expanded', 'false');
-            });
             document.addEventListener('click', (e) => {
                 if (!dropdown.contains(e.target)) {
                     dropdown.classList.remove('is-open');

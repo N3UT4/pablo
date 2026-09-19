@@ -11,6 +11,9 @@ $metrics = $metrics ?? [
 ];
 ?>
 <div class="container container-narrow" style="padding-top:24px;">
+  <div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  </div>
 
     <div class="dash-stats">
         <div class="dash-stat-card stat-success">

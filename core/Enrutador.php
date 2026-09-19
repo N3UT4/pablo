@@ -1,4 +1,21 @@
 <?php
+// =====================================================================
+// FILE: core/Enrutador.php
+// =====================================================================
+// DESCRIPCIÓN: Enrutador central de la aplicación. Lee el parámetro ?action= de la URL, verifica los permisos de acceso (roles y sesión) y despacha la solicitud al método del controlador correspondiente. También maneja respuestas JSON para endpoints AJAX y peticiones REST.
+// UBICACIÓN MVC: Router
+// ¿POR QUÉ EXISTE? Reemplaza el enrutamiento tradicional de un framework completo. En una aplicación MVC sin un router externo, este archivo es el encargado de mapear URLs a controladores y métodos, validando que el usuario tenga permiso para acceder a cada ruta.
+// CÓMO SE USA: Llamado desde index.php mediante Enrutador::dispatch(). El método dispatch() es estático y utiliza un switch sobre el valor de $_GET['action'].
+// ESTRUCTURA DE ROUTAS:
+//   - Públicas: home, contact, gallery, booking, consent, profile, promotions, 404, 500, csrf-token
+//   - Autenticación: login, register, logout, cambiar-clave, delete-account
+//   - Dashboard cliente/admin: dashboard, cliente-citas, cliente-abonos, cliente-consentimiento, cliente-agendar
+//   - Dashboard admin: admin, admin-usuarios, admin-servicios, admin-transacciones, admin-save-user, admin-save-service, admin-delete-service
+//   - Panel tatuador: artist-panel, artist-agenda, artist-horarios, artist-perfil, artist-update-estado, artist-save-schedule, artist-citas-json, artist-switch-mode
+//   - API REST: gallery-list, gallery-upload, book-appointment, submit-consent, validate-promo, redeem-promo, reporte-citas, reporte-citas-json, api
+// SEGURIDAD: Cada ruta verifica $_SESSION['user'] y el rol antes de ejecutar el controlador. Los endpoints AJAX devuelven JSON con código 401 si no hay sesión.
+// =====================================================================
+
 // Punto de entrada del enrutador MVC.
 // Traduce la acción solicitada (parámetro ?action=) al método correspondiente
 // del controlador. Es el único archivo que decide qué controlador ejecutar.
@@ -83,6 +100,7 @@ class Enrutador
             case 'admin-save-user':
             case 'admin-save-service':
             case 'admin-delete-service':
+                // Verificación de rol: solo usuarios con rol 'admin' pueden acceder
                 $user = $_SESSION['user'] ?? null;
                 if (!$user || ($user['rol'] ?? '') !== 'admin') {
                     $_SESSION['flash'] = ['type' => 'error', 'message' => 'Inicia sesión para continuar.'];
@@ -131,6 +149,13 @@ class Enrutador
                 break;
             case 'promotions':
                 $pageController->promotions();
+                break;
+            case 'demo-404':
+                header("HTTP/1.0 404 Not Found");
+                $pageController->notFound();
+                break;
+            case 'demo-500':
+                throw new Exception("Simulación de error del servidor para demostración");
                 break;
             // --- Errores ---
             case '404':
@@ -241,6 +266,7 @@ class Enrutador
             case 'artist-update-estado':
             case 'artist-save-schedule':
             case 'artist-citas-json':
+                // Verificación de rol: requiere 'tatuador' o 'admin' con modo activado
                 $user = $_SESSION['user'] ?? null;
                 if (!$user || !in_array($user['rol'] ?? '', ['tatuador', 'admin'], true)) {
                     $_SESSION['flash'] = ['type' => 'error', 'message' => 'Inicia sesión para continuar.'];

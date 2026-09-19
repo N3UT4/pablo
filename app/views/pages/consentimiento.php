@@ -1,4 +1,7 @@
 <div class="container">
+  <div style="margin-bottom:16px;">
+    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  </div>
 
   <!-- GATE: solo visible hasta validar acceso de staff -->
   <div id="accessGate" class="card gate-card">

@@ -280,14 +280,14 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
 
             <div class="artist-stats-grid" aria-label="Trayectoria de Itza">
               <div class="artist-stat-card">
-                <strong>+X</strong>
+                <strong>+6</strong>
                 <span>Años</span>
                 <small>Experiencia</small>
               </div>
               <div class="artist-stat-card">
-                <strong>+XXX</strong>
+                <strong>+400</strong>
                 <span>Piezas</span>
-                <small>Piezas creadas</small>
+                <small>Tatuajes realizados</small>
               </div>
               <div class="artist-stat-card">
                 <strong>100%</strong>
@@ -297,7 +297,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
             </div>
 
             <div class="artist-bio">
-              <p>En ITZA TATTOO, Itza transforma ideas, símbolos y recuerdos en piezas con identidad propia. Su trayectoria combina técnica, <strong>diseño personalizado</strong> y una mirada artística que hace que cada cliente se sienta parte del proceso.</p>
+              <p>Itza es la artista principal y fundadora de ITZA TATTOO. Con <strong>6 años de experiencia</strong> y más de <strong>400 tatuajes</strong> realizados, transforma ideas, símbolos y recuerdos en piezas con identidad propia. Su trayectoria combina técnica, <strong>diseño personalizado</strong> y una mirada artística que hace que cada cliente se sienta parte del proceso.</p>
               <p>Cada proyecto nace de escuchar con <strong>atención al detalle</strong> y de llevar la <strong>creatividad</strong> a cada línea, sombra y color. El resultado es una pieza exclusiva, pensada para durar y para contar una historia.</p>
             </div>
 

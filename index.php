@@ -1,4 +1,17 @@
 <?php
+// =====================================================================
+// FILE: index.php
+// =====================================================================
+// DESCRIPCIÓN: Punto de entrada principal de la aplicación ITZA TATTOO. Inicializa la base de datos automáticamente (crea la BD si no existe e importa las tablas desde el script SQL), ejecuta migraciones ligeras para agregar columnas relacionadas al módulo de tatuador, carga el autoload de componentes del framework MVC y despacha la petición al enrutador.
+// UBICACIÓN MVC: Entry Point / Router
+// ¿POR QUÉ EXISTE? Es el único script al que Apache dirige todas las peticiones (gracias a .htaccess con mod_rewrite). Coordina la inicialización del sistema y delega la lógica al Enrutador.
+// CÓMO SE USA: Se accede mediante index.php?action=<nombre>. El parámetro ?action= determina qué controlador y método se ejecuta. La primera vez que se ejecuta, crea la base de datos y las tablas automáticamente.
+// VARIABLES CLAVE:
+//   - $auto_host, $auto_user, $auto_pass, $auto_dbname: credenciales de conexión a MySQL.
+//   - $auto_sql: ruta al script SQL inicial (database/database.sql).
+//   - $auto_conn: conexión mysqli usada para la creación y migración de la BD.
+// =====================================================================
+
 // === CONFIGURACIÓN AUTOMÁTICA DE BASE DE DATOS (ITZA TATTOO) ===
 // Conecta a MySQL en XAMPP y crea la base de datos si no existe,
 // luego importa las tablas desde database/database.sql si la BD está vacía.
@@ -20,6 +33,8 @@ if (!$auto_conn->connect_error) {
             $auto_check = $auto_conn->query("SHOW TABLES");
             if ($auto_check && $auto_check->num_rows == 0 && file_exists($auto_sql)) {
                 $auto_query = file_get_contents($auto_sql);
+                $auto_query = preg_replace('/DELIMITER\s+\S+/', '', $auto_query);
+                $auto_query = str_replace('$$', ';', $auto_query);
                 if ($auto_conn->multi_query($auto_query)) {
                     do {
                         if ($auto_result = $auto_conn->store_result()) { $auto_result->free(); }
@@ -84,4 +99,5 @@ set_exception_handler(static function (Throwable $exception): void {
     (new ControladorPaginas())->serverError();
 });
 
+// Despacha la petición: lee ?action= de la URL y ejecuta el método correspondiente del controlador
 Enrutador::dispatch();

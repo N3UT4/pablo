@@ -1,4 +1,20 @@
 <?php
+// =====================================================================
+// FILE: core/ModeloBase.php
+// =====================================================================
+// DESCRIPCIÓN: Clase abstracta base para todos los modelos. Establece la conexión a la base de datos mediante PDO (con charset utf8mb4, modo de excepciones y prepares emulados desactivados) y expone un método execute() para ejecutar consultas preparadas de forma segura.
+// UBICACIÓN MVC: Model (base)
+// ¿POR QUÉ EXISTE? Centraliza la conexión a la BD y los patrones de consulta. Los modelos concretos (ModeloUsuarios, ModeloCitas, etc.) heredan $this->db y $this->execute() sin repetir la lógica de conexión.
+// CÓMO SE USA: Cada modelo concreto extiende ModeloBase, llama a parent::__construct() y usa $this->execute($sql, $params) para ejecutar consultas con parámetros nombrados.
+// MÉTODOS CLAVE:
+//   - __construct(): crea la conexión PDO usando las constantes DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD.
+//   - execute($query, $parameters): prepara y ejecuta la consulta; retorna el PDOStatement para que el llamador haga fetch/fetchAll.
+// CONFIGURACIÓN PDO:
+//   - ERRMODE_EXCEPTION: lanza excepciones en errores SQL (capturadas por try/catch en controladores).
+//   - FETCH_ASSOC: devuelve arrays asociativos por defecto.
+//   - EMULATE_PREPARES=false: usa prepared statements reales de MySQL (más seguro contra inyección).
+// =====================================================================
+
 // Modelo base abstracto que proporciona la conexión a la base de datos
 // mediante PDO y un método auxiliar para ejecutar consultas preparadas.
 // Todos los modelos del proyecto heredan de esta clase.

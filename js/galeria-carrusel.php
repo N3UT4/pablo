@@ -12,8 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var lightboxClose = lightbox ? lightbox.querySelector('[data-lightbox-close]:not(.gallery-lightbox-backdrop)') : null;
     var lightboxPrevious = lightbox ? lightbox.querySelector('[data-lightbox-prev]') : null;
     var lightboxNext = lightbox ? lightbox.querySelector('[data-lightbox-next]') : null;
+    var lightboxAncestors = [];
+    var ancestor = lightbox.parentElement;
+    while (ancestor && ancestor !== document.body) {
+      lightboxAncestors.push(ancestor);
+      ancestor = ancestor.parentElement;
+    }
     var pageRegions = Array.from(document.body.children).filter(function (element) {
-      return element !== lightbox && !['SCRIPT', 'STYLE', 'LINK'].includes(element.tagName);
+      return element !== lightbox && !['SCRIPT', 'STYLE', 'LINK'].includes(element.tagName) && lightboxAncestors.indexOf(element) === -1;
     });
     var pageRegionState = new Map();
     var lastFocusedElement = null;
@@ -99,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
       lastFocusedElement = document.activeElement;
       setPageHidden(true);
       lightbox.hidden = false;
+      lightbox.inert = false;
       document.body.classList.add('gallery-lightbox-open');
       showLightboxImage(lightboxIndex);
 
@@ -135,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (lightboxBackdrop) lightboxBackdrop.addEventListener('click', closeLightbox);
     if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxImage) lightboxImage.addEventListener('click', closeLightbox);
     if (lightboxPrevious) lightboxPrevious.addEventListener('click', function () { navigateLightbox(-1); });
     if (lightboxNext) lightboxNext.addEventListener('click', function () { navigateLightbox(1); });
 
