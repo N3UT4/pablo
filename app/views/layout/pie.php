@@ -14,7 +14,7 @@
 //   - home: Swiper (carrusel de galería).
 //   - login: autenticacion.js.
 //   - register: registro.js.
-//   - gallery: api.js + galeria.js.
+//   - galeria: api.js + galeria.js.
 //   - booking: api.js + abono.js.
 //   - consent: api.js + consentimiento.js.
 //   - profile: perfil.js.
@@ -90,7 +90,7 @@
     <script src="<?= BASE_URL ?>js/autenticacion.php"></script>
 <?php elseif (($currentPage ?? '') === 'register'): ?>
     <script src="<?= BASE_URL ?>js/registro.php"></script>
-<?php elseif (($currentPage ?? '') === 'gallery'): ?>
+<?php elseif (($currentPage ?? '') === 'galeria'): ?>
     <script src="<?= BASE_URL ?>js/api.php"></script>
     <script src="<?= BASE_URL ?>js/galeria.php"></script>
 <?php elseif (($currentPage ?? '') === 'booking'): ?>

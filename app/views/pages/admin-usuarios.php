@@ -11,7 +11,7 @@ $rolClasses = ['cliente' => 'badge-cliente', 'tatuador' => 'badge-tatuador', 'ad
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
         <div class="glass-card" style="flex:1;min-width:280px;margin:0;">
             <div class="dash-section-title">
-                <i class="fa-solid fa-users"></i>
+                <i class="fa-solid fa-usuarios"></i>
                 <h2>Usuarios y Tatuadores</h2>
             </div>
         </div>
@@ -27,7 +27,7 @@ $rolClasses = ['cliente' => 'badge-cliente', 'tatuador' => 'badge-tatuador', 'ad
         </div>
         <form method="POST" action="<?= BASE_URL ?>index.php?action=admin-save-user" class="dash-form">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-            <input type="hidden" name="user_id" id="userId" value="">
+            <input type="hidden" name="usuario_id" id="userId" value="">
             <div class="form-row">
                 <div class="form-group">
                     <label>Nombre completo</label>

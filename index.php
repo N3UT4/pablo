@@ -49,36 +49,36 @@ if (!$auto_conn->connect_error) {
 // === MIGRACIÓN LEVE: tablas/columnas nuevas sin tocar datos existentes ===
 $auto_conn = new mysqli($auto_host, $auto_user, $auto_pass, $auto_dbname);
 if (!$auto_conn->connect_error) {
-    // Agrega user_id a artists si falta
-    $r = $auto_conn->query("SHOW COLUMNS FROM artists LIKE 'user_id'");
+    // Agrega usuario_id a artistas si falta
+    $r = $auto_conn->query("SHOW COLUMNS FROM artistas LIKE 'usuario_id'");
     if (!$r || $r->num_rows === 0) {
-        $auto_conn->query("ALTER TABLE artists ADD COLUMN user_id INT UNSIGNED DEFAULT NULL AFTER id");
-        $auto_conn->query("ALTER TABLE artists ADD INDEX idx_artists_user (user_id)");
+        $auto_conn->query("ALTER TABLE artistas ADD COLUMN usuario_id INT UNSIGNED DEFAULT NULL AFTER id");
+        $auto_conn->query("ALTER TABLE artistas ADD INDEX idx_artistas_user (usuario_id)");
     }
 
-    // Crea artist_schedules si falta (horarios del tatuador)
-    $auto_conn->query("CREATE TABLE IF NOT EXISTS artist_schedules (
+    // Crea horarios_artistas si falta (horarios del tatuador)
+    $auto_conn->query("CREATE TABLE IF NOT EXISTS horarios_artistas (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        artist_id INT UNSIGNED NOT NULL,
+        artista_id INT UNSIGNED NOT NULL,
         dia_semana TINYINT(1) NOT NULL DEFAULT 0,
         hora_inicio TIME NOT NULL DEFAULT '09:00:00',
         hora_fin TIME NOT NULL DEFAULT '17:00:00',
         disponible TINYINT(1) NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        CONSTRAINT fk_schedule_artist FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
-        UNIQUE KEY uq_artist_schedule (artist_id, dia_semana)
+        CONSTRAINT fk_schedule_artist FOREIGN KEY (artista_id) REFERENCES artistas(id) ON DELETE CASCADE,
+        UNIQUE KEY uq_artist_schedule (artista_id, dia_semana)
     ) ENGINE=InnoDB");
     $auto_conn->close();
 }
 
-// === MIGRACIÓN LEVE: agrega artist_id a users si falta ===
+// === MIGRACIÓN LEVE: agrega artista_id a usuarios si falta ===
 $auto_conn = new mysqli($auto_host, $auto_user, $auto_pass, $auto_dbname);
 if (!$auto_conn->connect_error) {
-    $r = $auto_conn->query("SHOW COLUMNS FROM users LIKE 'artist_id'");
+    $r = $auto_conn->query("SHOW COLUMNS FROM usuarios LIKE 'artista_id'");
     if (!$r || $r->num_rows === 0) {
-        $auto_conn->query("ALTER TABLE users ADD COLUMN artist_id INT UNSIGNED DEFAULT NULL AFTER rol");
-        $auto_conn->query("ALTER TABLE users ADD INDEX idx_users_artist (artist_id)");
+        $auto_conn->query("ALTER TABLE usuarios ADD COLUMN artista_id INT UNSIGNED DEFAULT NULL AFTER rol");
+        $auto_conn->query("ALTER TABLE usuarios ADD INDEX idx_usuarios_artist (artista_id)");
     }
     $auto_conn->close();
 }

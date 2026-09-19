@@ -2,19 +2,19 @@
 // =====================================================================
 // FILE: app/models/ModeloUsuarios.php
 // =====================================================================
-// DESCRIPCIÓN: Modelo de datos para la tabla 'users'. Gestiona registro de usuarios, autenticación (login), manejo de sesión, verificación de roles, contraseñas temporales y operaciones CRUD completas (create, read, update, delete) de usuarios.
+// DESCRIPCIÓN: Modelo de datos para la tabla 'usuarios'. Gestiona registro de usuarios, autenticación (login), manejo de sesión, verificación de roles, contraseñas temporales y operaciones CRUD completas (create, read, update, delete) de usuarios.
 // UBICACIÓN MVC: Model
 // ¿POR QUÉ EXISTE? Encapsula todas las operaciones de la base de datos relacionadas con usuarios. Evita escribir SQL directamente en los controladores y centraliza la lógica de autenticación y roles.
 // CÓMO SE USA: Instanciado por ControladorAutenticacion y ControladorDashboard (inyectado como dependencia). Los métodos retornan arrays asociativos o PDOStatement para operaciones de conteo.
-// CAMPOS DE LA TABLA users:
+// CAMPOS DE LA TABLA usuarios:
 //   id, nombre, email, password, telefono, documento, fecha_nacimiento, rol,
-//   artist_id, temp_password, temp_password_active, created_at
+//   artista_id, temp_password, temp_password_active, created_at
 // MÉTODOS CLAVE POR CATEGORÍA:
 //   Autenticación: findByEmail(), login(), register(), setSessionUser(), currentUser(), logout()
 //   Roles: isLoggedIn(), hasRole(), isAdmin(), isTatuador(), isStaff()
 //   CRUD: all(), find(), save(), update(), deleteAccount()
 //   Contraseña temporal: setTemporaryPassword(), isTempPasswordActive(), deactivateTempPassword()
-//   Relación artista: findArtistByUser() — JOIN users ↔ artists
+//   Relación artista: findArtistByUser() — JOIN usuarios ↔ artistas
 // SEGURIDAD: Las contraseñas se hashean con password_hash(PASSWORD_DEFAULT). El login usa password_verify(). Los emails se normalizan a minúsculas. El borrado de cuenta elimina primero datos relacionados para mantener integridad referencial.
 // RECURSOS: Hereda de ModeloBase (conexión PDO, método execute()).
 // =====================================================================
@@ -38,8 +38,8 @@ class ModeloUsuarios extends ModeloBase
     {
         // SELECT con parámetro nombrado :email — evita inyección SQL
         $statement = $this->execute(
-            'SELECT id, nombre, email, password, telefono, documento, fecha_nacimiento, rol, artist_id, created_at
-             FROM users WHERE email = :email LIMIT 1',
+            'SELECT id, nombre, email, password, telefono, documento, fecha_nacimiento, rol, artista_id, created_at
+             FROM usuarios WHERE email = :email LIMIT 1',
             ['email' => strtolower(trim($email))]
         );
 
@@ -53,7 +53,7 @@ class ModeloUsuarios extends ModeloBase
     {
         // SELECT con parámetro nombrado :documento
         $statement = $this->execute(
-            'SELECT id, nombre, email, telefono, documento FROM users WHERE documento = :documento LIMIT 1',
+            'SELECT id, nombre, email, telefono, documento FROM usuarios WHERE documento = :documento LIMIT 1',
             ['documento' => trim($documento)]
         );
 
@@ -81,7 +81,7 @@ class ModeloUsuarios extends ModeloBase
 
         // INSERT con parámetros nombrados: password se hashea con PASSWORD_DEFAULT (bcrypt/argon2)
         $this->execute(
-            'INSERT INTO users (nombre, email, password, telefono, documento, fecha_nacimiento)
+            'INSERT INTO usuarios (nombre, email, password, telefono, documento, fecha_nacimiento)
              VALUES (:nombre, :email, :password, :telefono, :documento, :fecha_nacimiento)',
             [
                 'nombre' => $nombre,
@@ -131,8 +131,8 @@ class ModeloUsuarios extends ModeloBase
     }
 
     // Almacena los datos del usuario en la sesión.
-    // También busca si tiene un artista asociado y guarda el artist_id en sesión.
-    // Estructura de $_SESSION['user']: {id, nombre, email, rol, artist_id?}
+    // También busca si tiene un artista asociado y guarda el artista_id en sesión.
+    // Estructura de $_SESSION['user']: {id, nombre, email, rol, artista_id?}
     public function setSessionUser(array $user): void
     {
         $_SESSION['user'] = [
@@ -145,20 +145,20 @@ class ModeloUsuarios extends ModeloBase
 
         $artistUser = $this->findArtistByUser((int) $user['id']);
         if ($artistUser !== null) {
-            $_SESSION['user']['artist_id'] = $artistUser['id'];
-            $_SESSION['artist_id'] = $artistUser['id'];
+            $_SESSION['user']['artista_id'] = $artistUser['id'];
+            $_SESSION['artista_id'] = $artistUser['id'];
         }
     }
 
-    // Busca un artista asociado a un usuario por la relación user.artist_id.
+    // Busca un artista asociado a un usuario por la relación user.artista_id.
     public function findArtistByUser(int $userId): ?array
     {
         $statement = $this->execute(
             'SELECT a.id, a.nombre, a.bio, a.foto, a.activo
-             FROM artists a
-             JOIN users u ON u.artist_id = a.id
-             WHERE u.id = :user_id LIMIT 1',
-            ['user_id' => $userId]
+             FROM artistas a
+             JOIN usuarios u ON u.artista_id = a.id
+             WHERE u.id = :usuario_id LIMIT 1',
+            ['usuario_id' => $userId]
         );
         $row = $statement->fetch();
         return $row ?: null;
@@ -200,8 +200,8 @@ class ModeloUsuarios extends ModeloBase
     public function all(): array
     {
         $statement = $this->execute(
-            'SELECT id, nombre, email, telefono, documento, fecha_nacimiento, rol, artist_id, created_at
-             FROM users ORDER BY id ASC'
+            'SELECT id, nombre, email, telefono, documento, fecha_nacimiento, rol, artista_id, created_at
+             FROM usuarios ORDER BY id ASC'
         );
         return $statement->fetchAll();
     }
@@ -210,8 +210,8 @@ class ModeloUsuarios extends ModeloBase
     public function find(int $id): ?array
     {
         $statement = $this->execute(
-            'SELECT id, nombre, email, telefono, documento, fecha_nacimiento, rol, artist_id, created_at
-             FROM users WHERE id = :id LIMIT 1',
+            'SELECT id, nombre, email, telefono, documento, fecha_nacimiento, rol, artista_id, created_at
+             FROM usuarios WHERE id = :id LIMIT 1',
             ['id' => $id]
         );
         $row = $statement->fetch();
@@ -245,7 +245,7 @@ class ModeloUsuarios extends ModeloBase
             return false;
         }
 
-        $this->execute('UPDATE users SET ' . implode(', ', $sets) . ' WHERE id = :id', $params);
+        $this->execute('UPDATE usuarios SET ' . implode(', ', $sets) . ' WHERE id = :id', $params);
         return true;
     }
 
@@ -260,7 +260,7 @@ class ModeloUsuarios extends ModeloBase
     {
         $temp = bin2hex(random_bytes(6));
         $this->execute(
-            'UPDATE users SET temp_password = :temp, temp_password_active = 1 WHERE id = :id',
+            'UPDATE usuarios SET temp_password = :temp, temp_password_active = 1 WHERE id = :id',
             ['temp' => password_hash($temp, PASSWORD_DEFAULT), 'id' => $userId]
         );
     }
@@ -269,7 +269,7 @@ class ModeloUsuarios extends ModeloBase
     public function isTempPasswordActive(int $userId): bool
     {
         $stmt = $this->execute(
-            'SELECT temp_password, temp_password_active FROM users WHERE id = :id',
+            'SELECT temp_password, temp_password_active FROM usuarios WHERE id = :id',
             ['id' => $userId]
         );
         $row = $stmt->fetch();
@@ -280,14 +280,14 @@ class ModeloUsuarios extends ModeloBase
     public function deactivateTempPassword(int $userId): void
     {
         $this->execute(
-            'UPDATE users SET temp_password = NULL, temp_password_active = 0 WHERE id = :id',
+            'UPDATE usuarios SET temp_password = NULL, temp_password_active = 0 WHERE id = :id',
             ['id' => $userId]
         );
     }
 
     // Elimina la cuenta del usuario de la base de datos.
     // Primero elimina datos relacionados para mantener la integridad referencial.
-    // Orden: payments → consents → appointments → promotion_redemptions → users
+    // Orden: abonos → consentimientos → citas → canjes → usuarios
     public function deleteAccount(int $userId): void
     {
         if ($userId <= 0) {
@@ -295,14 +295,14 @@ class ModeloUsuarios extends ModeloBase
         }
 
         // DELETE en cascada manual: elimina pagos de citas del usuario
-        $this->execute('DELETE FROM payments WHERE appointment_id IN (SELECT id FROM appointments WHERE user_id = :id)', ['id' => $userId]);
+        $this->execute('DELETE FROM abonos WHERE cita_id IN (SELECT id FROM citas WHERE usuario_id = :id)', ['id' => $userId]);
         // Elimina consentimientos de las citas del usuario
-        $this->execute('DELETE FROM consents WHERE appointment_id IN (SELECT id FROM appointments WHERE user_id = :id)', ['id' => $userId]);
+        $this->execute('DELETE FROM consentimientos WHERE cita_id IN (SELECT id FROM citas WHERE usuario_id = :id)', ['id' => $userId]);
         // Elimina las citas del usuario
-        $this->execute('DELETE FROM appointments WHERE user_id = :id', ['id' => $userId]);
+        $this->execute('DELETE FROM citas WHERE usuario_id = :id', ['id' => $userId]);
         // Elimina canjes de promociones del usuario
-        $this->execute('DELETE FROM promotion_redemptions WHERE user_id = :id', ['id' => $userId]);
+        $this->execute('DELETE FROM canjes WHERE usuario_id = :id', ['id' => $userId]);
         // Finalmente elimina el usuario
-        $this->execute('DELETE FROM users WHERE id = :id', ['id' => $userId]);
+        $this->execute('DELETE FROM usuarios WHERE id = :id', ['id' => $userId]);
     }
 }

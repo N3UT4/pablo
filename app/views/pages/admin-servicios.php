@@ -25,7 +25,7 @@ $servicios = $servicios ?? [];
         </div>
         <form method="POST" action="<?= BASE_URL ?>index.php?action=admin-save-service" class="dash-form">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-            <input type="hidden" name="service_id" id="serviceId" value="">
+            <input type="hidden" name="servicio_id" id="serviceId" value="">
             <div class="form-row">
                 <div class="form-group">
                     <label>Nombre del servicio</label>

@@ -15,7 +15,7 @@ SET NAMES utf8mb4;
 -- =========================================================
 
 -- Clientes, staff y administradores (login con roles).
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS usuarios (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(120) NOT NULL,
   email VARCHAR(190) NOT NULL UNIQUE,
@@ -24,27 +24,27 @@ CREATE TABLE IF NOT EXISTS users (
   documento VARCHAR(50) DEFAULT NULL,
   fecha_nacimiento DATE DEFAULT NULL,
   rol ENUM('cliente', 'admin', 'tatuador') NOT NULL DEFAULT 'cliente',
-  artist_id INT UNSIGNED DEFAULT NULL,
+  artista_id INT UNSIGNED DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_users_documento (documento),
-  INDEX idx_users_artist (artist_id)
+  INDEX idx_usuarios_documento (documento),
+  INDEX idx_usuarios_artist (artista_id)
 ) ENGINE=InnoDB;
 
 -- Tatuadores que pueden atender citas.
-CREATE TABLE IF NOT EXISTS artists (
+CREATE TABLE IF NOT EXISTS artistas (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  user_id INT UNSIGNED DEFAULT NULL,
+  usuario_id INT UNSIGNED DEFAULT NULL,
   nombre VARCHAR(120) NOT NULL,
   bio TEXT DEFAULT NULL,
   foto VARCHAR(255) DEFAULT NULL,
   activo TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_artists_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-  INDEX idx_artists_user (user_id)
+  CONSTRAINT fk_artistas_user FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL,
+  INDEX idx_artistas_user (usuario_id)
 ) ENGINE=InnoDB;
 
 -- Servicios ofrecidos por el estudio.
-CREATE TABLE IF NOT EXISTS services (
+CREATE TABLE IF NOT EXISTS servicios (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL UNIQUE,
   slug VARCHAR(100) NOT NULL UNIQUE,
@@ -55,41 +55,41 @@ CREATE TABLE IF NOT EXISTS services (
 ) ENGINE=InnoDB;
 
 -- Citas solicitadas por los clientes.
-CREATE TABLE IF NOT EXISTS appointments (
+CREATE TABLE IF NOT EXISTS citas (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  user_id INT UNSIGNED NOT NULL,
-  artist_id INT UNSIGNED NOT NULL,
-  service_id INT UNSIGNED NOT NULL,
+  usuario_id INT UNSIGNED NOT NULL,
+  artista_id INT UNSIGNED NOT NULL,
+  servicio_id INT UNSIGNED NOT NULL,
   fecha_cita DATE NOT NULL,
   hora_cita TIME NOT NULL,
   detalle_personalizado TEXT DEFAULT NULL,
   observaciones TEXT DEFAULT NULL,
   estado ENUM('pendiente', 'confirmada', 'completada', 'cancelada') NOT NULL DEFAULT 'pendiente',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_appointments_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  CONSTRAINT fk_appointments_artist FOREIGN KEY (artist_id) REFERENCES artists(id),
-  CONSTRAINT fk_appointments_service FOREIGN KEY (service_id) REFERENCES services(id),
-  INDEX idx_appointments_date (fecha_cita, hora_cita),
-  INDEX idx_appointments_status (estado)
+  CONSTRAINT fk_citas_user FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  CONSTRAINT fk_citas_artist FOREIGN KEY (artista_id) REFERENCES artistas(id),
+  CONSTRAINT fk_citas_service FOREIGN KEY (servicio_id) REFERENCES servicios(id),
+  INDEX idx_citas_date (fecha_cita, hora_cita),
+  INDEX idx_citas_status (estado)
 ) ENGINE=InnoDB;
 
 -- Abonos y pagos asociados a una cita.
-CREATE TABLE IF NOT EXISTS payments (
+CREATE TABLE IF NOT EXISTS abonos (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  appointment_id INT UNSIGNED NOT NULL,
+  cita_id INT UNSIGNED NOT NULL,
   monto DECIMAL(12,2) NOT NULL,
   metodo ENUM('nequi', 'transferencia', 'efectivo', 'tarjeta') NOT NULL,
   comprobante VARCHAR(255) DEFAULT NULL,
   estado ENUM('pendiente', 'verificado', 'rechazado', 'reembolsado') NOT NULL DEFAULT 'pendiente',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_payments_appointment FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE CASCADE,
-  INDEX idx_payments_status (estado)
+  CONSTRAINT fk_abonos_appointment FOREIGN KEY (cita_id) REFERENCES citas(id) ON DELETE CASCADE,
+  INDEX idx_abonos_status (estado)
 ) ENGINE=InnoDB;
 
 -- Consentimiento informado del cliente.
-CREATE TABLE IF NOT EXISTS consents (
+CREATE TABLE IF NOT EXISTS consentimientos (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  appointment_id INT UNSIGNED NOT NULL,
+  cita_id INT UNSIGNED NOT NULL,
   nombre_cliente VARCHAR(120) NOT NULL,
   documento VARCHAR(50) NOT NULL,
   fecha_nacimiento DATE NOT NULL,
@@ -101,12 +101,12 @@ CREATE TABLE IF NOT EXISTS consents (
   parentesco VARCHAR(50) DEFAULT NULL,
   firma_acudiente VARCHAR(120) DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_consents_appointment FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE CASCADE,
-  UNIQUE KEY uq_consents_appointment (appointment_id)
+  CONSTRAINT fk_consentimientos_appointment FOREIGN KEY (cita_id) REFERENCES citas(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_consentimientos_appointment (cita_id)
 ) ENGINE=InnoDB;
 
 -- Mensajes enviados desde el formulario de contacto.
-CREATE TABLE IF NOT EXISTS contact_messages (
+CREATE TABLE IF NOT EXISTS mensajes (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(120) NOT NULL,
   email VARCHAR(190) NOT NULL,
@@ -119,29 +119,29 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 ) ENGINE=InnoDB;
 
 -- Fotografías de trabajos del estudio.
-CREATE TABLE IF NOT EXISTS gallery (
+CREATE TABLE IF NOT EXISTS galeria (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  artist_id INT UNSIGNED DEFAULT NULL,
+  artista_id INT UNSIGNED DEFAULT NULL,
   titulo VARCHAR(150) DEFAULT NULL,
   descripcion TEXT DEFAULT NULL,
   imagen VARCHAR(255) NOT NULL,
   activo TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_gallery_artist FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE SET NULL
+  CONSTRAINT fk_galeria_artist FOREIGN KEY (artista_id) REFERENCES artistas(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- Horarios de disponibilidad por tatuador (gestionados individualmente, no afectan el sitio web global).
-CREATE TABLE IF NOT EXISTS artist_schedules (
+CREATE TABLE IF NOT EXISTS horarios_artistas (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  artist_id INT UNSIGNED NOT NULL,
+  artista_id INT UNSIGNED NOT NULL,
   dia_semana TINYINT(1) NOT NULL DEFAULT 0, -- 0=Dom, 1=Lun, ..., 6=Sáb
   hora_inicio TIME NOT NULL DEFAULT '09:00:00',
   hora_fin TIME NOT NULL DEFAULT '17:00:00',
   disponible TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_schedule_artist FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
-  UNIQUE KEY uq_artist_schedule (artist_id, dia_semana)
+  CONSTRAINT fk_schedule_artist FOREIGN KEY (artista_id) REFERENCES artistas(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_artist_schedule (artista_id, dia_semana)
 ) ENGINE=InnoDB;
 
 -- Promociones publicadas por el estudio.
@@ -159,16 +159,16 @@ CREATE TABLE IF NOT EXISTS promotions (
 ) ENGINE=InnoDB;
 
 -- Promociones usadas por los clientes.
-CREATE TABLE IF NOT EXISTS promotion_redemptions (
+CREATE TABLE IF NOT EXISTS canjes (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  promotion_id INT UNSIGNED NOT NULL,
-  user_id INT UNSIGNED NOT NULL,
-  appointment_id INT UNSIGNED DEFAULT NULL,
+  promocion_id INT UNSIGNED NOT NULL,
+  usuario_id INT UNSIGNED NOT NULL,
+  cita_id INT UNSIGNED DEFAULT NULL,
   used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_redemptions_promotion FOREIGN KEY (promotion_id) REFERENCES promotions(id) ON DELETE CASCADE,
-  CONSTRAINT fk_redemptions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  CONSTRAINT fk_redemptions_appointment FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE SET NULL,
-  UNIQUE KEY uq_redemption (promotion_id, user_id, appointment_id)
+  CONSTRAINT fk_redemptions_promotion FOREIGN KEY (promocion_id) REFERENCES promotions(id) ON DELETE CASCADE,
+  CONSTRAINT fk_redemptions_user FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  CONSTRAINT fk_redemptions_appointment FOREIGN KEY (cita_id) REFERENCES citas(id) ON DELETE SET NULL,
+  UNIQUE KEY uq_redemption (promocion_id, usuario_id, cita_id)
 ) ENGINE=InnoDB;
 
 -- =========================================================
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS promotion_redemptions (
 -- =========================================================
 
 -- Tatuadores
-INSERT IGNORE INTO artists (id, nombre, bio, foto)
+INSERT IGNORE INTO artistas (id, nombre, bio, foto)
 VALUES
   (1, 'Itza — Blackwork & tribal', 'Tatuadora principal y fundadora de ITZA TATTOO. Especialista en blackwork y tribal.', 'img/itza tatto perfil.jpeg'),
   (2, 'Itza — Realismo', 'Retratos y escenas con sombreado fino y detalle fotográfico.', 'img/itza tatto perfil.jpeg'),
@@ -184,7 +184,7 @@ VALUES
   (4, 'Itza — Color & cover-up', 'Piezas a color y rediseño de tatuajes antiguos.', 'img/itza tatto perfil.jpeg');
 
 -- Servicios (los "slug" coinciden con las opciones de los formularios).
-INSERT IGNORE INTO services (nombre, slug, descripcion)
+INSERT IGNORE INTO servicios (nombre, slug, descripcion)
 VALUES
   ('Blackwork', 'blackwork', 'Trazos sólidos, alto contraste, diseño geométrico y tribal.'),
   ('Realismo', 'realismo', 'Retratos y escenas con sombreado fino y detalle fotográfico.'),
@@ -207,7 +207,7 @@ VALUES
 -- Contraseña para TODOS: password   (cámbiala al publicar)
 -- El hash abajo corresponde a "password" con password_hash() de PHP.
 -- =========================================================
-INSERT IGNORE INTO users (nombre, email, password, telefono, documento, fecha_nacimiento, rol)
+INSERT IGNORE INTO usuarios (nombre, email, password, telefono, documento, fecha_nacimiento, rol)
 VALUES
   ('Administrador ITZA', 'admin@itza.com',    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3001234567', '1000000001', '1990-01-01', 'admin'),
   ('Tatuador Itza',      'tatuador@itza.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3002345678', '1000000002', '1992-05-15', 'tatuador'),
@@ -231,13 +231,13 @@ BEGIN
         a.hora_cita,
         a.estado,
         (SELECT IFNULL(SUM(p.monto), 0)
-           FROM payments p
-          WHERE p.appointment_id = a.id
+           FROM abonos p
+          WHERE p.cita_id = a.id
             AND p.estado = 'verificado')  AS total_pagado
-    FROM appointments a
-    JOIN users    u  ON u.id  = a.user_id
-    JOIN artists  ar ON ar.id = a.artist_id
-    JOIN services s  ON s.id  = a.service_id
+    FROM citas a
+    JOIN usuarios    u  ON u.id  = a.usuario_id
+    JOIN artistas  ar ON ar.id = a.artista_id
+    JOIN servicios s  ON s.id  = a.servicio_id
     WHERE (p_desde IS NULL OR a.fecha_cita >= p_desde)
       AND (p_hasta IS NULL OR a.fecha_cita <= p_hasta)
     ORDER BY a.fecha_cita DESC, a.hora_cita DESC;
@@ -246,18 +246,18 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS SP_SALDO_CITA;
 DELIMITER $$
-CREATE PROCEDURE SP_SALDO_CITA(IN p_appointment_id INT)
+CREATE PROCEDURE SP_SALDO_CITA(IN p_cita_id INT)
 BEGIN
     SELECT
         a.id                              AS id_cita,
         a.estado,
         s.precio_desde                    AS precio_referencia,
         (SELECT IFNULL(SUM(p.monto), 0)
-           FROM payments p
-          WHERE p.appointment_id = a.id
+           FROM abonos p
+          WHERE p.cita_id = a.id
             AND p.estado IN ('pendiente','verificado')) AS total_abonado
-    FROM appointments a
-    JOIN services s ON s.id = a.service_id
-    WHERE a.id = p_appointment_id;
+    FROM citas a
+    JOIN servicios s ON s.id = a.servicio_id
+    WHERE a.id = p_cita_id;
 END $$
 DELIMITER ;

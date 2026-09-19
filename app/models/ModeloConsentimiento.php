@@ -15,7 +15,7 @@ class ModeloConsentimiento extends ModeloBase
     public function existsForAppointment(int $appointmentId): bool
     {
         $statement = $this->execute(
-            'SELECT id FROM consents WHERE appointment_id = :id LIMIT 1',
+            'SELECT id FROM consentimientos WHERE cita_id = :id LIMIT 1',
             ['id' => $appointmentId]
         );
         return (bool) $statement->fetch();
@@ -25,14 +25,14 @@ class ModeloConsentimiento extends ModeloBase
     public function create(array $data): int
     {
         $this->execute(
-            'INSERT INTO consents
-                (appointment_id, nombre_cliente, documento, fecha_nacimiento, procedimiento, acepta_riesgos,
+            'INSERT INTO consentimientos
+                (cita_id, nombre_cliente, documento, fecha_nacimiento, procedimiento, acepta_riesgos,
                  firma_cliente, acudiente_nombre, acudiente_documento, parentesco, firma_acudiente)
              VALUES
-                (:appointment_id, :nombre_cliente, :documento, :fecha_nacimiento, :procedimiento, :acepta_riesgos,
+                (:cita_id, :nombre_cliente, :documento, :fecha_nacimiento, :procedimiento, :acepta_riesgos,
                  :firma_cliente, :acudiente_nombre, :acudiente_documento, :parentesco, :firma_acudiente)',
             [
-                'appointment_id' => $data['appointment_id'],
+                'cita_id' => $data['cita_id'],
                 'nombre_cliente' => $data['nombre_cliente'],
                 'documento' => $data['documento'],
                 'fecha_nacimiento' => $data['fecha_nacimiento'],

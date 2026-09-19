@@ -60,18 +60,18 @@ class ControladorCitas extends ControladorBase
             }
 
             if (!$this->artistModel->exists($artistId)) {
-                $this->json(false, 'El tatuador seleccionado no existe. Revisa la tabla "artists" en la base de datos.', [], 422);
+                $this->json(false, 'El tatuador seleccionado no existe. Revisa la tabla "artistas" en la base de datos.', [], 422);
             }
 
             $servicio = $this->serviceModel->findBySlug($servicioSlug);
             if (!$servicio) {
-                $this->json(false, 'El estilo "' . $servicioSlug . '" no existe en la tabla "services". Agrégalo o ajusta el slug.', [], 422);
+                $this->json(false, 'El estilo "' . $servicioSlug . '" no existe en la tabla "servicios". Agrégalo o ajusta el slug.', [], 422);
             }
 
             $appointmentId = $this->appointmentModel->create([
-                'user_id' => $userId,
-                'artist_id' => $artistId,
-                'service_id' => $servicio['id'],
+                'usuario_id' => $userId,
+                'artista_id' => $artistId,
+                'servicio_id' => $servicio['id'],
                 'fecha_cita' => $fecha,
                 'hora_cita' => $hora,
                 'detalle_personalizado' => $detalle,
@@ -79,13 +79,13 @@ class ControladorCitas extends ControladorBase
             ]);
 
             $this->paymentModel->create([
-                'appointment_id' => $appointmentId,
+                'cita_id' => $appointmentId,
                 'monto' => $monto,
                 'metodo' => $metodo,
                 'comprobante' => $comprobante,
             ]);
 
-            $this->json(true, 'Tu cita quedó agendada y tu abono registrado. ¡Te esperamos!', ['appointment_id' => $appointmentId]);
+            $this->json(true, 'Tu cita quedó agendada y tu abono registrado. ¡Te esperamos!', ['cita_id' => $appointmentId]);
         } catch (Throwable $e) {
             error_log($e->getMessage());
             $this->json(false, 'No fue posible agendar la cita. Verifica la conexión a la base de datos.', [], 500);

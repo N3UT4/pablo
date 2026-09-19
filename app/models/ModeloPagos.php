@@ -1,6 +1,6 @@
 <?php
 // Modelo de datos para pagos/pagos.
-// Proporciona operaciones CRUD para la tabla payments.
+// Proporciona operaciones CRUD para la tabla abonos.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
 class ModeloPagos extends ModeloBase
@@ -15,10 +15,10 @@ class ModeloPagos extends ModeloBase
     public function create(array $data): int
     {
         $this->execute(
-            'INSERT INTO payments (appointment_id, monto, metodo, comprobante, estado)
-             VALUES (:appointment_id, :monto, :metodo, :comprobante, "pendiente")',
+            'INSERT INTO abonos (cita_id, monto, metodo, comprobante, estado)
+             VALUES (:cita_id, :monto, :metodo, :comprobante, "pendiente")',
             [
-                'appointment_id' => $data['appointment_id'],
+                'cita_id' => $data['cita_id'],
                 'monto' => $data['monto'],
                 'metodo' => $data['metodo'],
                 'comprobante' => $data['comprobante'] ?: null,

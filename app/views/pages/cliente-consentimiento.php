@@ -27,7 +27,7 @@ $cita = $cita ?? null;
 
             <form method="POST" action="<?= BASE_URL ?>index.php?action=submit-consent" class="dash-form" onsubmit="return confirm('¿Confirmas que has leído y aceptas el consentimiento informado?');">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
-                <input type="hidden" name="appointment_id" value="<?= (int) $cita['id'] ?>">
+                <input type="hidden" name="cita_id" value="<?= (int) $cita['id'] ?>">
 
                 <div class="form-row">
                     <div class="form-group">

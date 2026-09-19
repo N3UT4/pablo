@@ -7,12 +7,12 @@
 // ¿POR QUÉ EXISTE? Reemplaza el enrutamiento tradicional de un framework completo. En una aplicación MVC sin un router externo, este archivo es el encargado de mapear URLs a controladores y métodos, validando que el usuario tenga permiso para acceder a cada ruta.
 // CÓMO SE USA: Llamado desde index.php mediante Enrutador::dispatch(). El método dispatch() es estático y utiliza un switch sobre el valor de $_GET['action'].
 // ESTRUCTURA DE ROUTAS:
-//   - Públicas: home, contact, gallery, booking, consent, profile, promotions, 404, 500, csrf-token
+//   - Públicas: home, contact, galeria, booking, consent, profile, promotions, 404, 500, csrf-token
 //   - Autenticación: login, register, logout, cambiar-clave, delete-account
 //   - Dashboard cliente/admin: dashboard, cliente-citas, cliente-abonos, cliente-consentimiento, cliente-agendar
 //   - Dashboard admin: admin, admin-usuarios, admin-servicios, admin-transacciones, admin-save-user, admin-save-service, admin-delete-service
 //   - Panel tatuador: artist-panel, artist-agenda, artist-horarios, artist-perfil, artist-update-estado, artist-save-schedule, artist-citas-json, artist-switch-mode
-//   - API REST: gallery-list, gallery-upload, book-appointment, submit-consent, validate-promo, redeem-promo, reporte-citas, reporte-citas-json, api
+//   - API REST: galeria-list, galeria-upload, book-appointment, submit-consent, validate-promo, redeem-promo, reporte-citas, reporte-citas-json, api
 // SEGURIDAD: Cada ruta verifica $_SESSION['user'] y el rol antes de ejecutar el controlador. Los endpoints AJAX devuelven JSON con código 401 si no hay sesión.
 // =====================================================================
 
@@ -135,8 +135,8 @@ class Enrutador
             case 'contact':
                 $pageController->contact();
                 break;
-            case 'gallery':
-                $pageController->gallery();
+            case 'galeria':
+                $pageController->galeria();
                 break;
             case 'booking':
                 $pageController->booking();
@@ -168,11 +168,11 @@ class Enrutador
                 $pageController->csrfToken();
                 break;
             // --- Galería (API) ---
-            case 'gallery-list':
+            case 'galeria-list':
                 require_once DIR_PATH . 'app/controllers/ControladorGaleria.php';
                 (new ControladorGaleria())->list();
                 break;
-            case 'gallery-upload':
+            case 'galeria-upload':
                 $user = $_SESSION['user'] ?? null;
                 if (!$user || !in_array($user['rol'] ?? '', ['tatuador', 'admin'], true)) {
                     http_response_code(403);

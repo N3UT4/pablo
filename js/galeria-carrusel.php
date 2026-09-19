@@ -2,14 +2,14 @@
 header('Content-Type: application/javascript; charset=utf-8');
 ?>
 document.addEventListener('DOMContentLoaded', function () {
-  var carousels = document.querySelectorAll('[data-gallery-carousel]');
+  var carousels = document.querySelectorAll('[data-galeria-carousel]');
 
   function initLightbox() {
-    var lightbox = document.getElementById('galleryLightbox');
-    var lightboxImage = lightbox ? lightbox.querySelector('.gallery-lightbox-image') : null;
-    var lightboxCaption = lightbox ? lightbox.querySelector('.gallery-lightbox-caption') : null;
-    var lightboxBackdrop = lightbox ? lightbox.querySelector('.gallery-lightbox-backdrop') : null;
-    var lightboxClose = lightbox ? lightbox.querySelector('[data-lightbox-close]:not(.gallery-lightbox-backdrop)') : null;
+    var lightbox = document.getElementById('galeriaLightbox');
+    var lightboxImage = lightbox ? lightbox.querySelector('.galeria-lightbox-image') : null;
+    var lightboxCaption = lightbox ? lightbox.querySelector('.galeria-lightbox-caption') : null;
+    var lightboxBackdrop = lightbox ? lightbox.querySelector('.galeria-lightbox-backdrop') : null;
+    var lightboxClose = lightbox ? lightbox.querySelector('[data-lightbox-close]:not(.galeria-lightbox-backdrop)') : null;
     var lightboxPrevious = lightbox ? lightbox.querySelector('[data-lightbox-prev]') : null;
     var lightboxNext = lightbox ? lightbox.querySelector('[data-lightbox-next]') : null;
     var lightboxAncestors = [];
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openLightbox(trigger) {
       if (!lightbox || !lightboxImage || !trigger || !lightbox.hidden) return;
-      var carousel = trigger.closest('[data-gallery-carousel]');
+      var carousel = trigger.closest('[data-galeria-carousel]');
       var allItems = carousel
         ? Array.from(carousel.querySelectorAll('[data-lightbox-src]'))
         : Array.from(document.querySelectorAll('[data-lightbox-src]'));
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
       setPageHidden(true);
       lightbox.hidden = false;
       lightbox.inert = false;
-      document.body.classList.add('gallery-lightbox-open');
+      document.body.classList.add('galeria-lightbox-open');
       showLightboxImage(lightboxIndex);
 
       window.requestAnimationFrame(function () {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!lightbox || lightbox.hidden) return;
       imageRequestId += 1;
       lightbox.hidden = true;
-      document.body.classList.remove('gallery-lightbox-open');
+      document.body.classList.remove('galeria-lightbox-open');
       setPageHidden(false);
       if (lightboxImage) {
         lightboxImage.removeAttribute('src');
@@ -174,9 +174,9 @@ document.addEventListener('DOMContentLoaded', function () {
   initLightbox();
 
   carousels.forEach(function (carousel) {
-    var swiperContainer = carousel.querySelector('.gallery-swiper');
-    var filtersContainer = carousel.querySelector('.gallery-filters');
-    var status = carousel.querySelector('.gallery-counter');
+    var swiperContainer = carousel.querySelector('.galeria-swiper');
+    var filtersContainer = carousel.querySelector('.galeria-filters');
+    var status = carousel.querySelector('.galeria-counter');
 
     if (!swiperContainer) return;
 
@@ -234,15 +234,15 @@ document.addEventListener('DOMContentLoaded', function () {
           disableOnInteraction: false,
         },
         pagination: {
-          el: carousel.querySelector('.gallery-dots'),
+          el: carousel.querySelector('.galeria-dots'),
           clickable: true,
           renderBullet: function (index, className) {
             return '<span class="' + className + '" role="listitem" aria-label="Ir a foto ' + (index + 1) + '"></span>';
           },
         },
         navigation: {
-          nextEl: carousel.querySelector('.gallery-nav-next'),
-          prevEl: carousel.querySelector('.gallery-nav-prev'),
+          nextEl: carousel.querySelector('.galeria-nav-next'),
+          prevEl: carousel.querySelector('.galeria-nav-prev'),
         },
       };
 
@@ -282,12 +282,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (filtersContainer) {
       filtersContainer.addEventListener('click', function (event) {
-        var btn = event.target.closest('.gallery-filter');
+        var btn = event.target.closest('.galeria-filter');
         if (!btn) return;
 
         var filter = btn.getAttribute('data-filter');
 
-        filtersContainer.querySelectorAll('.gallery-filter').forEach(function (f) {
+        filtersContainer.querySelectorAll('.galeria-filter').forEach(function (f) {
           f.classList.remove('active');
           f.setAttribute('aria-pressed', 'false');
         });

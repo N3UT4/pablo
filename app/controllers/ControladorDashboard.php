@@ -28,7 +28,7 @@ require_once DIR_PATH . 'app/models/ModeloCitas.php';
 require_once DIR_PATH . 'app/models/ModeloPagos.php';
 require_once DIR_PATH . 'app/models/ModeloConsentimiento.php';
 require_once DIR_PATH . 'app/models/ModeloServicios.php';
-require_once DIR_PATH . 'app/services/DashboardService.php';
+require_once DIR_PATH . 'app/servicios/DashboardService.php';
 require_once DIR_PATH . 'app/helpers/AuthHelper.php';
 
 class ControladorDashboard extends ControladorBase
@@ -211,7 +211,7 @@ class ControladorDashboard extends ControladorBase
             return;
         }
 
-        $userId = (int) ($_POST['user_id'] ?? 0);
+        $userId = (int) ($_POST['usuario_id'] ?? 0);
         $nombre = trim((string) ($_POST['nombre'] ?? ''));
         $email = trim((string) ($_POST['email'] ?? ''));
         $telefono = trim((string) ($_POST['telefono'] ?? ''));
@@ -264,7 +264,7 @@ class ControladorDashboard extends ControladorBase
             return;
         }
 
-        $serviceId = (int) ($_POST['service_id'] ?? 0);
+        $serviceId = (int) ($_POST['servicio_id'] ?? 0);
         $nombre = trim((string) ($_POST['nombre'] ?? ''));
         $slug = trim((string) ($_POST['slug'] ?? ''));
         $precio = (float) ($_POST['precio_desde'] ?? 0);

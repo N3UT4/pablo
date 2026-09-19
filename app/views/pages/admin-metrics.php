@@ -135,7 +135,7 @@ $metrics = $metrics ?? [
             </div>
             <div class="panel-grid-dash" style="margin-bottom:0;grid-template-columns:1fr;">
                 <a href="<?= BASE_URL ?>index.php?action=admin-usuarios" class="panel-item">
-                    <i class="fa-solid fa-users"></i>
+                    <i class="fa-solid fa-usuarios"></i>
                     <h3>Gestión de Usuarios</h3>
                     <p>Crear, editar y asignar roles</p>
                 </a>

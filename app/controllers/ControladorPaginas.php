@@ -87,12 +87,12 @@ class ControladorPaginas extends ControladorBase
     }
 
     // Muestra la página de galería de tatuajes (requiere autenticación para galería completa).
-    public function gallery(): void
+    public function galeria(): void
     {
         $this->requireAuth('login');
         $this->view('galeria', [
             'title' => 'Galería — ITZA TATTOO STUDIO',
-            'currentPage' => 'gallery',
+            'currentPage' => 'galeria',
         ]);
     }
 

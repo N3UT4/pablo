@@ -189,10 +189,10 @@ if (!defined('STAFF_ACCESS_CODE')) {
 }
 
 if (!defined('GALLERY_UPLOAD_PATH')) {
-    define('GALLERY_UPLOAD_PATH', 'img/gallery');
+    define('GALLERY_UPLOAD_PATH', 'img/galeria');
 }
 if (!defined('GALLERY_UPLOAD_DIR')) {
-    define('GALLERY_UPLOAD_DIR', DIR_PATH . 'img/gallery');
+    define('GALLERY_UPLOAD_DIR', DIR_PATH . 'img/galeria');
 }
 if (!defined('GALLERY_UPLOAD_URL')) {
     define('GALLERY_UPLOAD_URL', BASE_URL . ltrim(GALLERY_UPLOAD_PATH, '/'));

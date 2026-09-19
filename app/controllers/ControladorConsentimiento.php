@@ -52,7 +52,7 @@ class ControladorConsentimiento extends ControladorBase
                 $this->json(false, 'Completa todos los campos requeridos del consentimiento.', [], 422);
             }
 
-            // El formulario no pide "appointment_id" directamente: se ubica por el documento del cliente,
+            // El formulario no pide "cita_id" directamente: se ubica por el documento del cliente,
             // que debe tener una cuenta y una cita agendada previamente en abono.
             $user = $this->userModel->findByDocumento($documento);
             if (!$user) {
@@ -72,7 +72,7 @@ class ControladorConsentimiento extends ControladorBase
             }
 
             $consentId = $this->consentModel->create([
-                'appointment_id' => $appointment['id'],
+                'cita_id' => $appointment['id'],
                 'nombre_cliente' => $nombre,
                 'documento' => $documento,
                 'fecha_nacimiento' => $fechaNacimiento,

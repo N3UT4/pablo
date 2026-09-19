@@ -46,10 +46,10 @@ class ModeloPromociones extends ModeloBase
     public function alreadyRedeemed(int $promotionId, int $userId): bool
     {
         $statement = $this->execute(
-            'SELECT id FROM promotion_redemptions
-             WHERE promotion_id = :promotion_id AND user_id = :user_id AND appointment_id IS NULL
+            'SELECT id FROM canjes
+             WHERE promocion_id = :promocion_id AND usuario_id = :usuario_id AND cita_id IS NULL
              LIMIT 1',
-            ['promotion_id' => $promotionId, 'user_id' => $userId]
+            ['promocion_id' => $promotionId, 'usuario_id' => $userId]
         );
         return (bool) $statement->fetch();
     }
@@ -58,9 +58,9 @@ class ModeloPromociones extends ModeloBase
     public function redeem(int $promotionId, int $userId): int
     {
         $this->execute(
-            'INSERT INTO promotion_redemptions (promotion_id, user_id)
-             VALUES (:promotion_id, :user_id)',
-            ['promotion_id' => $promotionId, 'user_id' => $userId]
+            'INSERT INTO canjes (promocion_id, usuario_id)
+             VALUES (:promocion_id, :usuario_id)',
+            ['promocion_id' => $promotionId, 'usuario_id' => $userId]
         );
         return (int) $this->db->lastInsertId();
     }

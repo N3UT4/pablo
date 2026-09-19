@@ -6,7 +6,7 @@ require_once DIR_PATH . 'app/models/ModeloArtistas.php';
 // Atiende el formulario de staff en galeria (js/galeria.js).
 class ControladorGaleria extends ControladorBase
 {
-    private ModeloGaleria $galleryModel;
+    private ModeloGaleria $galeriaModel;
     private ModeloArtistas $artistModel;
 
     private const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB, igual que el texto del formulario.
@@ -14,7 +14,7 @@ class ControladorGaleria extends ControladorBase
 
     public function __construct()
     {
-        $this->galleryModel = new ModeloGaleria();
+        $this->galeriaModel = new ModeloGaleria();
         $this->artistModel = new ModeloArtistas();
     }
 
@@ -22,7 +22,7 @@ class ControladorGaleria extends ControladorBase
     public function list(): void
     {
         try {
-            $photos = $this->galleryModel->listActive();
+            $photos = $this->galeriaModel->listActive();
             $this->json(true, 'ok', ['photos' => $photos]);
         } catch (Throwable $e) {
             error_log($e->getMessage());
@@ -96,8 +96,8 @@ class ControladorGaleria extends ControladorBase
                 }
 
                 $relativePath = GALLERY_UPLOAD_PATH . '/' . $filename;
-                $this->galleryModel->create([
-                    'artist_id' => $artistId,
+                $this->galeriaModel->create([
+                    'artista_id' => $artistId,
                     'titulo' => $titulo,
                     'descripcion' => $descripcionFull,
                     'imagen' => $relativePath,

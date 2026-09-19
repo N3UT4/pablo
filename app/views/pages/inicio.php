@@ -1,5 +1,5 @@
 <?php
-require_once DIR_PATH . 'app/views/partials/gallery-carousel.php';
+require_once DIR_PATH . 'app/views/partials/galeria-carousel.php';
 
 $studioPhotos = glob(DIR_PATH . 'img/[0-9]*.jpeg') ?: [];
 sort($studioPhotos, SORT_NATURAL);
@@ -34,7 +34,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
           </a>
           <?php endif; ?>
           <a href="#servicios" class="btn-ghost btn-ghost-hero">
-            <span data-i18n="home.services">Ver servicios</span>
+            <span data-i18n="home.servicios">Ver servicios</span>
             <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
           </a>
         </div>
@@ -61,7 +61,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
     </div>
   </section>
 
-  <section class="services" id="servicios">
+  <section class="servicios" id="servicios">
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Servicios</span>
@@ -175,7 +175,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
     </div>
   </section>
 
-  <section class="studio-gallery" id="galeria">
+  <section class="studio-galeria" id="galeria">
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Trabajo real</span>
@@ -185,7 +185,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
       </div>
       <?php renderItzaGalleryCarousel($studioGalleryPhotos, 'galeriaCarousel', 'Galería del estudio', !$isAuthenticated); ?>
       <?php if (!$isAuthenticated): ?>
-      <div class="gallery-cta reveal" style="text-align:center; margin-top:1.5rem;">
+      <div class="galeria-cta reveal" style="text-align:center; margin-top:1.5rem;">
         <a href="<?= BASE_URL ?>index.php?action=login" class="btn-primary">
           <i class="fa-solid fa-images" aria-hidden="true"></i> Ver galería completa
         </a>
@@ -196,7 +196,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
   </section>
 
   <?php
-  // Fotos subidas por el staff desde galeria.html (tabla "gallery"). Si la base de datos
+  // Fotos subidas por el staff desde galeria.html (tabla "galeria"). Si la base de datos
   // aún no está configurada o no hay fotos, esta sección simplemente no se muestra.
   $uploadedPhotos = [];
   try {
@@ -233,7 +233,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
     }
   ?>
   <?php if (!empty($uploadedGalleryPhotos)): ?>
-  <section class="studio-gallery" id="trabajos-recientes">
+  <section class="studio-galeria" id="trabajos-recientes">
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="eyebrow">Recién publicado</span>
@@ -243,7 +243,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
       </div>
       <?php renderItzaGalleryCarousel($uploadedGalleryPhotos, 'trabajosRecientesCarousel', 'Últimos trabajos', !$isAuthenticated); ?>
       <?php if (!$isAuthenticated): ?>
-      <div class="gallery-cta reveal" style="text-align:center; margin-top:1.5rem;">
+      <div class="galeria-cta reveal" style="text-align:center; margin-top:1.5rem;">
         <a href="<?= BASE_URL ?>index.php?action=login" class="btn-primary">
           <i class="fa-solid fa-images" aria-hidden="true"></i> Ver galería completa
         </a>
@@ -253,7 +253,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
     </div>
   </section>
   <?php endif; ?>
-  <section class="artists artist-spotlight-section" id="artistas">
+  <section class="artistas artist-spotlight-section" id="artistas">
     <div class="wrap">
       <div class="artist-spotlight-card reveal">
         <div class="artist-spotlight-glow" aria-hidden="true"></div>

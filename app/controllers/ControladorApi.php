@@ -1,6 +1,6 @@
 <?php
 // API REST del proyecto.
-// Expone el recurso "citas" (appointments) con los métodos HTTP:
+// Expone el recurso "citas" (citas) con los métodos HTTP:
 //   GET    index.php?action=api&recurso=citas          -> listar
 //   GET    index.php?action=api&recurso=citas&id=1     -> ver una
 //   POST   index.php?action=api&recurso=citas          -> crear (JSON body)
@@ -80,7 +80,7 @@ class ControladorApi extends ControladorBase
         return is_array($data) ? $data : [];
     }
 
-    // --- Recurso: citas (appointments) ---
+    // --- Recurso: citas (citas) ---
     private function citas(string $method): void
     {
         $id = (int) ($_GET['id'] ?? 0);
@@ -99,21 +99,21 @@ class ControladorApi extends ControladorBase
 
             case 'POST':
                 $data = $this->body();
-                $userId = (int) ($data['user_id'] ?? 0);
-                $artistId = (int) ($data['artist_id'] ?? 0);
-                $serviceId = (int) ($data['service_id'] ?? 0);
+                $userId = (int) ($data['usuario_id'] ?? 0);
+                $artistId = (int) ($data['artista_id'] ?? 0);
+                $serviceId = (int) ($data['servicio_id'] ?? 0);
                 $fecha = trim((string) ($data['fecha_cita'] ?? ''));
                 $hora = trim((string) ($data['hora_cita'] ?? ''));
 
                 if ($userId <= 0 || $artistId <= 0 || $serviceId <= 0 || $fecha === '' || $hora === '') {
-                    $this->json(false, 'Faltan campos obligatorios: user_id, artist_id, service_id, fecha_cita, hora_cita.', [], 422);
+                    $this->json(false, 'Faltan campos obligatorios: usuario_id, artista_id, servicio_id, fecha_cita, hora_cita.', [], 422);
                     return;
                 }
 
                 $newId = $this->appointmentModel->create([
-                    'user_id' => $userId,
-                    'artist_id' => $artistId,
-                    'service_id' => $serviceId,
+                    'usuario_id' => $userId,
+                    'artista_id' => $artistId,
+                    'servicio_id' => $serviceId,
                     'fecha_cita' => $fecha,
                     'hora_cita' => $hora,
                     'detalle_personalizado' => trim((string) ($data['detalle_personalizado'] ?? '')),

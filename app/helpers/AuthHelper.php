@@ -12,8 +12,8 @@
 //   - verifyApiAccess($redirectAction): verifica acceso a APIs REST. Retorna artistId o envía JSON 401/403 si no autorizado.
 //   - guard($requiredRol, $redirect): verifica que el usuario esté logueado y tenga alguno de los roles requeridos. Redirige si no. Devuelve true si pass.
 // LÓGICA DE AUTORIZACIÓN:
-//   - Rol 'tatuador': accede si tiene un artist_id asociado.
-//   - Rol 'admin': accede solo si $_SESSION['artist_mode'] está activado y tiene artist_id (modo "ver como tatuador").
+//   - Rol 'tatuador': accede si tiene un artista_id asociado.
+//   - Rol 'admin': accede solo si $_SESSION['artist_mode'] está activado y tiene artista_id (modo "ver como tatuador").
 //   - Otros roles: acceso denegado.
 // SEGURIDAD: Usa hash_equals() indirectamente (via verify_csrf_token en config). Las respuestas JSON usan http_response_code() apropiado (401/403).
 // RECURSOS: ModeloUsuarios (inyectado en constructor).
@@ -32,11 +32,11 @@ class AuthHelper
     }
 
     // Obtiene el ID del artista asociado a la sesión actual.
-    // Primero verifica en sesión ($_SESSION['user']['artist_id'] o $_SESSION['artist_id']).
+    // Primero verifica en sesión ($_SESSION['user']['artista_id'] o $_SESSION['artista_id']).
     // Si no está, lo busca en BD vía ModeloUsuarios::findArtistByUser().
     public function getArtistId(): int
     {
-        $artistId = (int) ($_SESSION['user']['artist_id'] ?? $_SESSION['artist_id'] ?? 0);
+        $artistId = (int) ($_SESSION['user']['artista_id'] ?? $_SESSION['artista_id'] ?? 0);
         if ($artistId <= 0) {
             $artist = $this->userModel->findArtistByUser((int) ($_SESSION['user']['id'] ?? 0));
             $artistId = (int) ($artist['id'] ?? 0);
@@ -46,8 +46,8 @@ class AuthHelper
 
     // Verifica acceso a páginas del panel de tatuador.
     // Retorna el artistId o redirige (302) al login si no tiene acceso.
-    // Rol 'tatuador': accede si tiene artist_id asociado.
-    // Rol 'admin': accede solo si artist_mode está activado y tiene artist_id.
+    // Rol 'tatuador': accede si tiene artista_id asociado.
+    // Rol 'admin': accede solo si artist_mode está activado y tiene artista_id.
     public function verifyPageAccess(string $redirectAction = 'login'): ?int
     {
         $user = $_SESSION['user'] ?? null;

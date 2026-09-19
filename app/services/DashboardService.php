@@ -1,6 +1,6 @@
 <?php
 // =====================================================================
-// FILE: app/services/DashboardService.php
+// FILE: app/servicios/DashboardService.php
 // =====================================================================
 // DESCRIPCIÓN: Service de negocio del dashboard. Extrae la lógica de consulta y agregación de datos del ControladorDashboard, centralizando el cálculo de métricas, listados de transacciones/usuarios/servicios en un único lugar.
 // UBICACIÓN MVC: Service (capa de lógica de negocio)
@@ -13,13 +13,13 @@
 //   - getServicios(): delega a ModeloServicios::listActive() para listar servicios activos.
 // ESTRUCTURA DE DATOS de getMetrics():
 //   {
-//     total_citas: int,        // COUNT(*) de appointments
+//     total_citas: int,        // COUNT(*) de citas
 //     pendientes: int,         // COUNT con estado='pendiente'
 //     confirmadas: int,        // COUNT con estado='confirmada'
 //     completadas: int,        // COUNT con estado='completada'
 //     canceladas: int,         // COUNT con estado='cancelada'
 //     citas_mes: int,          // COUNT con fecha_cita >= CURDATE()
-//     total_abonos: float,     // SUM(monto) de payments con estado pendiente/verificado
+//     total_abonos: float,     // SUM(monto) de abonos con estado pendiente/verificado
 //     ultimas_citas: array     // 5 citas más recientes con datos completos
 //   }
 // MANEJO DE ERRORES: cada método envuelve las llamadas en try/catch y retorna valores por defecto (0, [], 0.0) si la BD falla, registrando el error con error_log().

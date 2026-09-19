@@ -14,8 +14,8 @@ class ModeloGaleria extends ModeloBase
     public function listActive(int $limit = 0): array
     {
         $sql = 'SELECT g.id, g.titulo, g.descripcion, g.imagen, g.created_at, a.nombre AS artista
-                FROM gallery g
-                LEFT JOIN artists a ON a.id = g.artist_id
+                FROM galeria g
+                LEFT JOIN artistas a ON a.id = g.artista_id
                 WHERE g.activo = 1
                 ORDER BY g.created_at DESC';
         if ($limit > 0) {
@@ -35,10 +35,10 @@ class ModeloGaleria extends ModeloBase
         }
 
         $this->execute(
-            'INSERT INTO gallery (artist_id, titulo, descripcion, imagen, activo)
-             VALUES (:artist_id, :titulo, :descripcion, :imagen, 1)',
+            'INSERT INTO galeria (artista_id, titulo, descripcion, imagen, activo)
+             VALUES (:artista_id, :titulo, :descripcion, :imagen, 1)',
             [
-                'artist_id' => $data['artist_id'] ?: null,
+                'artista_id' => $data['artista_id'] ?: null,
                 'titulo' => $titulo,
                 'descripcion' => trim((string) ($data['descripcion'] ?? '')) ?: null,
                 'imagen' => $imagen,

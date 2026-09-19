@@ -201,7 +201,7 @@ class ControladorTatuador extends ControladorBase
 
         // Verifica que la cita exista y pertenezca al artista autenticado (protege contra acceso a otras citas)
         $cita = $this->citaModel->find($citaId);
-        if (!$cita || (int) $cita['artist_id'] !== $artistId) {
+        if (!$cita || (int) $cita['artista_id'] !== $artistId) {
             $this->json(false, 'Cita no encontrada o no asignada a ti.', [], 404);
         }
 

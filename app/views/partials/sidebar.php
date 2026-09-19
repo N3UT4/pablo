@@ -64,7 +64,7 @@
                     <i class="fa-solid fa-chart-line"></i> Métricas
                 </a>
                 <a href="<?= BASE_URL ?>index.php?action=admin-usuarios" class="<?= $currentAction === 'admin-usuarios' ? 'active' : '' ?>">
-                    <i class="fa-solid fa-users"></i> Usuarios
+                    <i class="fa-solid fa-usuarios"></i> Usuarios
                 </a>
                 <a href="<?= BASE_URL ?>index.php?action=admin-servicios" class="<?= $currentAction === 'admin-servicios' ? 'active' : '' ?>">
                     <i class="fa-solid fa-scissors"></i> Servicios

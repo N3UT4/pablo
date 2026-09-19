@@ -14,7 +14,7 @@ class ModeloContacto extends ModeloBase
     public function create(array $data): int
     {
         $this->execute(
-            'INSERT INTO contact_messages (nombre, email, asunto, mensaje, estado)
+            'INSERT INTO mensajes (nombre, email, asunto, mensaje, estado)
              VALUES (:nombre, :email, :asunto, :mensaje, "nuevo")',
             [
                 'nombre' => $data['nombre'],
