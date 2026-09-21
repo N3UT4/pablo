@@ -62,7 +62,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
   </section>
 
   <section class="servicios" id="servicios">
-    <div class="wrap">
+    <div class="wrap services-container">
       <div class="sec-head reveal">
         <span class="eyebrow">Servicios</span>
         <h2>Lo que hacemos</h2>

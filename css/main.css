@@ -585,9 +585,10 @@ nav {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
-  gap: clamp(48px, 7vw, 96px);
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
   align-items: center;
+  width: 100%;
 }
 
 .hero-grid::before {
@@ -608,7 +609,9 @@ nav {
 }
 
 .hero-copy {
-  max-width: 690px;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
 }
 
 .hero-eyebrow {
@@ -628,17 +631,16 @@ nav {
 }
 
 .hero h1 {
-  max-width: 14ch;
+  width: 100%;
+  max-width: none;
   margin-top: 24px;
   color: var(--bone);
-  font-size: clamp(52px, 7vw, 90px);
+  font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 900;
   letter-spacing: 1.5px;
-  line-height: 0.94;
+  line-height: 1.1;
   text-transform: uppercase;
-  transform: scaleX(1.08);
-  transform-origin: left center;
-  will-change: transform;
+  transform: none;
 }
 
 .hero h1 .hero-title-highlight {
@@ -728,6 +730,8 @@ nav {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  width: 100%;
+  min-width: 0;
   padding: 30px 30px 26px;
   border: 1px solid rgba(247, 243, 236, 0.13);
   border-radius: 18px;
@@ -1431,10 +1435,18 @@ nav {
   border-bottom: 1px solid var(--line);
 }
 
+.services > .services-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 90%;
+  padding: 0 24px;
+}
+
 .service-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
+  width: 100%;
 }
 
 .service-card {
@@ -2334,10 +2346,6 @@ footer:not(.site-footer) {
     max-width: 620px;
   }
 
-  .service-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
   .process-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -2423,7 +2431,7 @@ footer:not(.site-footer) {
 
   .hero h1 {
     max-width: none;
-    font-size: clamp(46px, 13vw, 66px);
+    font-size: clamp(2rem, 4vw, 3.5rem);
     letter-spacing: 0.6px;
   }
 

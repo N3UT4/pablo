@@ -7,10 +7,18 @@
   border-bottom: 1px solid var(--line);
 }
 
+.services > .services-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 90%;
+  padding: 0 24px;
+}
+
 .service-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
+  width: 100%;
 }
 
 .service-card {
@@ -144,10 +152,6 @@
 
 /* ==== RESPONSIVE SERVICES ==== */
 @media (max-width: 860px) {
-  .service-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
   .process-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -158,10 +162,6 @@
 }
 
 @media (max-width: 520px) {
-  .service-grid {
-    grid-template-columns: 1fr;
-  }
-
   .process-grid {
     grid-template-columns: 1fr;
   }
