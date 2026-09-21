@@ -54,4 +54,15 @@ class ModeloServicios extends ModeloBase
         $this->execute('DELETE FROM servicios WHERE id = :id', ['id' => $id]);
         return true;
     }
+
+    // Busca un servicio por ID y retorna su precio_desde.
+    public function findById(int $id): ?array
+    {
+        $statement = $this->execute(
+            'SELECT id, nombre, slug, descripcion, precio_desde FROM servicios WHERE id = :id AND activo = 1 LIMIT 1',
+            ['id' => $id]
+        );
+        $service = $statement->fetch();
+        return $service ?: null;
+    }
 }

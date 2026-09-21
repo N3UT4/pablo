@@ -1,5 +1,5 @@
 <?php
-// Modelo de datos para pagos/pagos.
+// Modelo de datos para pagos/abonos.
 // Proporciona operaciones CRUD para la tabla abonos.
 require_once DIR_PATH . 'core/ModeloBase.php';
 
@@ -26,5 +26,19 @@ class ModeloPagos extends ModeloBase
         );
 
         return (int) $this->db->lastInsertId();
+    }
+
+    // Actualiza el estado de un pago/abono.
+    public function updateEstado(int $pagoId, string $estado): bool
+    {
+        $estadosValidos = ['pendiente', 'verificado', 'rechazado'];
+        if (!in_array($estado, $estadosValidos, true)) {
+            return false;
+        }
+        $this->execute(
+            'UPDATE abonos SET estado = :estado WHERE id = :id',
+            ['estado' => $estado, 'id' => $pagoId]
+        );
+        return true;
     }
 }

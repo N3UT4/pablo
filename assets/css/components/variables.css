@@ -1,38 +1,123 @@
 :root {
-  /* === COLORES BASE (Cyberpunk/Dark Theme) === */
-  --ink: #0A0A0A;
-  --charcoal: #0D0D0D;
-  --charcoal-2: #121212;
-  --panel: #141414;
-  --panel-2: #1C1C1C;
-  --blood: #D4123A;
-  --blood-bright: #FF2E4A;
-  --bone: #F7F3EC;
-  --bone-dim: #BDB6AC;
-  --line: #323232;
-  --gold: #F2B134;
-  --gold-dim: #8A6A1E;
-  --success: #2E7D46;
-  --muted: #8B857D;
-  --page-bg: #0D0D0D;
+  /* === COLORES BASE - Dark Tattoo Studio Theme (WCAG AA/AAA compliant) === */
+  --ink: #050505;
+  --charcoal: #0A0A0A;
+  --charcoal-2: #0F0F0F;
+  --panel: #121212;
+  --panel-2: #1A1A1A;
+  --panel-3: #222222;
+
+  /* Blood/Rojo - Brand Primary (adjusted for better contrast) */
+  --blood: #C80E34;
+  --blood-bright: #E8344E;
+  --blood-light: #FF5A72;
+  --blood-dim: #8B0A26;
+  --blood-glow: rgba(232, 52, 78, 0.4);
+  --blood-glow-strong: rgba(232, 52, 78, 0.6);
+
+  /* Bone/Blanco hueso - Text colors (high contrast) */
+  --bone: #FEFEFE;
+  --bone-high: #FFFFFF;
+  --bone-dim: #D4CFC8;
+  --bone-muted: #A8A39A;
+  --bone-subtle: #8C877E;
+
+  /* Gold/Dorado - Accent (warmer, better contrast) */
+  --gold: #E8A828;
+  --gold-bright: #F5C040;
+  --gold-dim: #B8861A;
+  --gold-light: #FFE08A;
+  --gold-glow: rgba(232, 168, 40, 0.35);
+
+  /* UI Colors */
+  --line: #2E2E2E;
+  --line-soft: #3A3A3A;
+  --line-strong: #4A4A4A;
+  --success: #2DB85C;
+  --success-dim: #1E8A42;
+  --error: #E8344E;
+  --warning: #E8A828;
+  --muted: #7A756D;
+
+  /* Page backgrounds */
+  --page-bg: #0A0A0A;
+  --page-bg-alt: #0D0D0D;
 
   /* === ESPACIADO Y DIMENSIONES === */
   --radius-sm: 4px;
-  --radius: 6px;
-  --radius-lg: 8px;
-  --control-size: 44px;
-  --header-height: 76px;
-  --content-max: 1120px;
-  --narrow-max: 760px;
-  --section-space: 96px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
+  --radius-full: 999px;
+  --control-size: 48px;
+  --control-size-sm: 36px;
+  --header-height: 80px;
+  --content-max: 1200px;
+  --narrow-max: 800px;
+  --section-space: 112px;
+  --section-space-sm: 72px;
 
-  /* === FUENTES === */
-  --font-primary: 'Work Sans', sans-serif;
-  --font-display: 'Bebas Neue', sans-serif;
+  /* === TIPOGRAFÍA - Fluid Scale === */
+  --font-primary: 'Work Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Bebas Neue', 'Oswald', sans-serif;
   --font-logo: 'New Rocker', 'Bebas Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Fluid type scale (clamp) */
+  --text-xs: clamp(11px, 0.75rem + 0.1vw, 12px);
+  --text-sm: clamp(12px, 0.8rem + 0.15vw, 13px);
+  --text-base: clamp(14px, 0.9rem + 0.2vw, 15px);
+  --text-md: clamp(15px, 1rem + 0.25vw, 16px);
+  --text-lg: clamp(16px, 1.1rem + 0.3vw, 18px);
+  --text-xl: clamp(18px, 1.25rem + 0.4vw, 20px);
+  --text-2xl: clamp(22px, 1.5rem + 0.6vw, 28px);
+  --text-3xl: clamp(28px, 2rem + 1vw, 36px);
+  --text-4xl: clamp(36px, 2.5rem + 1.5vw, 48px);
+  --text-5xl: clamp(48px, 3.5rem + 2vw, 64px);
+  --text-6xl: clamp(60px, 4.5rem + 3vw, 96px);
+
+  /* Line heights */
+  --leading-tight: 1.05;
+  --leading-snug: 1.15;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+  --leading-loose: 1.85;
+
+  /* Letter spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+  --tracking-display: 0.01em;
+
+  /* Font weights */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+  --weight-black: 900;
 
   /* === TRANSICIONES BASE === */
-  --transition-fast: 0.15s ease;
-  --transition-base: 0.2s ease;
-  --transition-slow: 0.3s ease;
+  --transition-fast: 0.12s ease-out;
+  --transition-base: 0.18s ease-out;
+  --transition-slow: 0.25s ease-out;
+  --transition-spring: 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* === SHADOWS === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-base: 0 4px 12px -4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 48px -16px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 24px 64px -24px rgba(0, 0, 0, 0.7);
+  --shadow-glow-blood: 0 0 32px -8px var(--blood-glow);
+  --shadow-glow-gold: 0 0 32px -8px var(--gold-glow);
+
+  /* === Z-INDEX === */
+  --z-dropdown: 50;
+  --z-sticky: 60;
+  --z-modal: 100;
+  --z-toast: 200;
+  --z-tooltip: 300;
 }

@@ -5,6 +5,7 @@
 <div class="galeria-lightbox" id="galeriaLightbox" role="dialog" aria-modal="true" aria-label="Visor de imagen" aria-describedby="galeriaLightboxCaption" tabindex="-1" hidden>
   <div class="galeria-lightbox-backdrop" data-lightbox-close></div>
   <figure class="galeria-lightbox-figure">
+    <div class="galeria-lightbox-loading" aria-hidden="true"></div>
     <button class="galeria-control galeria-lightbox-nav galeria-control-prev" type="button" data-lightbox-prev aria-label="Imagen anterior">
       <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
     </button>

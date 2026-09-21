@@ -17,11 +17,13 @@ class ControladorContacto extends ControladorBase
     {
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                $this->json(false, 'Solicitud no válida.', [], 405);
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'Solicitud no válida.'];
+                $this->redirect('index.php?action=contact');
             }
 
             if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
-                $this->json(false, 'La sesión del formulario expiró. Recarga la página e inténtalo de nuevo.', [], 419);
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'La sesión del formulario expiró. Recarga la página e inténtalo de nuevo.'];
+                $this->redirect('index.php?action=contact');
             }
 
             $nombre = trim((string) ($_POST['nombre_contacto'] ?? ''));
@@ -32,7 +34,8 @@ class ControladorContacto extends ControladorBase
 
             if ($nombre === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $asunto === ''
                 || strlen($mensaje) < 10 || !$acepta) {
-                $this->json(false, 'Revisa los campos marcados en rojo antes de enviar.', [], 422);
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'Revisa los campos marcados en rojo antes de enviar.'];
+                $this->redirect('index.php?action=contact');
             }
 
             $messageId = $this->contactModel->create([
@@ -42,10 +45,12 @@ class ControladorContacto extends ControladorBase
                 'mensaje' => $mensaje,
             ]);
 
-            $this->json(true, 'Tu mensaje fue enviado. Te responderemos pronto.', ['message_id' => $messageId]);
+            $_SESSION['flash'] = ['type' => 'success', 'message' => 'Tu mensaje fue enviado. Te responderemos pronto.'];
+            $this->redirect('index.php?action=contact');
         } catch (Throwable $e) {
             error_log($e->getMessage());
-            $this->json(false, 'No fue posible enviar tu mensaje. Verifica la conexión a la base de datos.', [], 500);
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'No fue posible enviar tu mensaje. Verifica la conexión a la base de datos.'];
+            $this->redirect('index.php?action=contact');
         }
     }
 }

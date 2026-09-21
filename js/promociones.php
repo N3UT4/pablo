@@ -27,16 +27,16 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('descripcionPromo').textContent = promo.descripcion || '';
     document.getElementById('vigenciaPromo').textContent = promo.vigencia || '';
 
-    cuponValidoDiv.style.display = 'block';
-    formAplicacion.style.display = 'block';
-    sinCuponDiv.style.display = 'none';
+    cuponValidoDiv.classList.remove('hidden');
+    formAplicacion.classList.remove('hidden');
+    sinCuponDiv.classList.add('hidden');
   }
 
   // Oculta los datos del cupón y muestra el estado sin cupón.
   function ocultarCupon() {
-    cuponValidoDiv.style.display = 'none';
-    formAplicacion.style.display = 'none';
-    sinCuponDiv.style.display = 'block';
+    cuponValidoDiv.classList.add('hidden');
+    formAplicacion.classList.add('hidden');
+    sinCuponDiv.classList.remove('hidden');
   }
 
   let cuponVigente = null;
@@ -132,9 +132,9 @@ document.addEventListener('DOMContentLoaded', function () {
     itzaSuccess(result.message, '¡Cupón guardado!').then(() => {
       form.reset();
       cuponVigente = null;
-      cuponValidoDiv.style.display = 'none';
-      formAplicacion.style.display = 'none';
-      sinCuponDiv.style.display = 'none';
+      cuponValidoDiv.classList.add('hidden');
+      formAplicacion.classList.add('hidden');
+      sinCuponDiv.classList.add('hidden');
     });
   });
 

@@ -58,7 +58,10 @@
             </nav>
         <?php elseif ($rol === 'admin'): ?>
             <!-- Sección: Panel Administrador -->
-            <div class="sidebar-section-label">Panel Administrador</div>
+            <div class="sidebar-section-label">
+                Panel Administrador
+                <span class="admin-tag">Privilegiado</span>
+            </div>
             <nav>
                 <a href="<?= BASE_URL ?>index.php?action=admin" class="<?= in_array($currentAction, ['admin', 'dashboard']) ? 'active' : '' ?>">
                     <i class="fa-solid fa-chart-line"></i> Métricas
@@ -81,6 +84,14 @@
                 </a>
             </nav>
         <?php endif; ?>
+
+        <!-- Sección: Información -->
+        <div class="sidebar-section-label">Información</div>
+        <nav>
+            <a href="<?= BASE_URL ?>index.php?action=recomendaciones" class="<?= $currentAction === 'recomendaciones' ? 'active' : '' ?>">
+                <i class="fa-solid fa-band-aid"></i> Cuidados del tatuaje
+            </a>
+        </nav>
 
         <!-- Info del usuario y botón de cerrar sesión -->
         <div class="sidebar-user">

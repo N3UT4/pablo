@@ -11,7 +11,7 @@
 //   - DIR_PATH: ruta física absoluta al directorio raíz del proyecto.
 //   - APP_ROOT, APP_URL, APP_ENV: ruta raíz, URL y entorno (development/production).
 //   - DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, DB_PASS: credenciales de la BD.
-//   - STUDIO_CITY, STUDIO_ADDRESS, STUDIO_PHONE, STUDIO_WHATSAPP, STUDIO_INSTAGRAM, STUDIO_FACEBOOK, STUDIO_TIKTOK, STUDIO_MAPS: datos de contacto del estudio.
+//   - STUDIO_CITY, STUDIO_ADDRESS, STUDIO_PHONE, STUDIO_WHATSAPP, STUDIO_WHATSAPP_MESSAGE, STUDIO_INSTAGRAM, STUDIO_FACEBOOK, STUDIO_TIKTOK, STUDIO_MAPS: datos de contacto del estudio.
 //   - STAFF_ACCESS_CODE: código de acceso para staff.
 //   - GALLERY_UPLOAD_PATH, GALLERY_UPLOAD_DIR, GALLERY_UPLOAD_URL: rutas de uploads.
 //   - STUDIO_HOURS: horario de atención del estudio.
@@ -20,6 +20,7 @@
 //   - csrf_token(): retorna el token CSRF de la sesión actual.
 //   - verify_csrf_token($token): compara con hash_equals() (timing-safe).
 //   - estado_cita($estado): traduce estados internos a etiquetas humanas.
+//   - whatsapp_url($message): genera un enlace https://wa.me/ con mensaje pre-llenado.
 // SEGURIDAD: La sesión usa session_set_cookie_params con httponly=true, samesite='Lax', secure según protocolo. El token CSRF se genera con random_bytes(32) (32 bytes de entropía criptográfica).
 // =====================================================================
 
@@ -161,28 +162,31 @@ if (!defined('DB_PASS')) {
 }
 
 if (!defined('STUDIO_CITY')) {
-    define('STUDIO_CITY', 'Bogotá, La Victoria - 20 de Julio');
+    define('STUDIO_CITY', itza_env('STUDIO_CITY', 'Bogotá, La Victoria - 20 de Julio'));
 }
 if (!defined('STUDIO_ADDRESS')) {
-    define('STUDIO_ADDRESS', 'Calle 42 A Sur # 3C - 65 Este');
+    define('STUDIO_ADDRESS', itza_env('STUDIO_ADDRESS', 'Calle 42 A Sur # 3C - 65 Este'));
 }
 if (!defined('STUDIO_PHONE')) {
-    define('STUDIO_PHONE', '301 400 3006');
+    define('STUDIO_PHONE', itza_env('STUDIO_PHONE', '301 400 3006'));
 }
 if (!defined('STUDIO_WHATSAPP')) {
-    define('STUDIO_WHATSAPP', '573014003006');
+    define('STUDIO_WHATSAPP', itza_env('STUDIO_WHATSAPP', '573014003006'));
+}
+if (!defined('STUDIO_WHATSAPP_MESSAGE')) {
+    define('STUDIO_WHATSAPP_MESSAGE', itza_env('STUDIO_WHATSAPP_MESSAGE', '¡Hola! Quisiera hacer una consulta sobre tatuajes.'));
 }
 if (!defined('STUDIO_INSTAGRAM')) {
-    define('STUDIO_INSTAGRAM', 'https://www.instagram.com/itza.tattoo');
+    define('STUDIO_INSTAGRAM', itza_env('STUDIO_INSTAGRAM', 'https://www.instagram.com/itza.tattoo'));
 }
 if (!defined('STUDIO_FACEBOOK')) {
-    define('STUDIO_FACEBOOK', 'https://www.facebook.com/share/1CfAtuh5Bx/');
+    define('STUDIO_FACEBOOK', itza_env('STUDIO_FACEBOOK', 'https://www.facebook.com/share/1CfAtuh5Bx/'));
 }
 if (!defined('STUDIO_TIKTOK')) {
-    define('STUDIO_TIKTOK', 'https://www.tiktok.com/@itza_tattoo');
+    define('STUDIO_TIKTOK', itza_env('STUDIO_TIKTOK', 'https://www.tiktok.com/@itza_tattoo'));
 }
 if (!defined('STUDIO_MAPS')) {
-    define('STUDIO_MAPS', 'https://maps.app.goo.gl/drjEamHAYwjngxh57');
+    define('STUDIO_MAPS', itza_env('STUDIO_MAPS', 'https://maps.app.goo.gl/drjEamHAYwjngxh57'));
 }
 if (!defined('STAFF_ACCESS_CODE')) {
     define('STAFF_ACCESS_CODE', itza_env('STAFF_ACCESS_CODE', 'ITZA-STAFF-2026'));
@@ -231,4 +235,18 @@ function estado_cita(string $estado): string
         'cancelada' => 'Rechazada',
     ];
     return $map[$estado] ?? $estado;
+}
+
+function whatsapp_url(?string $message = null): string
+{
+    $phone = preg_replace('/[^0-9]/', '', (string) STUDIO_WHATSAPP);
+    if ($phone === '') {
+        return '';
+    }
+    $url = 'https://wa.me/' . $phone;
+    $msg = $message !== null && $message !== '' ? $message : STUDIO_WHATSAPP_MESSAGE;
+    if ($msg !== '') {
+        $url .= '?text=' . rawurlencode($msg);
+    }
+    return $url;
 }

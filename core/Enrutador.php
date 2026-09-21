@@ -7,7 +7,7 @@
 // ¿POR QUÉ EXISTE? Reemplaza el enrutamiento tradicional de un framework completo. En una aplicación MVC sin un router externo, este archivo es el encargado de mapear URLs a controladores y métodos, validando que el usuario tenga permiso para acceder a cada ruta.
 // CÓMO SE USA: Llamado desde index.php mediante Enrutador::dispatch(). El método dispatch() es estático y utiliza un switch sobre el valor de $_GET['action'].
 // ESTRUCTURA DE ROUTAS:
-//   - Públicas: home, contact, galeria, booking, consent, profile, promotions, 404, 500, csrf-token
+//   - Públicas: home, contact, galeria, booking, consent, profile, promotions, recomendaciones, 404, 500, csrf-token
 //   - Autenticación: login, register, logout, cambiar-clave, delete-account
 //   - Dashboard cliente/admin: dashboard, cliente-citas, cliente-abonos, cliente-consentimiento, cliente-agendar
 //   - Dashboard admin: admin, admin-usuarios, admin-servicios, admin-transacciones, admin-save-user, admin-save-service, admin-delete-service
@@ -129,6 +129,20 @@ class Enrutador
                     }
                 } elseif ($action === 'admin-delete-service') {
                     $dashboardController->adminDeleteService();
+                } elseif ($action === 'admin-dashboard') {
+                    $dashboardController->adminDashboard();
+                } elseif ($action === 'admin-update-estado') {
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        $dashboardController->ajaxUpdateEstado();
+                    } else {
+                        $dashboardController->adminDashboard();
+                    }
+                } elseif ($action === 'admin-registrar-pago') {
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        $dashboardController->ajaxRegistrarPago();
+                    } else {
+                        $dashboardController->adminDashboard();
+                    }
                 }
                 break;
             // --- Páginas públicas ---
@@ -149,6 +163,9 @@ class Enrutador
                 break;
             case 'promotions':
                 $pageController->promotions();
+                break;
+            case 'recomendaciones':
+                $pageController->recomendaciones();
                 break;
             case 'demo-404':
                 header("HTTP/1.0 404 Not Found");
@@ -188,6 +205,19 @@ class Enrutador
                 require_once DIR_PATH . 'app/controllers/ControladorCitas.php';
                 (new ControladorCitas())->store();
                 break;
+            // --- Pagos/Abonos adicionales ---
+            case 'registrar-abono':
+                require_once DIR_PATH . 'app/controllers/ControladorPagos.php';
+                (new ControladorPagos())->store();
+                break;
+            case 'listar-abonos':
+                require_once DIR_PATH . 'app/controllers/ControladorPagos.php';
+                (new ControladorPagos())->list();
+                break;
+            case 'actualizar-estado-pago':
+                require_once DIR_PATH . 'app/controllers/ControladorPagos.php';
+                (new ControladorPagos())->updateEstado();
+                break;
             // --- Consentimiento ---
             case 'submit-consent':
                 require_once DIR_PATH . 'app/controllers/ControladorConsentimiento.php';
@@ -200,6 +230,8 @@ class Enrutador
             case 'redeem-promo':
             case 'reporte-citas':
             case 'reporte-citas-json':
+            case 'registrar-abono':
+            case 'listar-abonos':
                 $user = $_SESSION['user'] ?? null;
                 if (!$user) {
                     // Para endpoints AJAX, devolver JSON en lugar de redirigir
@@ -231,6 +263,12 @@ class Enrutador
                 } elseif ($action === 'reporte-citas-json') {
                     require_once DIR_PATH . 'app/controllers/ControladorReportes.php';
                     (new ControladorReportes())->citasJson();
+                } elseif ($action === 'registrar-abono') {
+                    require_once DIR_PATH . 'app/controllers/ControladorPagos.php';
+                    (new ControladorPagos())->store();
+                } elseif ($action === 'listar-abonos') {
+                    require_once DIR_PATH . 'app/controllers/ControladorPagos.php';
+                    (new ControladorPagos())->list();
                 }
                 break;
             // --- Cerrar sesión ---
@@ -266,6 +304,7 @@ class Enrutador
             case 'artist-update-estado':
             case 'artist-save-schedule':
             case 'artist-citas-json':
+            case 'actualizar-estado-pago':
                 // Verificación de rol: requiere 'tatuador' o 'admin' con modo activado
                 $user = $_SESSION['user'] ?? null;
                 if (!$user || !in_array($user['rol'] ?? '', ['tatuador', 'admin'], true)) {
@@ -287,6 +326,9 @@ class Enrutador
                     $tatuadorController->saveSchedule();
                 } elseif ($action === 'artist-citas-json') {
                     $tatuadorController->citasJson();
+                } elseif ($action === 'actualizar-estado-pago') {
+                    require_once DIR_PATH . 'app/controllers/ControladorPagos.php';
+                    (new ControladorPagos())->updateEstado();
                 }
                 break;
             case 'artist-switch-mode':

@@ -141,6 +141,18 @@ class ControladorPaginas extends ControladorBase
         ]);
     }
 
+    // Muestra las recomendaciones y cuidados del tatuaje (público).
+    // Carga el array reutilizable de app/data/recomendaciones_tatuaje.php
+    // para usar su título SEO como fuente única de verdad del contenido.
+    public function recomendaciones(): void
+    {
+        $rec = require DIR_PATH . 'app/data/recomendaciones_tatuaje.php';
+        $this->view('recomendaciones', [
+            'title' => $rec['seo']['title'] ?? 'Recomendaciones — ITZA TATTOO STUDIO',
+            'currentPage' => 'recomendaciones',
+        ]);
+    }
+
     // Muestra el formulario para cambiar contraseña.
     public function changePasswordForm(): void
     {

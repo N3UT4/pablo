@@ -6,6 +6,7 @@
   background: var(--panel);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  overflow-x: hidden;
 }
 
 .artist-grid {
@@ -17,9 +18,9 @@
 /* ---- Artist Feature (large card) ---- */
 .artist-feature {
   display: grid;
-  grid-template-columns: minmax(280px, .8fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
   gap: 42px;
-  align-items: stretch;
+  align-items: start;
   background: var(--panel-2);
   border: 1px solid var(--line);
   padding: 28px;
@@ -33,7 +34,7 @@
 
 .artist-feature-photo img {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
   object-fit: cover;
   object-position: center;
@@ -113,6 +114,7 @@
 
 .artist-spotlight-section {
   background: var(--charcoal);
+  overflow-x: hidden;
 }
 
 .artist-spotlight-card {
@@ -134,20 +136,21 @@
 
 .artist-spotlight-grid {
   display: grid;
-  grid-template-columns: minmax(300px, 0.7fr) 1fr;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
   gap: 0;
-  align-items: stretch;
+  align-items: start;
 }
 
 .artist-spotlight-media {
   position: relative;
   min-height: 480px;
+  overflow: hidden;
 }
 
 .artist-photo-frame {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
 }
 

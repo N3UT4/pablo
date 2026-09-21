@@ -1,5 +1,5 @@
 <?php
-require_once DIR_PATH . 'app/views/partials/galeria-carousel.php';
+require_once DIR_PATH . 'app/views/partials/gallery-carousel.php';
 
 $studioPhotos = glob(DIR_PATH . 'img/[0-9]*.jpeg') ?: [];
 sort($studioPhotos, SORT_NATURAL);
@@ -19,7 +19,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
     <div class="wrap hero-grid">
       <div class="hero-copy">
         <span class="eyebrow hero-eyebrow" data-i18n="home.eyebrow">Estudio de tatuajes • Bogotá, La Victoria • 20 de Julio</span>
-        <h1 id="hero-title"><span data-i18n="home.title_prefix">Tinta con </span><span class="hero-title-highlight" data-i18n="home.title_highlight">propósito,</span><br><span data-i18n="home.title_suffix">citas sin fricción</span></h1>
+        <h1 id="hero-title"><span data-i18n="home.title">El primer paso para tu próximo tatuaje empieza aquí.</span></h1>
         <p class="hero-description" data-i18n="home.description">Agenda tu cita en minutos, asegura tu cupo con un pago QR por Nequi y firma tu consentimiento informado desde el celular. Menos filas, menos papeleo y más tiempo para crear.</p>
         <div class="hero-actions">
           <?php if ($isAuthenticated): ?>
@@ -400,7 +400,7 @@ $studioGalleryPhotos = array_map(static function (string $photo, int $index): ar
         <div class="contact-detail">
           <span class="contact-icon" aria-hidden="true">✆</span>
           <strong>Contacto y WhatsApp</strong>
-          <a href="https://wa.me/<?= STUDIO_WHATSAPP ?>" target="_blank" rel="noopener noreferrer">
+          <a href="<?= htmlspecialchars(whatsapp_url('¡Hola! Me gustaría agendar una cita para un tatuaje.')) ?>" target="_blank" rel="noopener noreferrer">
             <?= htmlspecialchars(STUDIO_PHONE) ?>
           </a>
           <span>Escríbenos para agendar o resolver tus dudas.</span>

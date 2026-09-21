@@ -23,6 +23,7 @@
                         <a href="<?= BASE_URL ?>index.php?action=home#proceso" role="menuitem">Cómo funciona</a>
                         <a href="<?= BASE_URL ?>index.php?action=home#artistas" role="menuitem">Artista</a>
                         <a href="<?= BASE_URL ?>index.php?action=promotions" role="menuitem">Promociones</a>
+                        <a href="<?= BASE_URL ?>index.php?action=recomendaciones" role="menuitem">Cuidados del tatuaje</a>
                         <a href="<?= BASE_URL ?>index.php?action=contact" role="menuitem">Contacto</a>
                     </div>
                 </div>

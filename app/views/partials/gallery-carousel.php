@@ -54,7 +54,8 @@ function renderItzaGalleryCarousel(array $photos, string $carouselId, string $ca
               <div class="swiper-slide" data-category="<?= $photoCategory ?>" data-index="<?= $index ?>">
                 <div class="galeria-slide-card">
                   <button class="galeria-photo" type="button" data-lightbox-src="<?= $photoSrc ?>" data-lightbox-alt="<?= $photoAlt ?>" data-lightbox-caption="<?= $photoStyleLabel . ' · ' . $photoTitle ?>" aria-label="Ampliar <?= $photoAlt ?>">
-                    <img src="<?= $photoSrc ?>" alt="<?= $photoAlt ?>" loading="lazy" decoding="async">
+                    <img src="<?= $photoSrc ?>" alt="<?= $photoAlt ?>" loading="lazy" decoding="async" onerror="this.style.display='none';">
+                    <div class="galeria-photo-placeholder" hidden>Imagen no disponible</div>
                   </button>
                   <span class="slide-tag"><?= $photoStyleLabel ?></span>
                   <div class="slide-info-bar">

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LETRAS — Diseño de Tatuaje</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=New+Rocker&family=Work+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', system-ui, sans-serif;
+            background: #050505;
+            color: #FEFEFE;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .bg-pulse {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(200, 14, 52, 0.15), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(200, 14, 52, 0.10), transparent 50%),
+                #050505;
+        }
+
+        .bg-pulse::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(232, 52, 78, 0.08), transparent 70%);
+            filter: blur(80px);
+            animation: pulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px 24px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .tattoo-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border: 1px solid rgba(232, 52, 78, 0.35);
+            border-radius: 999px;
+            background: rgba(200, 14, 52, 0.08);
+            color: #E8344E;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+
+        .tattoo-label i { font-size: 10px; }
+
+        .tattoo-title {
+            font-family: 'New Rocker', 'Bebas Neue', sans-serif;
+            font-size: clamp(72px, 15vw, 160px);
+            font-weight: 400;
+            letter-spacing: 4px;
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .tattoo-title .letter-black {
+            color: #050505;
+            text-shadow:
+                0 0 1px #050505,
+                1px 1px 0 #0A0A0A,
+                2px 2px 0 #121212,
+                3px 3px 0 #1A1A1A,
+                4px 4px 0 #222222,
+                5px 5px 8px rgba(0,0,0,0.6),
+                0 0 40px rgba(0,0,0,0.4);
+            -webkit-text-stroke: 1px #1A1A1A;
+        }
+
+        .tattoo-title .letter-red {
+            color: #C80E34;
+            text-shadow:
+                0 0 20px rgba(200, 14, 52, 0.5),
+                0 0 40px rgba(200, 14, 52, 0.25),
+                0 0 80px rgba(200, 14, 52, 0.1),
+                2px 2px 4px rgba(0,0,0,0.5);
+            -webkit-text-stroke: 1.5px #E8344E;
+            animation: redGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes redGlow {
+            0% { text-shadow: 0 0 20px rgba(200,14,52,0.5), 0 0 40px rgba(200,14,52,0.25), 2px 2px 4px rgba(0,0,0,0.5); }
+            100% { text-shadow: 0 0 35px rgba(232,52,78,0.7), 0 0 70px rgba(200,14,52,0.35), 0 0 120px rgba(200,14,52,0.15), 2px 2px 4px rgba(0,0,0,0.5); }
+        }
+
+        .tattoo-subtitle {
+            font-family: 'Work Sans', sans-serif;
+            font-size: clamp(14px, 2vw, 18px);
+            font-weight: 400;
+            color: #D4CFC8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 48px;
+        }
+
+        .flash-sheet {
+            position: relative;
+            border: 1px solid rgba(247,243,236,0.12);
+            border-radius: 12px;
+            background: linear-gradient(145deg, rgba(18,18,18,0.9), rgba(10,10,10,0.95));
+            padding: 40px 24px;
+            margin: 0 auto 48px;
+            max-width: 720px;
+            box-shadow: 0 24px 64px -24px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.03) inset;
+        }
+
+        .flash-sheet::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #C80E34, transparent);
+            border-radius: 2px;
+        }
+
+        .flash-word {
+            font-family: 'New Rocker', 'Bebas Neue', sans-serif;
+            font-size: clamp(48px, 10vw, 80px);
+            font-weight: 400;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            flex-wrap: wrap;
+        }
+
+        .flash-word span {
+            display: inline-block;
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .flash-word span:hover {
+            transform: translateY(-6px) scale(1.08);
+        }
+
+        .flash-word .blk {
+            color: #050505;
+            text-shadow:
+                1px 0 0 #0A0A0A,
+                0 1px 0 #0A0A0A,
+                -1px 0 0 #0A0A0A,
+                0 -1px 0 #0A0A0A,
+                2px 2px 0 #121212,
+                3px 3px 6px rgba(0,0,0,0.5),
+                0 0 20px rgba(0,0,0,0.3);
+            -webkit-text-stroke: 0.8px #222;
+        }
+
+        .flash-word .red {
+            color: #C80E34;
+            text-shadow:
+                0 0 15px rgba(200,14,52,0.6),
+                0 0 30px rgba(200,14,52,0.3),
+                2px 2px 4px rgba(0,0,0,0.4);
+            -webkit-text-stroke: 1px #E8344E;
+        }
+
+        .style-options {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .style-chip {
+            padding: 8px 16px;
+            border: 1px solid rgba(247,243,236,0.1);
+            border-radius: 999px;
+            background: rgba(247,243,236,0.03);
+            color: #A8A39A;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.25s ease;
+            cursor: default;
+        }
+
+        .style-chip i {
+            color: #E8344E;
+            margin-right: 6px;
+            font-size: 10px;
+        }
+
+        .style-chip:hover {
+            border-color: rgba(200,14,52,0.5);
+            background: rgba(200,14,52,0.08);
+            color: #FEFEFE;
+        }
+
+        .cta-section {
+            margin-top: 24px;
+        }
+
+        .cta-section p {
+            color: #A8A39A;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #C80E34 0%, #E8344E 100%);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            box-shadow: 0 0 32px -8px rgba(200,14,52,0.4), 0 4px 16px -8px rgba(0,0,0,0.5);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .cta-btn:hover {
+            background: linear-gradient(135deg, #E8344E 0%, #FF5A72 100%);
+            box-shadow: 0 0 40px -4px rgba(232,52,78,0.6), 0 8px 24px -8px rgba(0,0,0,0.6);
+            transform: translateY(-2px);
+        }
+
+        .cta-btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border: 1px solid rgba(247,243,236,0.2);
+            border-radius: 10px;
+            background: rgba(247,243,236,0.02);
+            color: #FEFEFE;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            margin-left: 12px;
+        }
+
+        .cta-btn-ghost:hover {
+            border-color: rgba(200,14,52,0.6);
+            background: rgba(200,14,52,0.08);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #C80E34, transparent);
+            margin: 32px auto;
+            border-radius: 2px;
+        }
+
+        .ink-drip {
+            position: absolute;
+            width: 3px;
+            background: #C80E34;
+            border-radius: 0 0 3px 3px;
+            opacity: 0.6;
+            animation: drip 5s ease-in-out infinite;
+        }
+
+        @keyframes drip {
+            0%, 100% { height: 8px; opacity: 0.6; }
+            50% { height: 20px; opacity: 0.2; }
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 32px 24px;
+            color: #8C877E;
+            font-size: 11px;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(247,243,236,0.06);
+            width: 100%;
+            margin-top: auto;
+        }
+
+        footer strong { color: #E8344E; }
+    </style>
+</head>
+<body>
+    <div class="bg-pulse" aria-hidden="true"></div>
+
+    <main>
+        <span class="tattoo-label"><i class="fa-solid fa-pen-nib"></i> Diseño personalizado</span>
+
+        <h1 class="tattoo-title">
+            <span class="letter-black">L</span><span class="letter-red">E</span><span class="letter-black">T</span><span class="letter-red">R</span><span class="letter-black">A</span><span class="letter-red">S</span>
+        </h1>
+
+        <p class="tattoo-subtitle">Negro &amp; Rojo — Estilo Lettering</p>
+
+        <div class="flash-sheet">
+            <div class="flash-word" id="flashWord">
+                <span class="blk">L</span><span class="red">E</span><span class="blk">T</span><span class="red">R</span><span class="blk">A</span><span class="red">S</span>
+            </div>
+        </div>
+
+        <div class="style-options">
+            <span class="style-chip"><i class="fa-solid fa-circle"></i> Blackletter</span>
+            <span class="style-chip"><i class="fa-solid fa-droplet"></i> Negro &amp; Rojo</span>
+            <span class="style-chip"><i class="fa-solid fa-hand-pointer"></i> Caligráfico</span>
+            <span class="style-chip"><i class="fa-solid fa-fire"></i> Old School</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="cta-section">
+            <p>El primer paso para tu próximo tatuaje empieza aquí.</p>
+            <a href="#" class="cta-btn">Agendar cita <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" class="cta-btn-ghost">Ver galería</a>
+        </div>
+    </main>
+
+    <footer>
+        <strong>ITZA TATTOO STUDIO</strong> · La Victoria, Bogotá · 20 de Julio
+    </footer>
+
+    <script>
+        const letters = document.querySelectorAll('#flashWord span');
+        letters.forEach((el, i) => {
+            el.style.animationDelay = (i * 0.1) + 's';
+            el.addEventListener('mouseenter', () => {
+                el.style.transform = 'translateY(-10px) scale(1.15)';
+                el.style.filter = el.classList.contains('red')
+                    ? 'brightness(1.4) drop-shadow(0 0 20px rgba(200,14,52,0.8))'
+                    : 'brightness(1.2) drop-shadow(0 0 10px rgba(0,0,0,0.5))';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = '';
+                el.style.filter = '';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -21,9 +21,7 @@
     },
     "home": {
       "eyebrow": "Estudio de tatuajes • Bogotá, La Victoria • 20 de Julio",
-      "title_prefix": "Tinta con ",
-      "title_highlight": "propósito,",
-      "title_suffix": "citas sin fricción",
+      "title": "El primer paso para tu próximo tatuaje empieza aquí.",
       "description": "Agenda tu cita en minutos, asegura tu cupo con un pago QR por Nequi y firma tu consentimiento informado desde el celular. Menos filas, menos papeleo y más tiempo para crear.",
       "reserve": "Reservar mi cita",
       "services": "Ver servicios",
@@ -340,9 +338,7 @@
     },
     "home": {
       "eyebrow": "Tattoo studio • Bogotá, La Victoria • 20 de Julio",
-      "title_prefix": "Ink with ",
-      "title_highlight": "purpose,",
-      "title_suffix": "effortless appointments",
+      "title": "The first step for your next tattoo starts here.",
       "description": "Book your appointment in minutes, secure your slot with a Nequi QR payment and sign your informed consent from your phone. Fewer lines, less paperwork and more time to create.",
       "reserve": "Book my appointment",
       "services": "View services",

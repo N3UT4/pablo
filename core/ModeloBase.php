@@ -41,4 +41,10 @@ abstract class ModeloBase
         $statement->execute($parameters);
         return $statement;
     }
+
+    // Obtiene la conexión PDO subyacente para transacciones.
+    public function getConnection(): PDO
+    {
+        return $this->db;
+    }
 }

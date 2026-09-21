@@ -1,0 +1,138 @@
+/* =====================================================================
+   FILE: css/admin.css
+   =====================================================================
+   DESCRIPCIÓN: Estilos exclusivos del panel de administración.
+   Se carga solo en vistas admin* mediante head.php.
+   Aplica un fondo más oscuro y un borde de seguridad rojo en el body
+   para que quede evidente que es una zona privilegiada.
+   ===================================================================== */
+
+/* Fondo de seguridad: tono más oscuro y sutil degradado rojo lateral */
+.admin-page {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(229, 9, 20, 0.06), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(229, 9, 20, 0.05), transparent 40%),
+    var(--page-bg) !important;
+}
+
+/* Barra de seguridad superior: indica que estás en zona admin */
+.admin-page .dashboard-sidebar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--blood-bright), transparent);
+  box-shadow: 0 0 12px rgba(229, 9, 20, 0.6);
+}
+
+/* Badge de privilegio en el sidebar */
+.sidebar-brand .admin-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--blood);
+  color: #fff;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+/* Contenedor principal del admin: más ancho y con mayor padding */
+.admin-page .container-narrow {
+  max-width: 1280px;
+}
+
+/* Tarjetas de métricas con mayor relieve */
+.admin-page .dash-stat-card {
+  background: rgba(20, 20, 20, 0.7);
+  border: 1px solid rgba(229, 9, 20, 0.15);
+  box-shadow: 0 8px 24px -12px rgba(229, 9, 20, 0.3);
+}
+
+.admin-page .dash-stat-card:hover {
+  border-color: var(--blood-bright);
+  box-shadow: 0 12px 32px -12px rgba(229, 9, 20, 0.5);
+}
+
+/* Botones de acción admin: mayor brillo */
+.admin-page .btn-glow {
+  box-shadow: 0 8px 24px -8px rgba(229, 9, 20, 0.8), 0 0 16px -4px rgba(229, 9, 20, 0.5);
+}
+
+.admin-page .btn-glow:hover {
+  box-shadow: 0 12px 32px -10px rgba(229, 9, 20, 0.95), 0 0 24px -4px rgba(229, 9, 20, 0.6);
+}
+
+/* Tablas admin: mayor contraste y filas con hover rojo sutil */
+.admin-page .dash-table thead th {
+  background: rgba(229, 9, 20, 0.06);
+  color: var(--bone);
+  letter-spacing: 1.2px;
+}
+
+.admin-page .dash-table tbody tr {
+  border-bottom: 1px solid rgba(247, 243, 236, 0.05);
+}
+
+.admin-page .dash-table tbody tr:hover {
+  background: rgba(229, 9, 20, 0.08);
+}
+
+/* Formularios admin: mayor padding y focus rojo */
+.admin-page .dash-form input,
+.admin-page .dash-form select,
+.admin-page .dash-form textarea {
+  background: rgba(15, 15, 15, 0.7);
+  border: 1px solid rgba(247, 243, 236, 0.12);
+}
+
+.admin-page .dash-form input:focus,
+.admin-page .dash-form select:focus,
+.admin-page .dash-form textarea:focus {
+  border-color: rgba(229, 9, 20, 0.6);
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15);
+}
+
+/* Glass cards admin con borde rojo sutil */
+.admin-page .glass-card {
+  background: rgba(18, 18, 18, 0.75);
+  border: 1px solid rgba(229, 9, 20, 0.12);
+}
+
+.admin-page .glass-card:hover {
+  border-color: rgba(229, 9, 20, 0.3);
+}
+
+/* Header del dashboard admin: título más prominente */
+.admin-page .dashboard-header h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  background: linear-gradient(135deg, var(--bone), var(--blood-bright));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Scrollbar personalizado para tablas admin */
+.admin-page .dash-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.admin-page .dash-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(10, 10, 10, 0.5);
+  border-radius: 4px;
+}
+
+.admin-page .dash-table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(229, 9, 20, 0.4);
+  border-radius: 4px;
+}
+
+.admin-page .dash-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--blood-bright);
+}

@@ -4,8 +4,8 @@ require_once DIR_PATH . 'app/models/ModeloCitas.php';
 require_once DIR_PATH . 'app/models/ModeloPagos.php';
 require_once DIR_PATH . 'app/models/ModeloArtistas.php';
 require_once DIR_PATH . 'app/models/ModeloServicios.php';
+require_once DIR_PATH . 'app/helpers/AbonoHelper.php';
 
-// Atiende el formulario de abono (js/abono.js): agenda la cita y registra el abono/pago.
 class ControladorCitas extends ControladorBase
 {
     private ModeloCitas $appointmentModel;
@@ -39,6 +39,7 @@ class ControladorCitas extends ControladorBase
 
             $artistId = (int) ($_POST['id_tatuador'] ?? 0);
             $servicioSlug = trim((string) ($_POST['tipo_servicio'] ?? ''));
+            $tamano = strtolower(trim((string) ($_POST['tamano'] ?? '')));
             $detalle = trim((string) ($_POST['detalle_personalizado'] ?? ''));
             $observaciones = trim((string) ($_POST['observaciones'] ?? ''));
             $fecha = trim((string) ($_POST['fecha_cita'] ?? ''));
@@ -47,8 +48,12 @@ class ControladorCitas extends ControladorBase
             $metodo = trim((string) ($_POST['metodo_pago'] ?? ''));
             $comprobante = trim((string) ($_POST['comprobante'] ?? ''));
 
-            if ($artistId <= 0 || $servicioSlug === '' || $fecha === '' || $hora === '' || $monto <= 0) {
+            if ($artistId <= 0 || $servicioSlug === '' || $tamano === '' || $fecha === '' || $hora === '' || $monto <= 0) {
                 $this->json(false, 'Revisa los campos marcados en rojo antes de continuar.', [], 422);
+            }
+
+            if (!AbonoHelper::esTamanoValido($tamano)) {
+                $this->json(false, "Tamaño de tatuaje inválido. Debe ser: pequeño, mediano o grande.", [], 422);
             }
 
             if (!in_array($metodo, ['nequi', 'transferencia', 'efectivo', 'tarjeta'], true)) {
@@ -68,6 +73,21 @@ class ControladorCitas extends ControladorBase
                 $this->json(false, 'El estilo "' . $servicioSlug . '" no existe en la tabla "servicios". Agrégalo o ajusta el slug.', [], 422);
             }
 
+            $servicioDetalle = $this->serviceModel->findById((int) $servicio['id']);
+            if (!$servicioDetalle || !isset($servicioDetalle['precio_desde']) || $servicioDetalle['precio_desde'] <= 0) {
+                $this->json(false, 'El servicio seleccionado no tiene un precio definido.', [], 422);
+            }
+            $precioTotal = (float) $servicioDetalle['precio_desde'];
+
+            if (!$this->validarAnticipacionMinima($fecha, $hora)) {
+                $this->json(false, 'No se permite agendar citas con menos de 72 horas (3 días) de anticipación.', [], 422);
+            }
+
+            $validacion = AbonoHelper::validarMontoAbono($monto, $tamano, $precioTotal);
+            if (!$validacion['valido']) {
+                $this->json(false, $validacion['mensaje'], [], 422);
+            }
+
             $appointmentId = $this->appointmentModel->create([
                 'usuario_id' => $userId,
                 'artista_id' => $artistId,
@@ -85,10 +105,30 @@ class ControladorCitas extends ControladorBase
                 'comprobante' => $comprobante,
             ]);
 
-            $this->json(true, 'Tu cita quedó agendada y tu abono registrado. ¡Te esperamos!', ['cita_id' => $appointmentId]);
+            $respuesta = AbonoHelper::generarRespuestaAbono($tamano, $monto, $precioTotal, 0);
+
+            $this->json(
+                true,
+                $respuesta['mensaje'],
+                [
+                    'cita_id' => $appointmentId,
+                    'abono' => $respuesta['data'],
+                ],
+                201
+            );
         } catch (Throwable $e) {
             error_log($e->getMessage());
             $this->json(false, 'No fue posible agendar la cita. Verifica la conexión a la base de datos.', [], 500);
         }
+    }
+
+    private function validarAnticipacionMinima(string $fecha, string $hora): bool
+    {
+        $fechaCita = $fecha . ' ' . $hora . ':00';
+        $timestampCita = strtotime($fechaCita);
+        $timestampAhora = time();
+        $diferenciaSegundos = $timestampCita - $timestampAhora;
+
+        return $diferenciaSegundos >= (72 * 3600);
     }
 }

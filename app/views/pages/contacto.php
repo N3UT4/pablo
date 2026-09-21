@@ -1,6 +1,6 @@
 <div class="container container-narrow">
-  <div style="margin-bottom:16px;">
-    <a href="javascript:history.back()" class="btn-outline btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
+  <div class="card-head-cta">
+    <a href="javascript:history.back()" class="btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
   </div>
   <div class="card">
     <div class="card-head">
@@ -14,21 +14,27 @@
       <div class="row2">
         <div class="field">
           <label for="contactName">Nombre</label>
-          <input type="text" id="contactName" name="contactName" placeholder="Tu nombre" required>
+          <input type="text" id="contactName" name="nombre_contacto" placeholder="Tu nombre" required>
         </div>
         <div class="field">
           <label for="contactEmail">Correo</label>
-          <input type="email" id="contactEmail" name="contactEmail" placeholder="tu@correo.com" required>
+          <input type="email" id="contactEmail" name="email_contacto" placeholder="tu@correo.com" required>
         </div>
 
       </div>
       <div class="field">
         <label for="contactSubject">Asunto</label>
-        <input type="text" id="contactSubject" name="contactSubject" placeholder="¿Qué necesitas?" required>
+        <input type="text" id="contactSubject" name="asunto" placeholder="¿Qué necesitas?" required>
       </div>
       <div class="field">
         <label for="contactMessage">Mensaje</label>
-        <textarea id="contactMessage" name="contactMessage" placeholder="Cuéntanos tu idea..." required></textarea>
+        <textarea id="contactMessage" name="mensaje" placeholder="Cuéntanos tu idea..." required></textarea>
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">
+          <input type="checkbox" name="acepta_contacto" value="1" required>
+          Acepto que ITZA TATTOO se comunique conmigo por correo, WhatsApp o teléfono para responder mi consulta.
+        </label>
       </div>
       <button type="submit" class="submit-btn">Enviar consulta</button>
     </form>
@@ -50,7 +56,7 @@
       </div>
       <div>
         <span class="info-label">WhatsApp</span>
-        <a href="https://wa.me/<?= STUDIO_WHATSAPP ?>" target="_blank" rel="noopener noreferrer">
+        <a href="<?= htmlspecialchars(whatsapp_url('Hola, me pongo en contacto desde la web. ¿Podríamos conversar sobre un tatuaje?')) ?>" target="_blank" rel="noopener noreferrer">
           <?= htmlspecialchars(STUDIO_PHONE) ?>
         </a>
         <span>Atención y reservas</span>

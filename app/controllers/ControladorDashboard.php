@@ -28,7 +28,8 @@ require_once DIR_PATH . 'app/models/ModeloCitas.php';
 require_once DIR_PATH . 'app/models/ModeloPagos.php';
 require_once DIR_PATH . 'app/models/ModeloConsentimiento.php';
 require_once DIR_PATH . 'app/models/ModeloServicios.php';
-require_once DIR_PATH . 'app/servicios/DashboardService.php';
+require_once DIR_PATH . 'app/models/ModeloArtistas.php';
+require_once DIR_PATH . 'app/services/DashboardService.php';
 require_once DIR_PATH . 'app/helpers/AuthHelper.php';
 
 class ControladorDashboard extends ControladorBase
@@ -38,6 +39,7 @@ class ControladorDashboard extends ControladorBase
     private ModeloPagos $pagoModel;
     private ModeloConsentimiento $consentModel;
     private ModeloServicios $serviceModel;
+    private ModeloArtistas $artistModel;
     private DashboardService $dashService;
     private AuthHelper $authHelper;
 
@@ -48,6 +50,7 @@ class ControladorDashboard extends ControladorBase
         $this->pagoModel = new ModeloPagos();
         $this->consentModel = new ModeloConsentimiento();
         $this->serviceModel = new ModeloServicios();
+        $this->artistModel = new ModeloArtistas();
         $this->dashService = new DashboardService($this->citaModel, $this->userModel, $this->serviceModel);
         $this->authHelper = new AuthHelper($this->userModel);
     }
@@ -123,11 +126,13 @@ class ControladorDashboard extends ControladorBase
     {
         $this->authHelper->guard(['cliente', 'tatuador', 'admin'], 'login');
         $servicios = [];
+        $artistas = [];
 
         try {
             $servicios = $this->serviceModel->listActive();
+            $artistas = $this->artistModel->listActive();
         } catch (Throwable $e) {
-            error_log('[Dashboard] Error cargando servicios: ' . $e->getMessage());
+            error_log('[Dashboard] Error cargando datos para agendar: ' . $e->getMessage());
         }
 
         $this->view('cliente-agendar', [
@@ -135,6 +140,7 @@ class ControladorDashboard extends ControladorBase
             'pageTitle' => 'Agendar Cita',
             'currentPage' => 'dashboard',
             'servicios' => $servicios,
+            'artistas' => $artistas,
             'user' => $_SESSION['user'],
         ]);
     }
@@ -307,5 +313,145 @@ class ControladorDashboard extends ControladorBase
         }
 
         $this->redirect(BASE_URL . 'index.php?action=admin-servicios');
+    }
+
+    // Sirve la vista del Dashboard de administración con citas y métricas.
+    public function adminDashboard(): void
+    {
+        $this->authHelper->guard('admin', 'login');
+
+        $citas = [];
+        $pagos = [];
+
+        try {
+            $citas = $this->citaModel->getTransacciones(200);
+        } catch (Throwable $e) {
+            error_log('[Dashboard] Error cargando citas: ' . $e->getMessage());
+        }
+
+        try {
+            $pagos = $this->citaModel->getTransacciones(50);
+            $pagos = array_filter($pagos, function($p) {
+                return isset($p['monto']) && (float) $p['monto'] > 0;
+            });
+        } catch (Throwable $e) {
+            error_log('[Dashboard] Error cargando pagos: ' . $e->getMessage());
+        }
+
+        $metrics = $this->dashService->getMetrics();
+
+        $this->view('admin-dashboard', [
+            'title' => 'Dashboard — ITZA TATTOO',
+            'pageTitle' => 'Dashboard',
+            'currentPage' => 'dashboard',
+            'currentAction' => 'admin-dashboard',
+            'citas' => $citas,
+            'pagos' => $pagos,
+            'metrics' => $metrics,
+            'user' => $_SESSION['user'],
+        ]);
+    }
+
+    // AJAX: Cambia el estado de una cita (pendiente, confirmada, completada, cancelada).
+    public function ajaxUpdateEstado(): void
+    {
+        $this->authHelper->guard('admin', 'login');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->json(false, 'Método no permitido.', [], 405);
+            return;
+        }
+
+        if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
+            $this->json(false, 'La sesión del formulario expiró.', [], 419);
+            return;
+        }
+
+        $citaId = (int) ($_POST['cita_id'] ?? 0);
+        $nuevoEstado = trim((string) ($_POST['nuevo_estado'] ?? ''));
+
+        if ($citaId <= 0) {
+            $this->json(false, 'ID de cita inválido.', [], 422);
+            return;
+        }
+
+        if (!in_array($nuevoEstado, ['pendiente', 'confirmada', 'completada', 'cancelada'], true)) {
+            $this->json(false, 'Estado inválido.', [], 422);
+            return;
+        }
+
+        try {
+            $result = $this->citaModel->updateEstado($citaId, $nuevoEstado);
+            if ($result) {
+                $this->json(true, 'Estado actualizado correctamente.', [
+                    'cita_id' => $citaId,
+                    'estado' => $nuevoEstado,
+                ]);
+            } else {
+                $this->json(false, 'No se encontró la cita o no se realizaron cambios.', [], 404);
+            }
+        } catch (Throwable $e) {
+            $this->json(false, 'Error al actualizar el estado: ' . $e->getMessage(), [], 500);
+        }
+    }
+
+    // AJAX: Registra un nuevo abono/pago para una cita.
+    public function ajaxRegistrarPago(): void
+    {
+        $this->authHelper->guard('admin', 'login');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->json(false, 'Método no permitido.', [], 405);
+            return;
+        }
+
+        if (!verify_csrf_token($_POST['csrf_token'] ?? null)) {
+            $this->json(false, 'La sesión del formulario expiró.', [], 419);
+            return;
+        }
+
+        $citaId = (int) ($_POST['cita_id'] ?? 0);
+        $monto = (float) ($_POST['monto'] ?? 0);
+        $metodo = trim((string) ($_POST['metodo'] ?? ''));
+        $comprobante = trim((string) ($_POST['comprobante'] ?? ''));
+
+        if ($citaId <= 0) {
+            $this->json(false, 'ID de cita inválido.', [], 422);
+            return;
+        }
+
+        if ($monto <= 0) {
+            $this->json(false, 'El monto debe ser mayor a cero.', [], 422);
+            return;
+        }
+
+        if (!in_array($metodo, ['nequi', 'transferencia', 'efectivo', 'tarjeta'], true)) {
+            $this->json(false, 'Método de pago inválido.', [], 422);
+            return;
+        }
+
+        try {
+            $cita = $this->citaModel->find($citaId);
+            if (!$cita) {
+                $this->json(false, 'La cita no existe.', [], 404);
+                return;
+            }
+
+            $pagoId = $this->pagoModel->create([
+                'cita_id' => $citaId,
+                'monto' => $monto,
+                'metodo' => $metodo,
+                'comprobante' => $comprobante ?: null,
+            ]);
+
+            $this->json(true, 'Abono registrado correctamente.', [
+                'pago_id' => $pagoId,
+                'cita_id' => $citaId,
+                'monto' => $monto,
+                'metodo' => $metodo,
+            ]);
+        } catch (Throwable $e) {
+            $this->json(false, 'Error al registrar el abono: ' . $e->getMessage(), [], 500);
+        }
     }
 }
